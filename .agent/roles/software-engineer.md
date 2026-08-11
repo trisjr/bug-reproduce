@@ -1,0 +1,1 @@
+/Users/trisjr/Projects/Tenomad/TNMCore-OS/.agent/roles/software-engineer.md

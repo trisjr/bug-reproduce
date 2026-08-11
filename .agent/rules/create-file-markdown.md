@@ -1,0 +1,1 @@
+/Users/trisjr/Projects/Tenomad/TNMCore-OS/.agent/rules/create-file-markdown.md

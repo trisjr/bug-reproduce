@@ -1,0 +1,1 @@
+/Users/trisjr/Projects/Tenomad/TNMCore-OS/.agent/roles/security-auditor.md

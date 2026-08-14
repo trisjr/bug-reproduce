@@ -64,6 +64,10 @@ Ghi lại để tài liệu hạ nguồn không hiểu nhầm:
 
 Tương tự, bốn ngưỡng `≥80%` / `<5%` / `<10MB` / `<30s` `[stated §24]` là metric của **technical spike** `[stated §22]`; RQ.md tự nói chúng là *"initial hypotheses, not final product commitments"* `[stated §24]`. Chúng **không phải acceptance criteria** và không được dùng làm căn cứ cho bất kỳ yêu cầu `SEC-xxx` nào ở mục 9.
 
+> **`✅ CHỐT GATE-01 — 2026-08-14` — spike đã được bật, và điều đó KHÔNG đổi đoạn trên.** Phase 0 technical spike `[stated §22]` được `@TrisJr` chốt **`Go`** và coi là **điều kiện đầu tư**; `Sponsor` = `@TrisJr`, `Manager` = `@TrisJr` (xem [Roadmap](../../010-Planning/Roadmap.md) Phase 0, [Charter-Repro §7](../../010-Planning/Charter-Repro.md)). Bốn ngưỡng §24 **vẫn là hypothesis**, **vẫn không phải acceptance criteria**, và **vẫn không được dùng** làm căn cứ cho requirement nào ở mục 9 — `GATE-01` quyết *có chạy spike hay không*, nó không biến hypothesis thành ngưỡng nghiệm thu.
+>
+> **`GATE-01-r`** — `Go` **không tự làm cho spike đo được**: `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở (không có denominator, không có định nghĩa *"reproduced"*, không có tiêu chí chọn test case, không có *Supported Execution Class*). Hệ quả trong tài liệu này: `SEC-008` (mục 11.b) **vẫn chưa có ngưỡng** — spike đã bật không đồng nghĩa spike sẽ cấp được con số. Định nghĩa rủi ro ở [Risk-Register §4.2](../../010-Planning/Risk-Register.md).
+
 ### 1.5 Quy ước nhãn nguồn
 
 | Nhãn | Nghĩa |
@@ -73,7 +77,8 @@ Tương tự, bốn ngưỡng `≥80%` / `<5%` / `<10MB` / `<30s` `[stated §24]
 | `[GAP]` | RQ.md **không nói gì** về điều này. |
 | `[cần validate]` | Đề xuất chưa được ai cân nhắc đánh đổi, không được đọc như đã chốt. |
 | `[cần anh chốt]` | Có mâu thuẫn thật giữa hai section của RQ.md; tài liệu này cố ý **không** tự quyết. **Không còn mục nào mang nhãn này** — `M2` là mâu thuẫn duy nhất từng mang nhãn, và nó đã được chốt (xem dòng dưới). |
-| `✅ ĐÃ CHỐT 2026-08-14` | Chủ sản phẩm đã quyết định phía nào của một mâu thuẫn `[cần anh chốt]`. **Nhãn này KHÔNG có nghĩa là RQ.md đã hết mâu thuẫn** — RQ.md vẫn nguyên văn nói ngược; nhãn chỉ ghi lại ta chọn phía nào và vì sao. Bằng chứng hai phía kèm section number được **giữ nguyên** ở mục 10. |
+| `✅ ĐÃ CHỐT 2026-08-14` | Chủ sản phẩm đã quyết định phía nào của một mâu thuẫn `[cần anh chốt]`. **Nhãn này KHÔNG có nghĩa là RQ.md đã hết mâu thuẫn** — RQ.md vẫn nguyên văn nói ngược; nhãn chỉ ghi lại ta chọn phía nào và vì sao. Bằng chứng hai phía kèm section number được **giữ nguyên** ở mục 10. **Nhãn này thuộc quyết định `M1`/`M2` (`D1`/`D2`) và KHÔNG được dùng lại** cho các quyết định sau. |
+| `✅ CHỐT GATE-0N — 2026-08-14` | Chủ sản phẩm (`@TrisJr`) đã quyết một hạng mục **`TBD`/`DEFER`** của tài liệu này. Khác nhãn ở dòng ngay trên ở chỗ: nhãn kia đóng một **mâu thuẫn của `RQ.md`** (`M1`/`M2`), nhãn này đóng một **khoảng trống mà `RQ.md` không nói gì**. Ba gate chạm tài liệu này: **`GATE-01`** (Phase 0 = `Go` · mục 1.4, 11.b) · **`GATE-04`** (sàn Capsule Store · cuối mục 10, mục 3.2) · **`GATE-05a`**/**`GATE-05b`** (TTL 30 ngày · crypto-shred `MUST-V0.1` · mục 11.a, 11.c). Cùng quy ước với nhãn trên: **giữ nguyên 100% bằng chứng** và phần *"vì sao không khẳng định được"*; nhãn chỉ ghi ai quyết, quyết gì, và hệ quả nào phải trả. **Mapping**: `GATE-01` = G1 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5 — trong tài liệu **chỉ dùng `GATE-0N`**. |
 
 ### 1.6 Nguyên tắc nền
 
@@ -96,7 +101,7 @@ Asset ở đây là **thứ đáng để mất**, xếp theo mức độ thiệt
 | `A-07` | Metadata thực thi | Stack trace, timestamp, git commit, runtime/dependency version, schema version `[stated §15, §18]` | §15, §18 | Ít nhạy cảm hơn nội dung, nhưng **stack trace và SQL error message thường mang giá trị dữ liệu nhúng trong chuỗi** (xem mục 7 nhóm 7) và tiết lộ topology nội bộ. |
 | `A-08` | Feature flag state & cấu hình nội bộ | Trạng thái flag tại thời điểm lỗi `[stated §6, §18]` | §6, §18 | Tiết lộ lộ trình sản phẩm chưa công bố và logic phân nhánh nội bộ. |
 | `A-09` | **Cấu hình redaction** | File khai báo header/field nào bị che `[stated §16]` | §16 | Bản thân nó là asset hạng nhất: **ai sửa được file này thì điều khiển toàn bộ `TB-2`**. RQ.md coi nó là cấu hình thường, không coi là asset `[GAP]`. |
-| `A-10` | Khoá mã hoá capsule | Key dùng cho encryption at rest `[stated §16 "Capsules should support encryption at rest"]` | §16 | Nếu crypto-shredding được chọn (mục 8.1), key trở thành **cơ chế xoá duy nhất còn hiệu lực** sau `TB-4` — mất kiểm soát key là mất luôn khả năng thu hồi. |
+| `A-10` | Khoá mã hoá capsule | Key dùng cho encryption at rest `[stated §16 "Capsules should support encryption at rest"]` | §16 | Nếu crypto-shredding được chọn (mục 8.1), key trở thành **cơ chế xoá duy nhất còn hiệu lực** sau `TB-4` — mất kiểm soát key là mất luôn khả năng thu hồi. **`✅ CHỐT GATE-05b — 2026-08-14`: đã được chọn** (`SEC-016` = `MUST-V0.1`) ⇒ điều kiện *"nếu"* đã thành hiện thực, và `A-10` **nâng từ asset thường lên asset then chốt**: nó vừa là cơ chế xoá duy nhất còn hiệu lực, vừa là **điểm chết** — mất key store là mất **toàn bộ** capsule, kể cả bản trong Zone 2. `RQ.md` không nói gì về key custody `[GAP]`; `U-06d` là **blocker** (`GATE-05b-r2`, mục 11.c). |
 | `A-11` | Audit log truy cập capsule | Ai đã list/pull/inspect/replay capsule nào `[stated §20.17 "audit logs"]` | §20.17 | Là bằng chứng duy nhất trả lời được câu hỏi sau sự cố: *dữ liệu này đã đi tới những ai*. Không có nó thì mọi điều tra là phỏng đoán. |
 | `A-12` | **Máy developer và credential trên đó** | Laptop chạy `repro replay`: SSH key, cloud credential, session của IDE, quyền push code `[inferred §8, §18]` | §8, §18 | Đây là asset mà RQ.md **không hề coi là asset**. Nó biến `THREAT-009` từ "lộ dữ liệu" thành **compromise chuỗi phát triển**. |
 | `A-13` | Hệ thống production thật | Payment gateway, mail sender, Kafka, DB production `[stated §13, §20.4]` | §13, §20.4 | Là **đích của side effect ngoài ý muốn** khi replay. RQ.md nhận ra rủi ro này `[stated §13]` nhưng cơ chế đề xuất fail-open (xem `THREAT-018`). |
@@ -143,7 +148,9 @@ Asset ở đây là **thứ đáng để mất**, xếp theo mức độ thiệt
                                           │
                                     ▓▓▓ TB-4 ▓▓▓  ◄── `repro pull`
                                           │         boundary NGUY HIỂM NHẤT
-                                          │         BẤT KHẢ HỒI — không có đường quay lại
+                                          │         BẤT KHẢ HỒI bằng thu hồi file — không có đường quay lại;
+                                          │         chỉ khả hồi qua crypto-shred (SEC-016, MUST-V0.1)
+                                          │         VÀ chỉ khi có key custody (U-06d) — xem 3.5
                                           ▼
 ╔═══════════════════════════ ZONE 3 — LAPTOP DEVELOPER ═════════════════════════════════════╗
 ║                                                                                            ║
@@ -166,6 +173,15 @@ Asset ở đây là **thứ đáng để mất**, xếp theo mức độ thiệt
 ╚════════════════════════════════════════════════════════════════════════════════════════════╝
 ```
 
+**Trạng thái ba thành phần của Zone 2 sau các quyết định ngày 2026-08-14** — sơ đồ trên vẽ *thiết kế mong muốn*, dòng này ghi *cái gì đã được chốt*:
+
+| Thành phần trong sơ đồ | Trạng thái |
+|---|---|
+| `Capsule Store (A-01)` · `authn/authz` | **Sàn đã chốt** — `✅ CHỐT GATE-04 — 2026-08-14`: object/file storage + **một index** + **authn/authz/audit hook**, 3 thao tác tối thiểu theo `SDD §5.4`. ⚠ **Cơ chế** authn/authz cụ thể vẫn **`TBD`**, và `GAP-04` (không có CLI verb vận hành) **chưa đóng** — `GATE-04-r`, xem cuối mục 10 |
+| `retention TTL` | **Đã có giá trị** — `✅ CHỐT GATE-05a — 2026-08-14`: mặc định **30 ngày**, cấu hình được (`FR-024`), `SEC-022` · mục 11.a |
+| `Key Store (A-10)` · `crypto-shred` | **Đã chốt áp dụng** — `✅ CHỐT GATE-05b — 2026-08-14`: `SEC-016` = **`MUST-V0.1`**, khoá giữ phía server · mục 11.c. ⚠ **Nhưng `Key Store` trong sơ đồ vẫn là một hộp chưa ai đặc tả**: key custody `U-06d` nay là **blocker** (`GATE-05b-r2`) |
+| `Audit Log (A-11)` | `MUST-V0.1` trong OSS core theo quyết định `D2` (`M2`) — xem mục 10, nhãn giữ nguyên ở đó |
+
 ### 3.3 Bảng sáu trust boundary
 
 | ID | Boundary | Từ → Đến | Control point tương ứng |
@@ -173,7 +189,7 @@ Asset ở đây là **thứ đáng để mất**, xếp theo mức độ thiệt
 | `TB-1` | Cấu hình → Recorder | Người/PR quyết định capture gì → recorder trong Zone 1 | Integrity của `A-09`, review gate, fail-closed khi thiếu config |
 | `TB-2` | **Redaction gate** | Dữ liệu runtime → nội dung capsule (bên trong Zone 1) | Redaction engine — **điểm kiểm soát quan trọng nhất** |
 | `TB-3` | Recorder → Collector/Storage | Zone 1 → Zone 2 | TLS, xác thực recorder, mã hoá at-rest, authz ghi |
-| `TB-4` | **Storage → laptop** (`repro pull`) | Zone 2 → Zone 3 | authn/authz đọc, audit, TTL — **boundary nguy hiểm nhất** |
+| `TB-4` | **Storage → laptop** (`repro pull`) | Zone 2 → Zone 3 | authn/authz đọc (**sàn `GATE-04`**; cơ chế vẫn `TBD`), audit, TTL (**mặc định 30 ngày, `GATE-05a`**), và **crypto-shred** (`SEC-016` = `MUST-V0.1`, `GATE-05b`; cần key custody `U-06d`) — **boundary nguy hiểm nhất** |
 | `TB-5` | Capsule → Replay Runtime | Dữ liệu không tin cậy → code thực thi trong Zone 3 | Verify trước khi parse, sandbox deserialize |
 | `TB-6` | Replay Runtime → thế giới bên ngoài | Zone 3 → mạng / `A-13` | Chặn egress ở mức process, default-deny write |
 
@@ -197,6 +213,12 @@ Chúng bảo vệ *tốt hơn* thì thiệt hại *nhỏ hơn*, nhưng không co
 
 **(1) Bất khả hồi.** Mọi boundary khác còn có đường sửa sai. Key rò rỉ ở `TB-3` thì rotate key. ACL sai ở Zone 2 thì đổi ACL. Object thừa trong storage thì xoá object. Nhưng **sau `TB-4`, tổ chức không còn khả năng thu hồi** — không có cơ chế nào trong thiết kế cho phép Zone 2 lấy lại hay vô hiệu hoá một file đã nằm trên máy của người khác. Đây là loại rủi ro khác về chất: không phải "khó khắc phục" mà là "không có khái niệm khắc phục".
 
+> **`✅ CHỐT GATE-05b — 2026-08-14` — lý do (1) đã đổi, nhưng CHƯA hết.** `SEC-016` (crypto-shredding) nay là **`MUST-V0.1`** (mục 11.c): capsule được mã hoá bằng khoá riêng giữ ở Zone 2, và **phá khoá làm mọi bản copy trở thành ciphertext vô nghĩa mà không cần biết chúng ở đâu**. Nghĩa là `TB-4` chuyển từ **bất khả hồi** sang **khả hồi** — đây là thay đổi về chất, không phải cải thiện mức độ: lần đầu tiên tồn tại một *"khái niệm khắc phục"* cho boundary này.
+>
+> ⚠ **Hai điều kiện, và nếu bỏ một trong hai thì câu trên sai:**
+> 1. **Khả hồi CHỈ khi có key management.** Không có nơi giữ khoá, vòng đời khoá, cơ chế phá khoá và chính sách sao lưu khoá thì `SEC-016` là một quyết định chưa thực thi được. `U-06d` (key custody) nay là **blocker** — `GATE-05b-r2`, xem mục 11.c và [Risk-Register §4.2](../../010-Planning/Risk-Register.md). **Cho tới khi `U-06d` được giải, đoạn "Bất khả hồi" ở trên vẫn là mô tả đúng hiện trạng.**
+> 2. **Khả hồi không có nghĩa là an toàn.** Crypto-shred thu hồi **khả năng đọc**, nó **không** thu hồi *"dữ liệu đã từng bị đọc"*: một bản copy đã được giải mã và lưu lại ở dạng plaintext, hoặc một khoá đã bị lấy trước khi phá, nằm ngoài tầm của cơ chế này. Bốn lý do (2)…(5) bên dưới **không lý do nào bị `GATE-05b` xoá bỏ** — `TB-4` vẫn là boundary nguy hiểm nhất.
+
 **(2) Bị vượt qua trên happy path, không do bị tấn công.** Đây là điểm dễ bị bỏ qua nhất. `repro pull` **không phải lỗ hổng — nó là tính năng**, là chính cái mà sản phẩm bán `[stated §8, §18, §35]`. Không có attacker nào cần xuất hiện để dữ liệu production đi qua `TB-4`; nó đi qua mỗi lần sản phẩm được dùng đúng mục đích.
 
 Hệ quả: **rủi ro tăng tuyến tính theo mức adoption**. North Star Metric của sản phẩm là số bug production được chuyển thành test case `[stated §31]` — nghĩa là **chỉ số thành công của sản phẩm và chỉ số phơi nhiễm dữ liệu là cùng một chỉ số**. Càng thành công thì càng nhiều dữ liệu production nằm trên càng nhiều laptop. Không có threat model nào khác trong RQ.md có tính chất này.
@@ -207,7 +229,9 @@ Hệ quả: **rủi ro tăng tuyến tính theo mức adoption**. North Star Met
 
 **(5) Nó nhân bản asset.** Một capsule trong Zone 2 là **một** object chịu **một** retention policy. Sau khi N developer pull, nó là **N+1 bản** trong đó chỉ bản gốc chịu policy. Retention TTL, crypto-shred, ACL — tất cả đều chỉ áp được lên bản gốc. Thiết kế hiện tại nhân bản asset nhanh hơn khả năng quản trị nó.
 
-**Kết luận kết hợp**: `TB-2` quyết định *dữ liệu nào tồn tại*; `TB-4` quyết định *dữ liệu đó tồn tại ở bao nhiêu nơi ngoài tầm với*. Hai boundary này phải được xử lý bằng hai tư duy khác nhau — `TB-2` bằng fail-closed engineering, `TB-4` bằng chấp nhận rằng nó không thể được "bảo vệ" mà chỉ có thể được **giảm giá trị của thứ đi qua nó** (mục 5, 6) và **làm cho nó khả hồi** (crypto-shredding, mục 8.1).
+*Cập nhật sau `GATE-05` — 2026-08-14*: mệnh đề *"tất cả đều chỉ áp được lên bản gốc"* **không còn đúng với crypto-shred**. `SEC-016` = `MUST-V0.1` ⇒ **phá khoá áp lên toàn bộ N+1 bản cùng lúc**, vì cái bị phá không phải bản copy mà là **điều kiện đọc được chúng**. Hai control còn lại **không đổi**: retention TTL (nay mặc định 30 ngày, `GATE-05a`) và ACL vẫn chỉ chạm được bản gốc ở Zone 2 — `SEC-044` (TTL cục bộ) là `SHOULD` và bị vô hiệu bằng một thao tác copy file. Và bản thân crypto-shred **chỉ áp được khi có key custody** (`U-06d`, `GATE-05b-r2`). Nghĩa là: **tốc độ nhân bản không giảm**, nhưng lần đầu tiên có một control theo kịp nó — với điều kiện control đó được vận hành thật.
+
+**Kết luận kết hợp**: `TB-2` quyết định *dữ liệu nào tồn tại*; `TB-4` quyết định *dữ liệu đó tồn tại ở bao nhiêu nơi ngoài tầm với*. Hai boundary này phải được xử lý bằng hai tư duy khác nhau — `TB-2` bằng fail-closed engineering, `TB-4` bằng chấp nhận rằng nó không thể được "bảo vệ" mà chỉ có thể được **giảm giá trị của thứ đi qua nó** (mục 5, 6) và **làm cho nó khả hồi** (crypto-shredding, mục 8.1) — **đường thứ hai nay đã được chọn**: `SEC-016` = `MUST-V0.1`, `✅ CHỐT GATE-05b — 2026-08-14`, với điều kiện key custody `U-06d` (`GATE-05b-r2`).
 
 ---
 
@@ -244,7 +268,7 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | `THREAT-004` | **Redaction config fail-open** | `TB-1` | **KHÔNG** `[GAP]` |
 | `THREAT-005` | **Recorder bị lạm dụng thành công cụ exfiltration nội bộ** | `TB-1` + `TB-2` + `TB-4` | **KHÔNG** `[GAP]` |
 | `THREAT-006` | **Capsule vào git vĩnh viễn** | Zone 3 → Zone 4 | **KHÔNG** `[GAP]` |
-| `THREAT-007` | Capsule sprawl trong Zone 3 (cloud sync, IDE, AI assistant, mất máy) | `TB-4`, Zone 3 → Zone 4 | **KHÔNG** `[GAP]` |
+| `THREAT-007` | Capsule sprawl trong Zone 3 (cloud sync, IDE, AI assistant, mất máy) | `TB-4`, Zone 3 → Zone 4 | **KHÔNG** `[GAP]` — và **vẫn thuộc nhóm không có mitigation thực thi được** sau `GATE-05`: crypto-shred đã chốt nhưng treo trên key custody `U-06d` |
 | `THREAT-008` | Bản self-host không có access control | `TB-3` + `TB-4` | **KHÔNG** `[GAP]` trong RQ.md — nhưng **✅ ĐÃ CHỐT 2026-08-14**: mitigation đến từ quyết định sản phẩm `D2`, xem mục 10 |
 | `THREAT-009` | **Capsule là input không tin cậy → thực thi mã trên máy developer** | `TB-5` | **KHÔNG** `[GAP]` |
 | `THREAT-010` | Replay gây side effect thật lên production | `TB-6` | Có, ở mức nguyên tắc `[stated §13, §20.4]` |
@@ -253,16 +277,28 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | `THREAT-013` | Capsule giả mạo được nạp vào storage | `TB-3` | **KHÔNG** `[GAP]` |
 | `THREAT-014` | Capsule quá lớn gây cạn tài nguyên | `TB-2` + `TB-3` | Có `[stated §20.12]` |
 | `THREAT-015` | Replay "thành công" nhưng đi đường khác → kết luận sai | `TB-5` | Khá đủ `[stated §10, §20.3, §20.16]` |
-| `THREAT-016` | Capsule tồn tại vô thời hạn, không xoá được | `TB-3` + `TB-4` | **KHÔNG** `[GAP]` |
+| `THREAT-016` | Capsule tồn tại vô thời hạn, không xoá được | `TB-3` + `TB-4` | **KHÔNG** `[GAP]` trong RQ.md — nhưng **✅ CHỐT GATE-05a — 2026-08-14 và ✅ CHỐT GATE-05b — 2026-08-14**: mitigation đến từ quyết định sản phẩm (TTL 30 ngày · crypto-shred `MUST-V0.1`), xem 4.4 và mục 11 |
 | `THREAT-017` | Replay sai version/schema tạo kết luận không đáng tin | `TB-5` | Có `[stated §15, §20.8, §20.9]` |
 | `THREAT-018` | **Egress khi replay không thực sự bị chặn — phân loại theo verb fail-open** | `TB-6` | **KHÔNG** `[GAP]` — §13 nêu ý định, không nêu cơ chế đủ |
 | `THREAT-019` | Chuỗi cung ứng `@repro/node` bị chiếm | `TB-1` + `TB-2` | **KHÔNG** `[GAP]` |
 
 **11 threat mà RQ.md HOÀN TOÀN KHÔNG CÓ mitigation**: `THREAT-004`, `005`, `006`, `007`, `008`, `009`, `011`, `013`, `016`, `018`, `019`. Chúng được đánh dấu `[GAP — RQ.md KHÔNG CÓ MITIGATION]` ở đầu mỗi mục dưới đây.
 
-> **Con số 11 đo RQ.md, không đo trạng thái sản phẩm — và nó GIỮ NGUYÊN sau 2026-08-14.** Quyết định `D2` (mục 10) cấp mitigation cho `THREAT-008`, nhưng mitigation đó đến từ một **quyết định sản phẩm ghi đè §28**, không phải từ RQ.md; nguyên văn RQ.md vẫn không có mitigation nào cho `THREAT-008`. Đổi 11 thành 10 sẽ làm con số nói sai điều mà cột *"RQ.md có mitigation?"* hỏi.
+> **Con số 11 đo RQ.md, không đo trạng thái sản phẩm — và nó GIỮ NGUYÊN sau 2026-08-14.** Quyết định `D2` (mục 10) cấp mitigation cho `THREAT-008`, nhưng mitigation đó đến từ một **quyết định sản phẩm ghi đè §28**, không phải từ RQ.md; nguyên văn RQ.md vẫn không có mitigation nào cho `THREAT-008`. Đổi 11 thành 10 sẽ làm con số nói sai điều mà cột *"RQ.md có mitigation?"* hỏi. **Điều này áp y hệt cho `GATE-05a`/`GATE-05b`**: hai quyết định đó cấp mitigation cho `THREAT-016`, nhưng `RQ.md` vẫn không nhắc tới giá trị TTL mặc định nào và không nhắc tới crypto-shredding ở bất kỳ đâu ⇒ nhãn `[GAP]` của `THREAT-016` **giữ nguyên**, và **11 vẫn là 11**.
 >
-> Con số dùng cho việc lập kế hoạch là con số dẫn xuất: **10 threat vẫn chưa có mitigation nào từ bất kỳ nguồn nào** — `THREAT-004`, `005`, `006`, `007`, `009`, `011`, `013`, `016`, `018`, `019`. `THREAT-008` đã rời nhóm này. Xem 4.5.
+> **Ba con số, đo ba thứ khác nhau** — `✅ CHỐT GATE-05a — 2026-08-14` · `✅ CHỐT GATE-05b — 2026-08-14`
+>
+> | Con số | Đo cái gì | Giá trị | Đổi khi nào |
+> |---|---|---|---|
+> | **11** | **`RQ.md` thiếu bao nhiêu** — cột *"RQ.md có mitigation?"* của bảng trên | **11** — `THREAT-004`, `005`, `006`, `007`, `008`, `009`, `011`, `013`, `016`, `018`, `019` | **Chỉ khi `RQ.md` được sửa.** `RQ.md` là nguồn sự thật và không được sửa ⇒ con số này **bất biến**. Quyết định sản phẩm **không bao giờ** làm nó đổi |
+> | **10** | Còn bao nhiêu threat hở **sau `D2`** (2026-08-14) | **10** — bỏ `THREAT-008` | Lịch sử: đây là giá trị ngay sau `D2`, giữ lại để tra được |
+> | **9** | Còn bao nhiêu threat **không có mitigation từ bất kỳ nguồn nào**, **sau `GATE-05`** | **9** — `THREAT-004`, `005`, `006`, `007`, `009`, `011`, `013`, `018`, `019` | **Con số dùng cho lập kế hoạch hôm nay.** `THREAT-016` rời nhóm |
+>
+> **Vì sao `THREAT-016` rời nhóm — và vì sao chỉ nó.** `THREAT-016` = *"capsule tồn tại vô thời hạn **và** không xoá được"*, hai vế. `GATE-05a` cấp cho vế thứ nhất một mitigation **vô điều kiện**: `SEC-022` nay có giá trị mặc định **30 ngày**, nên trạng thái *"không ai quyết ⇒ TTL vô hạn"* **không còn là mặc định của thiết kế**. Điều đó đủ để threat này thôi thuộc nhóm *"không có mitigation từ bất kỳ nguồn nào"*. Vế thứ hai (*bản copy ở Zone 3/Zone 4*) do `GATE-05b` xử lý và **có điều kiện** — vì vậy **residual của `THREAT-016` vẫn Cao**, xem 4.4. **Rời nhóm ≠ đã an toàn**: nhóm này đếm *"có mitigation từ bất kỳ nguồn nào hay không"*, không đếm *"residual đã thấp hay chưa"* — đúng như `THREAT-008` rời nhóm mà vẫn giữ residual Medium.
+>
+> **Vì sao `THREAT-007` và `THREAT-011` KHÔNG rời nhóm.** Với hai threat này, thứ duy nhất mà `GATE-05` cấp là **crypto-shred**, và hiệu lực của crypto-shred **treo hoàn toàn** trên key custody — `U-06d`, nay là **blocker** (`GATE-05b-r2`). `SEC-044` (TTL cục bộ, nay neo vào 30 ngày) là `SHOULD` và là hygiene control, **không** tạo containment (mục 7.1, `SEC-044`). Một mitigation chưa thực thi được thì chưa phải mitigation; đếm chúng đã rời nhóm là làm con số nói sai. Chúng sẽ rời nhóm khi `U-06d` có câu trả lời — không phải trước đó.
+>
+> **Nguyên tắc chung của ba con số** (giữ nguyên từ cách xử `THREAT-008` trước đây): mitigation đến từ **`RQ.md`** và mitigation đến từ **quyết định sản phẩm** (`D2`, `GATE-04`, `GATE-05a`, `GATE-05b`) là **hai loại khác nhau**. Không gộp chúng, không xoá nhãn `[GAP]` của threat nào, không đánh số lại. Đóng một mục thì **đổi disposition của mục đó**, không xoá dấu vết là nó **từng** hở. Xem 4.5.
 
 ### 4.4 Chi tiết từng threat
 
@@ -289,8 +325,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Impact | **High.** Một storage bị chiếm là toàn bộ lịch sử execution production bị lộ cùng lúc — không phải một request mà là mọi request đã từng lỗi. |
 | Likelihood | **Medium.** Zone 2 là hạ tầng có chủ đích được bảo vệ; nhưng nó là mục tiêu giá trị cao và tập trung. |
 | Mitigation trong RQ.md | *"Capsules should support encryption at rest"* `[stated §16]`; kiến trúc ưu tiên `Private Recorder → Encrypted Capsule → Private Storage` `[stated §20.6]`; §21 xếp "Security exposure" là Critical, MVP=Yes `[stated §21]`. Đây là mitigation **một phần**: RQ.md nói *should support* — tức là khả năng, không phải mặc định — và không nói gì về key custody, tức không nói ai **không** đọc được. |
-| Residual risk | Nếu key nằm cùng nơi với ciphertext thì encryption at rest chỉ bảo vệ trước mất ổ đĩa, không bảo vệ trước `AM-2`. RQ.md không phân tách key khỏi storage `[GAP]`. |
-| Mitigation bổ sung | `SEC-015` (AEAD, storage không giữ key), `SEC-016` `[DEFER — mục 11.c]`, `SEC-017`, `SEC-019` |
+| Residual risk | Nếu key nằm cùng nơi với ciphertext thì encryption at rest chỉ bảo vệ trước mất ổ đĩa, không bảo vệ trước `AM-2`. RQ.md không phân tách key khỏi storage `[GAP]`. **Sau `GATE-05b` (2026-08-14): thấp về nguyên tắc, nhưng đổi hình dạng.** `SEC-016` = `MUST-V0.1` bắt buộc **khoá riêng từng capsule giữ ở Zone 2, không đi kèm capsule** ⇒ việc phân tách key khỏi ciphertext nay là **yêu cầu**, không còn là khoảng trống. Đánh đổi: nó tạo ra một **asset tập trung mới** — key store (`A-10`) trở thành mục tiêu giá trị cao nhất trong Zone 2, vì chiếm được nó là giải được **toàn bộ** capsule. `RQ.md` vẫn không nói gì về key custody `[GAP]`; `U-06d` nay là blocker (`GATE-05b-r2`). |
+| Mitigation bổ sung | `SEC-015` (AEAD, storage không giữ key), `SEC-016` **`MUST-V0.1`** (`✅ CHỐT GATE-05b — 2026-08-14`, mục 11.c), `SEC-017`, `SEC-019` |
 
 #### THREAT-003 — Dữ liệu production rời khỏi tổ chức sang hạ tầng bên thứ ba
 
@@ -369,8 +405,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Bốn đường rò rỉ, không đường nào là tấn công | (1) **Cloud sync**: `~/.repro` nằm trong home directory; iCloud Drive / Dropbox / OneDrive / Google Drive backup home directory theo mặc định ở nhiều cấu hình ⇒ capsule được upload lên hạ tầng bên thứ ba tự động. (2) **IDE indexer**: nếu capsule nằm trong workspace, IDE index nội dung để phục vụ tìm kiếm; index đó có thể được đồng bộ. (3) **AI assistant**: công cụ hỗ trợ lập trình đọc workspace và gửi nội dung tới backend — đây chính là công cụ mà developer đang debug sẽ dùng. (4) **Thiết bị mất hoặc bị đánh cắp**. |
 | Likelihood | **High.** Không cần ai làm gì sai. Đây là hành vi mặc định của môi trường làm việc developer năm 2026. |
 | Mitigation trong RQ.md | **Không có.** RQ.md không mô hình hoá Zone 3 như một môi trường có rủi ro; nó coi laptop developer là điểm đến an toàn `[inferred §8]` `[GAP]`. |
-| Residual risk | **Cao.** `SEC-042`/`SEC-044`/`SEC-045` là hygiene control ở mức CLI — chúng giảm ma sát sai, không tạo containment. Containment thật ở Zone 3 chỉ đến từ (a) giảm giá trị nội dung capsule (mục 5, 6), (b) crypto-shredding để bản copy trở nên vô nghĩa khi bị thu hồi (mục 8.1), (c) chính sách endpoint của tổ chức — nằm ngoài sản phẩm. |
-| Mitigation bổ sung | `SEC-042` (permission 0600/0700), `SEC-044` (TTL cục bộ + `repro gc`), `SEC-045` (cảnh báo khi đích nằm trong đường dẫn cloud-sync đã biết), `SEC-016` `[DEFER]` (crypto-shred — cơ chế duy nhất làm bản copy ở Zone 3 trở nên khả hồi) |
+| Residual risk | **Cao — và vẫn Cao sau `GATE-05`.** `SEC-042`/`SEC-044`/`SEC-045` là hygiene control ở mức CLI — chúng giảm ma sát sai, không tạo containment. Containment thật ở Zone 3 chỉ đến từ (a) giảm giá trị nội dung capsule (mục 5, 6), (b) crypto-shredding để bản copy trở nên vô nghĩa khi bị thu hồi (mục 8.1), (c) chính sách endpoint của tổ chức — nằm ngoài sản phẩm. **Sau `GATE-05b`: đường (b) đã được CHỌN** — `SEC-016` = `MUST-V0.1` ⇒ lần đầu tiên tồn tại một cơ chế containment thật cho Zone 3 ở tầng quyết định. **Nhưng residual không hạ**, vì hiệu lực của (b) treo hoàn toàn trên **key custody** (`U-06d`, blocker theo `GATE-05b-r2`): không có nơi giữ và phá khoá thì bản copy trong iCloud, trong index của IDE, trong backend của AI assistant vẫn là **plaintext đã rời tổ chức**. `SEC-044` nay neo vào TTL server 30 ngày (`GATE-05a`) nhưng vẫn là `SHOULD` và vẫn bị vô hiệu bằng một thao tác copy file. **Vì vậy `THREAT-007` KHÔNG rời nhóm dẫn xuất** — xem callout ba con số ở 4.3. |
+| Mitigation bổ sung | `SEC-042` (permission 0600/0700), `SEC-044` (TTL cục bộ + `repro gc`, neo vào 30 ngày phía server), `SEC-045` (cảnh báo khi đích nằm trong đường dẫn cloud-sync đã biết), `SEC-016` **`MUST-V0.1`** (`✅ CHỐT GATE-05b — 2026-08-14`) — crypto-shred, cơ chế duy nhất làm bản copy ở Zone 3 trở nên khả hồi; **khả hồi CÓ ĐIỀU KIỆN**: chỉ khi key custody tồn tại (`U-06d`, `GATE-05b-r2`) |
 
 #### THREAT-008 — Bản self-host không có access control
 
@@ -388,8 +424,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Likelihood | **Trước 2026-08-14: High** nếu §28 được hiện thực đúng như viết. **Sau `D2`: Medium** — kịch bản "bản self-host không có control nào" đã bị loại bỏ ở mức quyết định phạm vi; phần xác suất còn lại chuyển từ *"sản phẩm cố ý không có authz"* sang *"authz được hiện thực sai hoặc triển khai sai"*. |
 | Mitigation trong RQ.md | **Không có** — và tệ hơn: RQ.md **mâu thuẫn với chính nó**. §20.5 liệt kê "strict access control" là mitigation cho Sensitive Production Data `[stated §20.5]`, và §21 xếp dòng "Sensitive data" là Critical với cột **MVP? = Yes** `[stated §21]`. Hai section này coi access control là hạng mục MVP; §28 coi nó là tính năng trả phí. **Điều này vẫn đúng nguyên văn với RQ.md tại thời điểm đọc** — quyết định `D2` không sửa RQ.md. |
 | **Mitigation từ quyết định sản phẩm** | **✅ `D2`, 2026-08-14** — authentication + authorization (access control) + audit log được chốt **nằm trong OSS core**, ghi đè phần §28 xếp *Access control* và *Retention policies* vào commercial layer. Hệ quả trực tiếp: `SEC-018` (authn + authz deny-by-default), `SEC-019` (capsule scoping), `SEC-020` (audit append-only), `SEC-021` (xoá cứng ở bản self-host) được **xác nhận `MUST-V0.1` trong OSS core**, không còn treo chờ quyết định. Chi tiết và lý do: mục 10. |
-| Residual risk | **Giảm nhưng KHÔNG về 0 — Medium.** Ba lý do, và cần đọc rời nhau: **(1) `D2` là quyết định *phạm vi*, không phải một control đang chạy.** Nó trả lời "control này có được xây không", không trả lời "control này có đúng không". Authz hiện thực sai — deny-by-default bị lách, scope leak trong `repro list`, phân quyền theo service không khớp mô hình sở hữu thật của tổ chức — là một rủi ro **riêng biệt**, và nó thuộc lớp lỗi phổ biến nhất trong mọi hệ thống có phân quyền. **(2) `GAP-04` còn nguyên**: §18 khai báo đúng 6 CLI verb (`list`, `pull`, `inspect`, `replay`, `diff`, `verify`) `[stated §18]` và **cả 6 đều developer-side** — không có verb nào để cấp/thu quyền, đọc audit log, hay vận hành retention. Control bắt buộc phải tồn tại nhưng **không có giao diện để vận hành** thì trên thực tế nó không được vận hành. **(3)** Bản self-host vẫn phải tự vận hành key custody và audit storage; `D2` không cấp cho tổ chức năng lực làm việc đó. |
-| Mitigation bổ sung | `SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` — **cả bốn nay là `MUST-V0.1` trong OSS core theo `D2`**, không còn `[cần anh chốt]`. Còn thiếu và là nợ tường minh: **giao diện vận hành cho `GAP-04`** — cần một quyết định sản phẩm về nơi SRE/admin thao tác authz, audit và retention (CLI verb mới, hay giao diện khác). Threat model không tự chốt việc này vì nó là quyết định phạm vi sản phẩm, không phải quyết định bảo mật. |
+| Residual risk | **Giảm nhưng KHÔNG về 0 — Medium.** Ba lý do, và cần đọc rời nhau: **(1) `D2` là quyết định *phạm vi*, không phải một control đang chạy.** Nó trả lời "control này có được xây không", không trả lời "control này có đúng không". Authz hiện thực sai — deny-by-default bị lách, scope leak trong `repro list`, phân quyền theo service không khớp mô hình sở hữu thật của tổ chức — là một rủi ro **riêng biệt**, và nó thuộc lớp lỗi phổ biến nhất trong mọi hệ thống có phân quyền. **(2) `GAP-04` còn nguyên**: §18 khai báo đúng 6 CLI verb (`list`, `pull`, `inspect`, `replay`, `diff`, `verify`) `[stated §18]` và **cả 6 đều developer-side** — không có verb nào để cấp/thu quyền, đọc audit log, hay vận hành retention. Control bắt buộc phải tồn tại nhưng **không có giao diện để vận hành** thì trên thực tế nó không được vận hành. **`GATE-04` (2026-08-14) KHÔNG đóng `GAP-04`**: nó đưa `authn/authz/audit hook` vào **sàn bắt buộc của Capsule Store** — tức xác nhận control phải tồn tại **ở tầng kiến trúc** — nhưng §18 vẫn không có verb nào để vận hành, và **cơ chế** authn/authz cụ thể vẫn `TBD` (`GATE-04-r`, cuối mục 10). **(3)** Bản self-host vẫn phải tự vận hành key custody và audit storage; `D2` không cấp cho tổ chức năng lực làm việc đó — và sau `GATE-05b`, **key custody nặng hơn hẳn**: crypto-shred `MUST-V0.1` biến key store từ hạng mục tuỳ chọn thành **thành phần bắt buộc chưa có ai đặc tả** (`U-06d`, blocker theo `GATE-05b-r2`). **Residual giữ Medium** — `GATE-04` và `GATE-05` không hạ nó. |
+| Mitigation bổ sung | `SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` — **cả bốn nay là `MUST-V0.1` trong OSS core theo `D2`**, không còn `[cần anh chốt]`. Còn thiếu và là nợ tường minh: **giao diện vận hành cho `GAP-04`** — cần một quyết định sản phẩm về nơi SRE/admin thao tác authz, audit và retention (CLI verb mới, hay giao diện khác). Threat model không tự chốt việc này vì nó là quyết định phạm vi sản phẩm, không phải quyết định bảo mật. **Sau `GATE-04` (2026-08-14)**: sàn của Capsule Store **đã chốt** và `authn/authz/audit hook` nằm trong sàn ⇒ bốn requirement trên có chỗ đứng kiến trúc; nhưng **`GAP-04` vẫn chưa đóng** và **cơ chế** authn/authz vẫn `TBD` — nợ này **không** được `GATE-04` trả (`GATE-04-r`). |
 
 #### THREAT-009 — Capsule là input không tin cậy → thực thi mã trên máy developer
 
@@ -434,8 +470,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Hai lớp của vấn đề | **Lớp 1**: bản thân audit log có thể không tồn tại trong bản self-host, vì §28 xếp Enterprise security vào commercial `[stated §28]` — xem `THREAT-008`. **Lớp 2**: kể cả khi có audit đầy đủ, nó chỉ ghi được *"ai đã pull"*. Nó **không thể** ghi *"capsule đó sau đó đi đâu"* — vì sau `TB-4` không còn điểm quan sát nào (mục 3.5 lý do 4). |
 | Likelihood | **High** — đây là trạng thái mặc định của thiết kế, không cần điều kiện gì. |
 | Mitigation trong RQ.md | **Không có.** §20.17 có liệt kê "audit logs" trong danh sách những thứ cần support cho compliance `[stated §20.17]`, nhưng đó là một gạch đầu dòng trong danh sách, không phải một cơ chế được thiết kế: không nói ghi gì, ghi ở đâu, ai xoá được, giữ bao lâu `[GAP]`. |
-| Residual risk | **Lớp 2 không đóng được.** `SEC-020` đóng được lớp 1 (audit tồn tại, append-only, principal không tự xoá được dấu vết của mình), nhưng không có requirement nào đóng được lớp 2. Đây là giới hạn cấu trúc của một sản phẩm phát artifact portable. Cách duy nhất làm nhẹ nó: crypto-shredding (`SEC-016`) biến "không biết nó ở đâu" thành "không quan trọng nó ở đâu, vì nó không đọc được nữa". |
-| Mitigation bổ sung | `SEC-020` (audit append-only cho mọi `list/pull/inspect`/lấy key), `SEC-024` (`data_classification` trên capsule ⇒ khoanh vùng được phạm vi sự cố), `SEC-047` (bản kê redaction ⇒ biết capsule đó *có thể* chứa gì), `SEC-016` `[DEFER]` |
+| Residual risk | **Lớp 2 không đóng được.** `SEC-020` đóng được lớp 1 (audit tồn tại, append-only, principal không tự xoá được dấu vết của mình), nhưng không có requirement nào đóng được lớp 2. Đây là giới hạn cấu trúc của một sản phẩm phát artifact portable. Cách duy nhất làm nhẹ nó: crypto-shredding (`SEC-016`) biến "không biết nó ở đâu" thành "không quan trọng nó ở đâu, vì nó không đọc được nữa". **Sau `GATE-05b`: cách đó đã được chọn** — `SEC-016` = `MUST-V0.1`. Nhưng ba điều **không đổi**: (a) lớp 2 vẫn **không đóng được** — crypto-shred *làm nhẹ* hệ quả, nó **không** cấp lại khả năng biết capsule đã đi tới đâu, và câu trả lời cho cơ quan quản lý vẫn không phải *"nó ở những nơi này"*; (b) việc *làm nhẹ* treo trên key custody (`U-06d`, `GATE-05b-r2`); (c) một khoá đã bị lấy trước khi phá thì phá khoá không cứu được gì — audit việc **lấy khoá** (`SEC-020`) vì vậy nay quan trọng hơn trước. **`THREAT-011` KHÔNG rời nhóm dẫn xuất** (4.3). |
+| Mitigation bổ sung | `SEC-020` (audit append-only cho mọi `list/pull/inspect`/lấy key — **nay là control chính của key custody**), `SEC-024` (`data_classification` trên capsule ⇒ khoanh vùng được phạm vi sự cố), `SEC-047` (bản kê redaction ⇒ biết capsule đó *có thể* chứa gì), `SEC-016` **`MUST-V0.1`** (`✅ CHỐT GATE-05b — 2026-08-14`, kèm điều kiện `U-06d`) |
 
 #### THREAT-012 — Recorder làm suy giảm hoặc gây lỗi production
 
@@ -493,7 +529,9 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 
 #### THREAT-016 — Capsule tồn tại vô thời hạn và không xoá được
 
-`[GAP — RQ.md KHÔNG CÓ MITIGATION]`
+`[GAP — RQ.md KHÔNG CÓ MITIGATION]` · **✅ CHỐT GATE-05a — 2026-08-14** (TTL mặc định = 30 ngày) · **✅ CHỐT GATE-05b — 2026-08-14** (crypto-shred = `MUST-V0.1`) · **mitigation đến từ quyết định sản phẩm, KHÔNG từ RQ.md** · xem mục 11.a, 11.c
+
+> **Phân biệt ba điều, đừng gộp**: (1) `RQ.md` **vẫn không có mitigation** cho threat này — §16 không nhắc retention, §20.5/§20.17 chỉ có gạch đầu dòng không giá trị mặc định, §28 vẫn xếp *Retention policies* vào commercial layer, và `RQ.md` **không nhắc tới crypto-shredding ở bất kỳ đâu** ⇒ nhãn `[GAP]` **giữ nguyên** đúng quy ước mục 1.5; (2) hai quyết định ngày **2026-08-14** cấp mitigation: `GATE-05a` cho vế *"vô thời hạn"* — **vô điều kiện**, và `GATE-05b` cho vế *"không xoá được"* — **có điều kiện key custody**; (3) vì vậy threat này **rời nhóm dẫn xuất** (10 → 9, xem callout ba con số ở 4.3) **nhưng residual vẫn Cao**. Rời nhóm đo *"có mitigation hay chưa"*, không đo *"đã an toàn hay chưa"*.
 
 | Trường | Nội dung |
 |---|---|
@@ -501,10 +539,11 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Asset | `A-01`, `A-06` |
 | Attacker model | `AM-8`, `AM-2`, `AM-10` |
 | Impact | **High.** Mỗi capsule còn tồn tại là một cửa sổ phơi nhiễm còn mở. Một capsule sống 3 năm là một capsule có 3 năm để bị lộ, và mang dữ liệu đã hết mục đích sử dụng từ lâu — mục đích của nó là debug một lỗi cụ thể, và mục đích đó chấm dứt khi lỗi được sửa. |
-| Likelihood | **High** — đây là hành vi mặc định nếu không có TTL. |
-| Mitigation trong RQ.md | **Không có cơ chế.** §16 không nhắc retention `[stated §16]`. §20.5 liệt kê "configurable retention" và §20.17 liệt kê "data retention policies" + "deletion" `[stated §20.5, §20.17]` — nhưng cả hai đều là **gạch đầu dòng trong danh sách mitigation**, không phải thiết kế: không có giá trị mặc định, không có hành vi khi hết hạn, không có định nghĩa "xoá" nghĩa là gì khi capsule đã qua `TB-4`. Và §28 xếp "Retention policies" vào **commercial layer** `[stated §28]` ⇒ bản self-host có thể **không có** cơ chế này. |
-| Residual risk | **Cao ở phần bản copy.** `SEC-022`/`SEC-023` xoá được bản gốc ở Zone 2. Chúng **không chạm được** tới N bản đã nằm ở Zone 3 và Zone 4. Chỉ crypto-shredding (`SEC-016` + `SEC-021`) mới biến việc xoá thành có hiệu lực trên mọi bản copy — và đó chính là nội dung mục 8.1. |
-| Mitigation bổ sung | `SEC-022` (mọi capsule có TTL hữu hạn; hệ thống **từ chối** cấu hình TTL vô hạn — giá trị mặc định `TBD`, mục 11.a), `SEC-023` (hết hạn ⇒ xoá tự động + ghi audit), `SEC-021` (lệnh xoá cứng nằm trong OSS core), `SEC-044` (TTL cục bộ ở Zone 3), `SEC-016` `[DEFER]` |
+| Likelihood | **Trước 2026-08-14: High** — đây là hành vi mặc định nếu không có TTL. **Sau `GATE-05a`: Medium** — *"không ai cấu hình ⇒ sống mãi"* **không còn là hành vi mặc định**: `SEC-022` áp **30 ngày** khi cấu hình vắng mặt, và cấu hình TTL vô hạn bị **từ chối**. Phần xác suất còn lại chuyển từ *"thiết kế không có TTL"* sang *"tổ chức tự nới TTL lên rất dài"* (TTL cấu hình được theo `FR-024`) và *"cơ chế hết hạn hiện thực sai"* — cùng lớp rủi ro với `GATE-04-r`: một control tồn tại không đồng nghĩa control chạy đúng. |
+| Mitigation trong RQ.md | **Không có cơ chế.** §16 không nhắc retention `[stated §16]`. §20.5 liệt kê "configurable retention" và §20.17 liệt kê "data retention policies" + "deletion" `[stated §20.5, §20.17]` — nhưng cả hai đều là **gạch đầu dòng trong danh sách mitigation**, không phải thiết kế: không có giá trị mặc định, không có hành vi khi hết hạn, không có định nghĩa "xoá" nghĩa là gì khi capsule đã qua `TB-4`. Và §28 xếp "Retention policies" vào **commercial layer** `[stated §28]` ⇒ bản self-host có thể **không có** cơ chế này. **Điều này vẫn đúng nguyên văn với `RQ.md` tại thời điểm đọc** — `GATE-05` không sửa `RQ.md`. |
+| **Mitigation từ quyết định sản phẩm** | **✅ `GATE-05a`, 2026-08-14** — TTL mặc định = **30 ngày**, quyết bởi `@TrisJr`; `SEC-022` nay có giá trị để áp khi cấu hình vắng mặt, vẫn cấu hình được theo `FR-024`. Đóng `U-06b`. **✅ `GATE-05b`, 2026-08-14** — crypto-shredding = **`MUST-V0.1`** (`SEC-016`), khoá giữ phía server; xoá khoá ⇒ capsule không giải được. Đóng `U-06c`. Hai quyết định này **ghi đè phần §28** xếp *Retention policies* vào commercial layer, cùng cách `D2` đã ghi đè phần *Access control* (mục 10). Chi tiết và lý do: mục 11.a và 11.c. |
+| Residual risk | **Cao ở phần bản copy — nhưng lý do đã đổi hoàn toàn.** Hai vế phải đọc rời nhau. **(1) Vế *"tồn tại vô thời hạn"* — đóng.** `SEC-022` có giá trị mặc định (30 ngày) và `SEC-023` xoá tự động khi hết hạn; cửa sổ phơi nhiễm của **bản gốc** nay hữu hạn theo mặc định, không cần ai cấu hình gì. **(2) Vế *"không xoá được bản copy"* — có cơ chế, chưa có hiệu lực.** Câu cũ *"`SEC-022`/`SEC-023` xoá được bản gốc ở Zone 2, chúng **không chạm được** tới N bản đã nằm ở Zone 3 và Zone 4"* **vẫn đúng về hai requirement đó**, nhưng kết luận rút ra từ nó **không còn đúng**: `SEC-016` nay là **`MUST-V0.1`** ⇒ **crypto-shred CHẠM ĐƯỢC tới N bản copy đó** — phá khoá làm mọi bản trên laptop, trong git, trong Slack, trong backup trở thành ciphertext vô nghĩa **mà không cần biết chúng ở đâu** (mục 8.1.2). **Đây là thay đổi có sức nặng nhất mà `GATE-05` tạo ra trong tài liệu này.** ⚠ **Điều kiện, và nó là điều kiện cứng**: hiệu lực đó **chỉ tồn tại khi có key custody** — nơi giữ khoá, vòng đời khoá, cơ chế phá khoá, và chính sách sao lưu khoá (nghịch lý sao lưu ở mục 8.1.2). `U-06d` nay là **blocker** (`GATE-05b-r2`). Cho tới khi `U-06d` được giải, residual của vế (2) giữ **Cao**: quyết định đã có, năng lực thực thi thì chưa. |
+| Mitigation bổ sung | `SEC-022` (mọi capsule có TTL hữu hạn; hệ thống **từ chối** cấu hình TTL vô hạn — **giá trị mặc định = 30 ngày**, `✅ CHỐT GATE-05a — 2026-08-14`, mục 11.a), `SEC-023` (hết hạn ⇒ xoá tự động + ghi audit), `SEC-021` (lệnh xoá cứng nằm trong OSS core — **nay bao gồm phá khoá**, vì `SEC-016` đã chốt), `SEC-044` (TTL cục bộ ở Zone 3, neo vào 30 ngày phía server), `SEC-016` **`MUST-V0.1`** (`✅ CHỐT GATE-05b — 2026-08-14`; thực thi được **khi và chỉ khi** có key custody — `U-06d`, `GATE-05b-r2`). **Còn thiếu và là nợ tường minh**: `GAP-04` — không có CLI verb nào để **đặt/kiểm tra retention** hay **thực thi phá khoá**; một TTL 30 ngày không kiểm tra được và một lệnh phá khoá không có giao diện thì trên thực tế không được vận hành (`GATE-04-r`, cuối mục 10). |
 
 #### THREAT-017 — Replay sai version/schema tạo kết luận không đáng tin
 
@@ -559,13 +598,14 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Tổng số threat | 19 |
 | RQ.md có mitigation (đủ hoặc một phần) | 8 — `THREAT-001, 002, 003, 010, 012, 014, 015, 017` |
 | **RQ.md hoàn toàn không có mitigation** | **11 — `THREAT-004, 005, 006, 007, 008, 009, 011, 013, 016, 018, 019`** — con số này **đo RQ.md** và **không đổi** sau 2026-08-14 |
-| **Không có mitigation từ bất kỳ nguồn nào** (sau quyết định `D2`) | **10 — `THREAT-004, 005, 006, 007, 009, 011, 013, 016, 018, 019`**. `THREAT-008` rời nhóm này: mitigation của nó đến từ quyết định sản phẩm `D2` (mục 10), **không** từ RQ.md |
+| **Không có mitigation từ bất kỳ nguồn nào** — giá trị **sau `D2`** (lịch sử) | **10 — `THREAT-004, 005, 006, 007, 009, 011, 013, 016, 018, 019`**. `THREAT-008` rời nhóm này: mitigation của nó đến từ quyết định sản phẩm `D2` (mục 10), **không** từ RQ.md |
+| **Không có mitigation từ bất kỳ nguồn nào** — giá trị **hiện hành, sau `GATE-05a`/`GATE-05b`** (2026-08-14) | **9 — `THREAT-004, 005, 006, 007, 009, 011, 013, 018, 019`**. `THREAT-016` rời nhóm: `GATE-05a` cấp giá trị TTL mặc định (30 ngày, **vô điều kiện**) và `GATE-05b` cấp crypto-shred `MUST-V0.1` (**có điều kiện** `U-06d`) — cả hai từ quyết định sản phẩm, **không** từ RQ.md. `THREAT-007` và `THREAT-011` **ở lại**: mitigation duy nhất của chúng là crypto-shred, treo hoàn toàn trên key custody. Đây là **con số dùng cho lập kế hoạch**; xem callout ba con số ở 4.3 |
 | Threat có residual risk **không đóng được bằng requirement** | `THREAT-005` (cần quản trị tổ chức), `THREAT-006` đường 2 (cần quyết định capsule format), `THREAT-011` lớp 2 (giới hạn cấu trúc), `THREAT-019` (đánh đổi cố hữu) |
 | Threat mà rủi ro **tăng theo mức thành công của sản phẩm** | `TB-4` nói chung, `THREAT-007`, `THREAT-009`, `THREAT-019` |
 
 Hai quan sát xuyên suốt:
 
-1. **11 threat không có mitigation tập trung vào ba asset mà RQ.md không coi là asset**: `A-09` (cấu hình redaction), `A-11` (audit log), `A-12` (máy developer). Đây không phải trùng hợp — không coi là asset thì không nghĩ tới việc bảo vệ. Quyết định `D2` (2026-08-14) **xác nhận quan sát này thay vì phủ nhận nó**: điều phải làm để đóng `THREAT-008` chính là **nâng `A-11` (audit log) từ "một mitigation được nhắc qua ở §20.17" lên "một asset hạng nhất phải tồn tại trong OSS core"**. Hai asset còn lại — `A-09` và `A-12` — vẫn chưa được RQ.md coi là asset, và 10 threat còn lại vẫn nằm ở đó.
+1. **11 threat không có mitigation tập trung vào ba asset mà RQ.md không coi là asset**: `A-09` (cấu hình redaction), `A-11` (audit log), `A-12` (máy developer). Đây không phải trùng hợp — không coi là asset thì không nghĩ tới việc bảo vệ. Quyết định `D2` (2026-08-14) **xác nhận quan sát này thay vì phủ nhận nó**: điều phải làm để đóng `THREAT-008` chính là **nâng `A-11` (audit log) từ "một mitigation được nhắc qua ở §20.17" lên "một asset hạng nhất phải tồn tại trong OSS core"**. Hai asset còn lại — `A-09` và `A-12` — vẫn chưa được RQ.md coi là asset, và **9 threat còn lại vẫn nằm ở đó** (con số dẫn xuất hiện hành sau `GATE-05`; xem 4.3). **`GATE-05b` lặp lại đúng khuôn mẫu đó với `A-10`**: điều phải làm để đóng vế *"không xoá được"* của `THREAT-016` là **nâng `A-10` (khoá mã hoá capsule) từ "một dòng *should support encryption at rest* ở §16" lên "một asset hạng nhất phải có key store, vòng đời khoá và chính sách sao lưu khoá"**. `RQ.md` nhắc `A-10` nhưng **không nói gì về key custody** `[GAP]` — và đó chính là lý do `U-06d` nay là blocker (`GATE-05b-r2`), không phải một chi tiết hiện thực.
 2. **Ba threat nghiêm trọng nhất đều nằm ở chiều mà RQ.md không nhìn**: `THREAT-009` (dữ liệu chảy **vào** replay runtime), `THREAT-005` (kênh dữ liệu mới nhìn từ phía **insider**), `THREAT-019` (code chảy **vào** production). RQ.md nhìn dữ liệu chảy ra, và mọi mitigation của nó phục vụ chiều đó.
 
 ---
@@ -811,8 +851,8 @@ Câu này được viết ra để chặn một hệ quả cụ thể: mọi tà
 | Control | Vai trò | Requirement |
 |---|---|---|
 | **Access control** | Giới hạn *ai* chạm được vào capsule — là thứ duy nhất hoạt động bất kể capsule chứa gì | `SEC-018`, `SEC-019` |
-| **Encryption + crypto-shred** | Làm cho việc chiếm được bản copy trở nên vô nghĩa, và **biến `TB-4` từ bất khả hồi thành khả hồi** (mục 8.1) | `SEC-015`, `SEC-016` `[DEFER]`, `SEC-021` |
-| **Retention TTL** | Giới hạn *bao lâu* — cửa sổ phơi nhiễm hữu hạn thay vì vô hạn | `SEC-022`, `SEC-023`, `SEC-044` |
+| **Encryption + crypto-shred** | Làm cho việc chiếm được bản copy trở nên vô nghĩa, và **biến `TB-4` từ bất khả hồi thành khả hồi** (mục 8.1) — `✅ CHỐT GATE-05b — 2026-08-14`, **có điều kiện key custody** `U-06d` | `SEC-015`, `SEC-016` **`MUST-V0.1`**, `SEC-021` |
+| **Retention TTL** | Giới hạn *bao lâu* — cửa sổ phơi nhiễm hữu hạn thay vì vô hạn; **mặc định 30 ngày**, `✅ CHỐT GATE-05a — 2026-08-14` | `SEC-022`, `SEC-023`, `SEC-044` |
 | **Audit** | Làm cho việc truy cập **để lại dấu vết** — điều kiện cần để trả lời được câu hỏi sau sự cố | `SEC-020` |
 | **Locality (self-host)** | Giữ dữ liệu trong ranh giới pháp lý và hợp đồng của tổ chức | mục 8.5 |
 | **Hạn chế bản copy ở Zone 3** | Tấn công trực diện vào lý do 5 của `TB-4` (nhân bản asset) | `SEC-042`, `SEC-043`, `SEC-044`, `SEC-045` |
@@ -832,7 +872,7 @@ RQ.md nhận diện đúng bốn khung này `[stated §20.17]` và liệt kê mi
 | Ràng buộc lên capsule / lifecycle | Hệ quả thiết kế |
 |---|---|
 | **Capsule là hoạt động xử lý dữ liệu cá nhân.** Không phải log kỹ thuật — nó chứa nội dung request và row dữ liệu thật `[stated §6, §11]`. | Phải có cơ sở pháp lý và **mục đích giới hạn**. Mục đích của capsule là *debug một lỗi cụ thể*, không phải phân tích chung. |
-| **Storage limitation** — dữ liệu không được giữ lâu hơn mục đích | Mục đích chấm dứt khi lỗi được sửa ⇒ TTL **bắt buộc hữu hạn** (`SEC-022`). TTL vô hạn là mặc định không thể biện hộ. |
+| **Storage limitation** — dữ liệu không được giữ lâu hơn mục đích | Mục đích chấm dứt khi lỗi được sửa ⇒ TTL **bắt buộc hữu hạn** (`SEC-022`). TTL vô hạn là mặc định không thể biện hộ. **`✅ CHỐT GATE-05a — 2026-08-14`: mặc định = 30 ngày**, cấu hình được (`FR-024`) — mục 11.a. ⚠ **30 ngày là quyết định sản phẩm, KHÔNG phải kết luận tuân thủ**: nó được `@TrisJr` quyết **không qua pháp chế**, nên việc nó có thoả nghĩa vụ lưu trữ của một khu vực pháp lý cụ thể **vẫn chưa được ai kiểm**. Mục 1.2 vẫn áp: tài liệu này không cấp trạng thái tuân thủ. |
 | **Data minimisation** — chỉ xử lý dữ liệu cần thiết | Đây chính là đáp án §38 Q10 ở mục 5.1: **shape + metadata + internal id**, không phải nội dung. Bất kỳ trường nào không cần cho replay mà vẫn nằm trong capsule đều khó biện hộ. |
 | **Security of processing** | `SEC-015` (mã hoá), `SEC-017` (transport), `SEC-018`/`SEC-019` (access control), `SEC-020` (audit) |
 | **Records of processing** — phải mô tả được đang xử lý loại dữ liệu nào | `SEC-024` (`data_classification` trên capsule) + `SEC-047` (bản kê redaction). Không có hai thứ này, tổ chức không mô tả được chính hoạt động của mình. |
@@ -852,6 +892,10 @@ Thực thi được quyền xoá đòi hỏi **hai điều kiện**, và thiết
 | **(b) Xoá được MỌI bản copy** | **Không thể.** Capsule là artifact **bất biến, đã được copy xuống N laptop** qua `TB-4`, và có thể đã vào git (`THREAT-006`), vào Slack, vào cloud sync (`THREAT-007`). Xoá object trong Zone 2 không chạm tới bản nào trong số đó. |
 
 Điều kiện (b) là điều kiện không thể đáp ứng bằng cách xoá — vì **không tồn tại danh sách các bản copy**.
+
+> **`✅ CHỐT GATE-05b — 2026-08-14`.** Câu trên **vẫn đúng nguyên vẹn** — và đó chính là lý do quyết định này được đưa ra: điều kiện (b) không giải được **bằng cách xoá**, nên nó được giải **bằng cách khác** — phá khoá thay vì phá file (mục 8.1.2). `SEC-016` nay là `MUST-V0.1`. Hai điều kiện (a) và (b) sau quyết định:
+> - **(b)** có cơ chế đáp ứng, **với điều kiện key custody** (`U-06d`, `GATE-05b-r2`). Chưa có key store thì (b) vẫn là *"không thể"*.
+> - **(a)** vẫn **không có cơ chế** — `SEC-025` giữ `DEFER` vì thiết kế của nó chưa tồn tại. Nhưng sức nặng của (a) **giảm**: khi phá khoá có hiệu lực trên mọi bản copy, việc xoá không còn đòi hỏi phải tra ra *capsule nào chứa dữ liệu của chủ thể nào* trước đã. Đây là lý do `SEC-025` vẫn `DEFER` mà không phải nâng lên `MUST-V0.1`.
 
 #### 8.1.2 Crypto-shredding là cơ chế duy nhất
 
@@ -884,7 +928,17 @@ Capture  ──► capsule được mã hoá bằng KEY RIÊNG CHO TỪNG CAPSUL
 | **Tăng độ phức tạp self-host** | Bản self-host phải vận hành thêm một key store, với vòng đời key, sao lưu key, và khôi phục key. Mất key store = mất **toàn bộ** capsule, kể cả bản trong Zone 2. Điều này va thẳng vào mô tả `Basic Self-hosting` của §28 `[stated §28]`. |
 | **Nghịch lý sao lưu** | Sao lưu key store làm giảm hiệu lực của việc phá key (bản backup vẫn còn key). Chính sách backup của key phải được thiết kế cùng lúc, không phải sau. |
 
-**`[cần validate]`** — Đề xuất này **chưa được ai cân đo**. RQ.md không nhắc tới crypto-shredding ở bất kỳ đâu `[GAP]`, nên nó không nằm trong bất kỳ đánh đổi nào đã được cân nhắc. Nó **không được đọc như đã chốt**. Quyết định thuộc về architect — xem mục 11.c và `SEC-016` `[DEFER]`.
+**`✅ CHỐT GATE-05b — 2026-08-14`** — Đề xuất này **đã được cân và đã được chốt**. Nhãn `[cần validate]` được gỡ; `SEC-016` = **`MUST-V0.1`**.
+
+| | |
+|---|---|
+| **Đã quyết** | **Áp dụng crypto-shredding.** Khoá giữ phía server (Zone 2), không đi kèm capsule; xoá khoá ⇒ capsule không giải được. |
+| **Ai quyết** | **`@TrisJr`** (chủ sản phẩm), ngày 2026-08-14. Đóng `U-06c`. `§11.c` từng ghi *"Cần ai = architect"*; trên thực tế `@TrisJr` quyết, và hệ quả kiến trúc được ghi ở `ADR-002`/`ADR-009` (writer khác, cùng run). |
+| **Ba đánh đổi ở bảng trên đã được TRẢ, không được xoá** | *Mất replay offline* · *Tăng độ phức tạp self-host* · *Nghịch lý sao lưu*. Cả ba **giữ nguyên nguyên văn** và nay là **hệ quả được chấp nhận có ý thức** (`GATE-05b-r`), không phải rủi ro chưa nhìn thấy. Đặc biệt: *nghịch lý sao lưu* từ một ghi chú trở thành **hạng mục thiết kế bắt buộc** — sao lưu khoá làm giảm hiệu lực của việc phá khoá, nên chính sách backup khoá phải được thiết kế **cùng lúc**, không phải sau. |
+| **Điều kiện thực thi — `GATE-05b-r2`** | Cơ chế ở sơ đồ trên **chỉ chạy được khi có key custody**: nơi giữ khoá, vòng đời khoá, quyền phá khoá, audit việc lấy khoá (`SEC-020`). `U-06d` nay là **blocker**. Một khoá bị lấy trước khi phá thì phá khoá không cứu được gì. |
+| **Mệnh đề vẫn đúng, giữ nguyên** | **`RQ.md` không nhắc tới crypto-shredding ở bất kỳ đâu** `[GAP]`. Đây là sự thật về `RQ.md`, **không** phải trạng thái quyết định: mitigation này đến từ **quyết định sản phẩm**, không từ tài liệu nguồn — vì vậy nhãn `[GAP]` của `THREAT-016` và con số **11** ở mục 4.3 **không đổi**. Điều **không còn đúng** là *"nó không nằm trong bất kỳ đánh đổi nào đã được cân nhắc"*: đánh đổi đã được nêu, đã được cân, và đã được chọn. |
+
+Xem mục 11.c để có toàn bộ lý do, hai rủi ro kèm theo, và ràng buộc thời điểm (đã chốt **trước khi** capsule format v1 đóng băng).
 
 ### 8.2 HIPAA
 
@@ -920,7 +974,7 @@ Khác ba khung trên ở một điểm quan trọng: SOC 2 không hỏi "anh có
 | **Logical access control phải tồn tại và chứng minh được** | `SEC-018`, `SEC-019`. Một bản triển khai **không có** access control không thể đưa ra bằng chứng nào — đây là phát hiện kiểm toán trực tiếp, không phải khuyến nghị. Lại là `THREAT-008` và mục 10. |
 | **Hạn chế việc truyền và mang dữ liệu ra khỏi hệ thống** | `TB-4` **chính là** sự kiện mang dữ liệu ra. Cần `SEC-020` (ghi lại), `SEC-043`/`SEC-044` (giới hạn nơi đến và thời gian tồn tại). Nếu không có gì, tổ chức phải khai rằng có một kênh mang dữ liệu ra không được kiểm soát. |
 | **Giám sát và phát hiện** | `SEC-020` append-only, và **principal không xoá được dấu vết của chính mình** — nếu xoá được thì bằng chứng không có giá trị. |
-| **Huỷ dữ liệu khi hết mục đích** | `SEC-021`, `SEC-022`, `SEC-023`. Với các bản copy ở Zone 3/Zone 4, chỉ crypto-shred (8.1.2) mới cho phép khai một cách trung thực rằng dữ liệu đã được huỷ. |
+| **Huỷ dữ liệu khi hết mục đích** | `SEC-021`, `SEC-022` (**mặc định 30 ngày**, `GATE-05a`), `SEC-023`. Với các bản copy ở Zone 3/Zone 4, chỉ crypto-shred (8.1.2) mới cho phép khai một cách trung thực rằng dữ liệu đã được huỷ — **cơ chế đó nay đã được chốt** (`SEC-016` = `MUST-V0.1`, `GATE-05b`). ⚠ Nhưng SOC 2 đòi **bằng chứng**, không đòi sự tồn tại: khai được điều đó cần **key custody vận hành được** (`U-06d`) **và** một đường để xuất bằng chứng phá khoá — `GAP-04` chưa đóng nên đường đó chưa có. |
 | **Thay đổi cấu hình có kiểm soát** | `SEC-013` (approval cho thay đổi `A-09`), `SEC-010` (fingerprint config đi kèm mọi capsule ⇒ đối chiếu được capsule nào sinh dưới cấu hình nào). Đây cũng chính là bằng chứng chống `THREAT-005`. |
 
 ### 8.5 Trả lời §38 Q12 — *Is self-hosting required from day one?*
@@ -955,12 +1009,16 @@ Hệ quả kéo theo, và nó dẫn thẳng sang mục 10: nếu self-host là c
 
 | Phân loại | Số lượng |
 |---|---|
-| `MUST-V0.1` | **32** |
+| `MUST-V0.1` | **33** |
 | `SHOULD` | **8** |
-| `DEFER` | **3** |
+| `DEFER` | **2** — `SEC-025`, `SEC-039` |
 | **Tổng** | **43** |
 
-> **Quyết định `D2` (2026-08-14) KHÔNG làm đổi bộ số này.** `SEC-018`/`SEC-019`/`SEC-020`/`SEC-021` vốn đã là `MUST-V0.1`; `D2` chỉ **gỡ điều kiện treo** `[cần anh chốt]` khỏi chúng và xác nhận chúng thuộc **OSS core**. `SEC-016` giữ nguyên `DEFER`. Bộ số sau quyết định vẫn là **32 `MUST-V0.1` / 8 `SHOULD` / 3 `DEFER` = 43**.
+> **Quyết định `D2` (2026-08-14) KHÔNG làm đổi bộ số này — nhưng `GATE-05b` thì CÓ.** `✅ CHỐT GATE-05b — 2026-08-14`
+>
+> - **Mệnh đề về `D2` vẫn đúng nguyên vẹn**: `SEC-018`/`SEC-019`/`SEC-020`/`SEC-021` vốn đã là `MUST-V0.1`; `D2` chỉ **gỡ điều kiện treo** `[cần anh chốt]` khỏi chúng và xác nhận chúng thuộc **OSS core**. `D2` không chuyển phân loại của bất kỳ requirement nào, nên nó **không** làm đổi bộ số.
+> - **`GATE-05b` làm đổi bộ số**: `SEC-016` **rời `DEFER` sang `MUST-V0.1`** (mục 11.c). Đây là **thay đổi phân loại duy nhất** của ngày 2026-08-14 — không requirement nào khác bị nâng hay hạ, và `SEC-025` **giữ `DEFER`** (thiết kế cơ chế của nó vẫn chưa tồn tại).
+> - **Bộ số hiện hành: `33 MUST-V0.1` / `8 SHOULD` / `2 DEFER` = `43`.** **Tổng 43 không đổi** — chỉ phân bố đổi, vì đây là một requirement **chuyển nhóm**, không phải requirement mới. Phân bố **trước `GATE-05b`** (một `MUST-V0.1` ít hơn, một `DEFER` nhiều hơn) chỉ còn tồn tại ở **một chỗ duy nhất**: bảng lịch sử `Trước D2 / Sau D2` ở mục 10, nơi nó có ghi ngày và ghi rõ đã bị `GATE-05b` thay thế. Mọi tài liệu hạ nguồn trích bộ số này phải đọc **`33 / 8 / 2`**.
 
 ### 9.2 Bốn thay đổi mặc định — phần giá trị nhất của tài liệu này
 
@@ -971,7 +1029,7 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 | **1** | **Mọi thứ fail closed** | Hệ thống gặp trạng thái bất thường thì **dừng**, không **tiếp tục ở chế độ không bảo vệ** | `SEC-001` (redaction lỗi ⇒ **không persist**), `SEC-005` (phát hiện PAN theo nội dung, không chờ tên field), `SEC-012` (config thiếu ⇒ **refuse to start**, **không bao giờ** mặc định "no redaction") |
 | **2** | **Allowlist thay denylist ở hai chỗ quyết định** | Ở hai nơi mà không gian đầu vào là **không giới hạn và không đoán trước được**, denylist chắc chắn thiếu | `SEC-004` (environment variable), `SEC-032` (**replay egress**) |
 | **3** | **Capsule phải verify trước khi parse** | Capsule là dữ liệu không tin cậy, không phải dữ liệu của mình | `SEC-027` — **RQ.md hoàn toàn chưa có** `[GAP]` |
-| **4** | **Authn/authz + audit nằm trong OSS core** — **✅ ĐÃ CHỐT 2026-08-14** | Không phải commercial layer | `SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` = `MUST-V0.1` **trong OSS core** theo `D2`. Ghi đè phần §28 xếp *Access control* / *Retention policies* vào commercial layer — bằng chứng hai phía giữ nguyên ở mục 10. **`SEC-016` (crypto-shred) KHÔNG nằm trong quyết định này**: vẫn `DEFER` `[cần validate]`, xem mục 11.c |
+| **4** | **Authn/authz + audit nằm trong OSS core** — **✅ ĐÃ CHỐT 2026-08-14** | Không phải commercial layer | `SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` = `MUST-V0.1` **trong OSS core** theo `D2`. Ghi đè phần §28 xếp *Access control* / *Retention policies* vào commercial layer — bằng chứng hai phía giữ nguyên ở mục 10. **`SEC-016` (crypto-shred) KHÔNG nằm trong `D2`** — mệnh đề này **vẫn đúng**: `D2` chỉ chốt authn/authz/audit. **Nhưng `SEC-016` ĐÃ được chốt bởi một quyết định khác**: `✅ CHỐT GATE-05b — 2026-08-14`, nay `MUST-V0.1`, nhãn `[cần validate]` đã gỡ — xem mục 11.c. Đừng đọc `D2` như đã chốt phần này, và cũng **đừng đọc "không thuộc `D2`" thành "chưa chốt"** |
 
 ---
 
@@ -1014,12 +1072,12 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 | ID | Loại | Given / Then |
 |---|---|---|
 | `SEC-015` | `MUST-V0.1` | **Given** một capsule được lưu vào storage, **then** nội dung được mã hoá bằng thuật toán mã hoá có xác thực (AEAD); **and** storage backend **không** giữ khoá giải mã. **Given** ciphertext bị sửa đổi, **then** giải mã thất bại và capsule bị từ chối. |
-| **`SEC-016`** | **`DEFER`** | **Given** một capsule được tạo, **then** nó được mã hoá bằng **khoá riêng của capsule đó**, khoá nằm ở Zone 2 và **không** đi kèm capsule; **and** `repro replay` lấy khoá just-in-time; **and** lệnh xoá phá khoá ⇒ mọi bản copy trở thành ciphertext vô nghĩa. **`DEFER` vì cần một QUYẾT ĐỊNH, không vì thiếu ưu tiên** — đánh đổi với replay offline chưa được cân (mục 8.1.2, mục 11.c). **Quyết định `D2` ngày 2026-08-14 KHÔNG bao gồm yêu cầu này** — `D2` chỉ chốt authn + authz + audit. `SEC-016` giữ nguyên `DEFER` và nhãn `[cần validate]`; **không** được đọc như đã chốt. |
+| **`SEC-016`** | **`MUST-V0.1`** · `✅ CHỐT GATE-05b — 2026-08-14` | **Given** một capsule được tạo, **then** nó được mã hoá bằng **khoá riêng của capsule đó**, khoá nằm ở Zone 2 và **không** đi kèm capsule; **and** `repro replay` lấy khoá just-in-time; **and** lệnh xoá phá khoá ⇒ mọi bản copy trở thành ciphertext vô nghĩa. **Trước 2026-08-14 yêu cầu này là `DEFER` vì cần một QUYẾT ĐỊNH, không vì thiếu ưu tiên** — đánh đổi với replay offline chưa được cân (mục 8.1.2, mục 11.c). **Nay đã được cân và chọn**: `@TrisJr` chốt áp dụng crypto-shredding, phân loại `MUST-V0.1`; nhãn `[cần validate]` được gỡ. **Quyết định `D2` KHÔNG bao gồm yêu cầu này** — mệnh đề đó vẫn đúng; thứ chốt `SEC-016` là **`GATE-05b`**. **Hai điều kiện đi kèm, không được bỏ**: (a) `GATE-05b-r` — *"replay không cần kết nối mạng"* thôi là bất biến; (b) `GATE-05b-r2` — **`U-06d` (key custody) là blocker**: không có nơi giữ và xoá khoá thì yêu cầu này **không thực thi được**, và mọi mệnh đề *"bản copy trở thành ciphertext vô nghĩa"* trong tài liệu này đều treo trên điều kiện đó. |
 | `SEC-017` | `MUST-V0.1` | **Given** recorder gửi capsule tới collector, **then** kết nối dùng TLS **và** recorder xác thực bằng credential riêng của từng service; **and** capsule được ghi vào scope của chính service đó. **Given** credential không hợp lệ hoặc scope không khớp, **then** collector từ chối nhận. |
 | **`SEC-018`** | `MUST-V0.1` | **Given** bất kỳ thao tác nào trên capsule (`list`, `pull`, `inspect`, `delete`, lấy khoá), **then** thao tác đòi hỏi **authentication** và **authorization deny-by-default** — không có quyền tường minh thì bị từ chối. **Yêu cầu này nằm trong OSS core, không phải commercial layer** — `✅ ĐÃ CHỐT 2026-08-14` (`D2`), ghi đè §28; bằng chứng mâu thuẫn giữ ở mục 10. |
 | `SEC-019` | `MUST-V0.1` | **Given** một principal chạy `repro list` hoặc `repro pull`, **then** chỉ những capsule thuộc service/team mà principal được cấp quyền mới hiển thị và tải được; capsule ngoài scope **không xuất hiện trong danh sách** (không chỉ là bị từ chối khi tải — sự tồn tại của chúng cũng là thông tin, mục 7 nhóm 10). Đây là phần *authorization* của `D2`, **nằm trong OSS core** — `✅ ĐÃ CHỐT 2026-08-14`. |
 | **`SEC-020`** | `MUST-V0.1` | **Given** bất kỳ truy cập nào tới capsule, **then** một bản ghi audit `{who, what, when, from-where}` được ghi vào log **append-only**; **and** principal thực hiện thao tác **không** có quyền sửa hoặc xoá bản ghi của chính mình. **Yêu cầu này nằm trong OSS core** — `✅ ĐÃ CHỐT 2026-08-14` (`D2`), xem mục 10. |
-| **`SEC-021`** | `MUST-V0.1` | **Given** một yêu cầu xoá capsule, **then** tồn tại lệnh xoá cứng thực thi được **trong bản self-host** và việc xoá được ghi audit. **Given** `SEC-016` đã được chốt, **then** lệnh này cũng phá khoá tương ứng (crypto-shred) — mệnh đề này **vẫn treo** vì `SEC-016` chưa được chốt (mục 11.c). **Yêu cầu này nằm trong OSS core** — `✅ ĐÃ CHỐT 2026-08-14` (`D2`), xem mục 10. |
+| **`SEC-021`** | `MUST-V0.1` | **Given** một yêu cầu xoá capsule, **then** tồn tại lệnh xoá cứng thực thi được **trong bản self-host** và việc xoá được ghi audit. **Given** `SEC-016` đã được chốt, **then** lệnh này cũng phá khoá tương ứng (crypto-shred) — mệnh đề này **KHÔNG còn treo**: `SEC-016` **đã được chốt `MUST-V0.1`** (`✅ CHỐT GATE-05b — 2026-08-14`, mục 11.c) ⇒ **xoá cứng nay bao gồm phá khoá**, và đó là phần làm cho việc xoá có hiệu lực trên bản copy ngoài Zone 2. Điều kiện thực thi: phải có key store để phá khoá (`U-06d`, `GATE-05b-r2`). **Yêu cầu này nằm trong OSS core** — `✅ ĐÃ CHỐT 2026-08-14` (`D2`), xem mục 10. |
 
 ---
 
@@ -1029,10 +1087,10 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 
 | ID | Loại | Given / Then |
 |---|---|---|
-| **`SEC-022`** | `MUST-V0.1` | **Given** một capsule được tạo, **then** nó mang một TTL **hữu hạn**. **Given** cấu hình cố gắng đặt TTL vô hạn hoặc không đặt TTL, **then** hệ thống **từ chối** cấu hình đó. **Giá trị mặc định = `TBD`** — cần PM và pháp chế, xem mục 11.a. Điều **khẳng định được** là: giá trị phải hữu hạn. |
+| **`SEC-022`** | `MUST-V0.1` | **Given** một capsule được tạo, **then** nó mang một TTL **hữu hạn**. **Given** cấu hình cố gắng đặt TTL vô hạn, **then** hệ thống **từ chối** cấu hình đó. **Given** cấu hình **không đặt TTL**, **then** hệ thống áp **giá trị mặc định = `30 ngày`** — `✅ CHỐT GATE-05a — 2026-08-14`, quyết bởi `@TrisJr` (mục 11.a). TTL **vẫn cấu hình được** (`FR-024`): 30 ngày là **mặc định khi không cấu hình**, không phải giới hạn cứng. ⚠ Con số này là **quyết định sản phẩm, không qua pháp chế** — nghĩa vụ lưu trữ theo khu vực pháp lý vẫn chưa được ai kiểm (mục 11.a). Điều **khẳng định được** vẫn là: giá trị phải hữu hạn. |
 | `SEC-023` | `MUST-V0.1` | **Given** TTL của một capsule hết hạn, **then** capsule bị xoá tự động khỏi Zone 2 mà không cần thao tác thủ công, **and** việc xoá được ghi vào audit log của `SEC-020`. |
 | `SEC-024` | `SHOULD` | **Given** một capsule được tạo, **then** manifest mang `data_classification` mô tả **loại** dữ liệu mà capsule có thể chứa (không phải nội dung), đủ để trả lời câu hỏi khoanh vùng phạm vi khi có sự cố mà không cần mở capsule. |
-| `SEC-025` | **`DEFER`** | **Given** một yêu cầu xoá dữ liệu của một chủ thể, **then** hệ thống tra được danh sách capsule có liên quan qua một tham chiếu giả danh. **`DEFER` vì thiết kế của cơ chế này chưa tồn tại** và nó tương tác trực tiếp với `SEC-016`: nếu crypto-shred được chọn thì điều kiện (a) ở mục 8.1.1 trở nên ít quan trọng hơn nhiều. Quyết định `SEC-016` phải có trước. |
+| `SEC-025` | **`DEFER`** | **Given** một yêu cầu xoá dữ liệu của một chủ thể, **then** hệ thống tra được danh sách capsule có liên quan qua một tham chiếu giả danh. **`SEC-025` GIỮ `DEFER` vì thiết kế của cơ chế này chưa tồn tại** — `GATE-05b` **không** đổi phân loại của yêu cầu này. Nó tương tác trực tiếp với `SEC-016`: **crypto-shred nay đã được chọn** (`MUST-V0.1`, `GATE-05b`) ⇒ điều kiện (a) ở mục 8.1.1 (*biết capsule nào chứa dữ liệu của chủ thể nào*) trở nên **ít quan trọng hơn nhiều**, vì phá khoá có hiệu lực mà không cần tra ngược tới từng chủ thể. Điều kiện tiên quyết *"quyết định `SEC-016` phải có trước"* **đã được thoả**; phần còn thiếu là **thiết kế cơ chế tra cứu**, và đó là lý do `DEFER` vẫn đứng. |
 | `SEC-026` | — | *Reserved* |
 
 ---
@@ -1087,7 +1145,7 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 |---|---|---|
 | `SEC-042` | `MUST-V0.1` | **Given** `repro pull` ghi capsule xuống đĩa, **then** file được tạo với quyền chỉ chủ sở hữu đọc/ghi và thư mục chứa chỉ chủ sở hữu truy cập. **Given** không đặt được quyền đó, **then** thao tác thất bại thay vì ghi với quyền rộng hơn. |
 | **`SEC-043`** | `MUST-V0.1` | **Given** `repro pull` được chạy với thư mục đích nằm **bên trong** một git working tree, **then** CLI **từ chối** ghi trừ khi có cờ tường minh; **and** khi ghi vào thư mục mặc định, CLI tạo hoặc cập nhật `.gitignore` để loại trừ capsule. Đối ứng `THREAT-006` đường 1. **Đường 2 (regression test) không đóng được bằng requirement này** — nó cần một quyết định về capsule format, xem mục 11 và `ADR-002`. |
-| `SEC-044` | `SHOULD` | **Given** một capsule tồn tại trong `~/.repro`, **then** nó mang TTL cục bộ **không dài hơn** TTL phía server; **and** `repro gc` xoá capsule quá hạn. Phân loại `SHOULD` chứ không `MUST` là **có chủ đích**: TTL cục bộ bị vô hiệu hoá bằng một thao tác copy file, nên nó là hygiene control chứ không tạo containment — xếp nó là `MUST` sẽ tạo cảm giác an toàn không tương xứng. Containment thật ở Zone 3 chỉ đến từ `SEC-016`. |
+| `SEC-044` | `SHOULD` | **Given** một capsule tồn tại trong `~/.repro`, **then** nó mang TTL cục bộ **không dài hơn** TTL phía server — nay là một con số cụ thể: **mặc định 30 ngày** (`SEC-022`, `GATE-05a`). **and** `repro gc` xoá capsule quá hạn. Phân loại `SHOULD` chứ không `MUST` là **có chủ đích và không đổi sau `GATE-05`**: TTL cục bộ bị vô hiệu hoá bằng một thao tác copy file, nên nó là hygiene control chứ không tạo containment — xếp nó là `MUST` sẽ tạo cảm giác an toàn không tương xứng. Containment thật ở Zone 3 chỉ đến từ `SEC-016` — **nay là `MUST-V0.1`** (`GATE-05b`), **với điều kiện key custody `U-06d` (`GATE-05b-r2`)**. |
 | `SEC-045` | `SHOULD` | **Given** thư mục đích của `repro pull` nằm trong một đường dẫn đồng bộ cloud đã biết, **then** CLI cảnh báo tường minh trước khi ghi và yêu cầu xác nhận. Đối ứng `THREAT-007` đường 1. |
 | `SEC-046` | — | *Reserved* |
 
@@ -1109,21 +1167,21 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 | Threat | Requirement đối ứng | Còn residual sau khi áp đủ? |
 |---|---|---|
 | `THREAT-001` | `SEC-002` `SEC-003` `SEC-005` `SEC-006` `SEC-007` `SEC-047` | **Có** — trần cứng của redaction, mục 7 |
-| `THREAT-002` | `SEC-015` `SEC-016` `SEC-017` `SEC-019` | Thấp, nếu `SEC-016` được chốt |
+| `THREAT-002` | `SEC-015` `SEC-016` `SEC-017` `SEC-019` | **Thấp** — `SEC-016` **đã chốt** `MUST-V0.1` (`GATE-05b`); điều kiện còn lại là key custody (`U-06d`) |
 | `THREAT-003` | `SEC-017` `SEC-018` `SEC-021` + quyết định self-host (8.5) | Thấp |
 | `THREAT-004` | `SEC-009` `SEC-010` `SEC-011` `SEC-012` `SEC-013` `SEC-001` | Trung bình — config đúng cú pháp nhưng sai nghĩa |
 | `THREAT-005` | `SEC-010` `SEC-012` `SEC-013` `SEC-019` `SEC-020` | **Cao** — cần quản trị tổ chức, không đóng được bằng công cụ |
 | `THREAT-006` | `SEC-042` `SEC-043` `SEC-047` | **Cao** — đường 2 cần quyết định capsule format |
-| `THREAT-007` | `SEC-042` `SEC-044` `SEC-045` `SEC-016` | **Cao** trừ khi `SEC-016` được chốt |
-| `THREAT-008` | `SEC-018` `SEC-019` `SEC-020` `SEC-021` | **Trung bình** — mục 10 đã chốt (`D2`); residual còn lại là **hiện thực authz đúng** + `GAP-04` (không có CLI verb để vận hành) |
+| `THREAT-007` | `SEC-042` `SEC-044` `SEC-045` `SEC-016` | **Cao** — `SEC-016` **đã chốt** `MUST-V0.1` (`GATE-05b`) nên đường containment nay **tồn tại**, nhưng hiệu lực của nó treo trên key custody `U-06d` (`GATE-05b-r2`); residual chỉ hạ khi có key store vận hành được |
+| `THREAT-008` | `SEC-018` `SEC-019` `SEC-020` `SEC-021` | **Trung bình — không đổi sau `GATE-04`** — mục 10 đã chốt (`D2`); residual còn lại là **hiện thực authz đúng** + `GAP-04` (không có CLI verb để vận hành, **vẫn nguyên**) + **cơ chế** authn/authz vẫn `TBD` sau `GATE-04` (`GATE-04-r`) |
 | `THREAT-009` | `SEC-027` `SEC-028` `SEC-029` `SEC-030` `SEC-035` `SEC-036` `SEC-038` `SEC-039` | **Thấp nếu đóng ngay** |
 | `THREAT-010` | `SEC-032` `SEC-033` `SEC-034` | Thấp |
-| `THREAT-011` | `SEC-020` `SEC-024` `SEC-047` `SEC-016` | **Cao ở lớp 2** — giới hạn cấu trúc |
+| `THREAT-011` | `SEC-020` `SEC-024` `SEC-047` `SEC-016` | **Cao ở lớp 2** — giới hạn cấu trúc. `SEC-016` **đã chốt** `MUST-V0.1` (`GATE-05b`) nên lớp 2 được **làm nhẹ** (*"không quan trọng nó ở đâu"*), **không** được đóng; và phần làm nhẹ đó treo trên `U-06d` |
 | `THREAT-012` | `SEC-037` `SEC-008` | Thấp |
 | `THREAT-013` | `SEC-017` `SEC-019` `SEC-027` `SEC-039` | Thấp |
 | `THREAT-014` | `SEC-008` `SEC-030` `SEC-037` | Trung bình — ngưỡng `TBD` |
 | `THREAT-015` | `SEC-047` `SEC-048` | Thấp |
-| `THREAT-016` | `SEC-021` `SEC-022` `SEC-023` `SEC-044` `SEC-016` | **Cao ở phần bản copy** |
+| `THREAT-016` | `SEC-021` `SEC-022` `SEC-023` `SEC-044` `SEC-016` | **Cao ở phần bản copy** — nhưng đã đổi bản chất: phần *"tồn tại vô thời hạn"* **đóng vô điều kiện** (`SEC-022` = 30 ngày, `GATE-05a`); phần *"không xoá được bản copy"* có cơ chế **đã chốt** (`SEC-016` = `MUST-V0.1`, `GATE-05b`) nhưng **chỉ có hiệu lực khi có key custody** `U-06d` (`GATE-05b-r2`) ⇒ residual giữ **Cao** tới lúc đó |
 | `THREAT-017` | `SEC-024` `SEC-048` | Trung bình |
 | `THREAT-018` | `SEC-032` `SEC-033` `SEC-034` `SEC-035` `SEC-036` | Trung bình — side effect cục bộ |
 | `THREAT-019` | `SEC-040` `SEC-037` `SEC-004` | **Không loại bỏ được** — đánh đổi cố hữu |
@@ -1143,7 +1201,7 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 | **Chốt** | **Authentication + authorization (access control) + audit log — cả ba — nằm trong OSS core**, không phải commercial layer. |
 | **Ghi đè** | `RQ.md §28`, phần xếp *Access control* và *Retention policies* vào commercial layer `[stated §28]`, `RQ.md:1605-1627`. |
 | **Giữ nguyên ở commercial layer** | Hosted storage · Team management · Analytics · AI analysis · Cloud integrations `[stated §28]`. |
-| **KHÔNG nằm trong quyết định này** | **Crypto-shred (`SEC-016`)** — vẫn `DEFER` `[cần validate]`, vì đánh đổi với replay offline chưa được giải. Xem mục 11.c. **Đừng đọc `D2` như đã chốt luôn phần này.** |
+| **KHÔNG nằm trong quyết định này** | **Crypto-shred (`SEC-016`)** — **`D2` không chốt phần này, và mệnh đề đó vẫn đúng**: `D2` chỉ gồm authn + authz + audit. **Đừng đọc `D2` như đã chốt luôn phần này.** ⚠ **Nhưng cũng đừng đọc dòng này thành "`SEC-016` chưa chốt"**: `SEC-016` **đã được chốt bởi `GATE-05b` ngày 2026-08-14** — `MUST-V0.1`, quyết bởi `@TrisJr`, nhãn `[cần validate]` đã gỡ, đánh đổi với replay offline **đã được cân và chấp nhận** (`GATE-05b-r`). Xem mục 11.c. Hai quyết định **rời nhau**: `D2` là phạm vi OSS core, `GATE-05b` là phân loại crypto-shred. |
 | **Ai quyết** | Chủ sản phẩm. Lens bảo mật đã khuyến nghị (xem *Khuyến nghị của lens bảo mật* dưới đây) và khuyến nghị đó **được chấp thuận**. |
 
 **Lý do chọn cả ba chứ không chỉ authn** — ba câu hỏi khác nhau, không thay thế được cho nhau:
@@ -1160,9 +1218,9 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 |---|---|---|
 | `THREAT-008` | `[GAP]` — không mitigation; residual *"không đánh giá được, chờ mục 10"* | `[GAP]` **giữ nguyên với RQ.md** (nguyên văn §28 không đổi), nhưng có mitigation từ quyết định sản phẩm; residual **Medium**, không về 0 |
 | `SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` | `MUST-V0.1` nhưng treo nhãn `[cần anh chốt]` | `MUST-V0.1` **trong OSS core**, không còn treo |
-| `SEC-016` | `DEFER` `[cần validate]` | **Không đổi** — `DEFER` `[cần validate]` |
-| Bộ số phân loại (mục 9.1) | 32 / 8 / 3 | **Không đổi** — 32 / 8 / 3 |
-| Số threat RQ.md không có mitigation (mục 4.3, 4.5) | 11 | **Không đổi — 11** (con số đo RQ.md). Con số dẫn xuất *"không có mitigation từ bất kỳ nguồn nào"* = **10** |
+| `SEC-016` | `DEFER` `[cần validate]` | **`D2` không đổi nó** — `DEFER` `[cần validate]` sau `D2`. ⚠ **`GATE-05b` (2026-08-14) thì đổi**: nay **`MUST-V0.1`**, nhãn `[cần validate]` đã gỡ — xem mục 11.c |
+| Bộ số phân loại (mục 9.1) | `32 MUST-V0.1` / `8 SHOULD` / `3 DEFER` | **`D2` không đổi bộ số** — `D2` không chuyển phân loại của requirement nào. ⚠ **`GATE-05b` thì CÓ**: bộ số hiện hành là **`33 / 8 / 2 = 43`**; cột này là giá trị **trước `GATE-05b`**, giữ lại để tra được lịch sử |
+| Số threat RQ.md không có mitigation (mục 4.3, 4.5) | 11 | **Không đổi — 11** (con số đo RQ.md; `RQ.md` không thay đổi thì con số này không bao giờ đổi). Con số dẫn xuất *"không có mitigation từ bất kỳ nguồn nào"* = **10** sau `D2`, và **9** sau `GATE-05` (`THREAT-016` rời nhóm) — xem callout ba con số ở mục 4.3 |
 | Kết luận mục 7 (redaction là hygiene control, **không** phải containment boundary) | Đúng | **Đúng hơn.** `D2` **củng cố** kết luận đó chứ không làm mềm nó: containment thật đến từ access control + encryption + retention + audit, và nay ba trong bốn thứ đó **chắc chắn tồn tại trong OSS core**. Điều này không làm redaction mạnh lên chút nào — nó chỉ xác nhận rằng thứ gánh containment không bao giờ là redaction. |
 
 > **Vì sao phần trình bày hai phía vẫn còn nguyên trong mục này.** Quyết định của chủ sản phẩm **không sửa RQ.md**. Mở `RQ.md` hôm nay, §28 vẫn xếp *Access control* và *Retention policies* vào commercial layer, và §20.5/§21 vẫn coi chúng là hạng mục MVP — hai câu đó vẫn nói ngược nhau. Xoá bằng chứng đi thì người đọc RQ.md về sau sẽ kết luận rằng threat model trích dẫn sai. **Phía A và phía B dưới đây là dấu vết vì sao có quyết định này, không phải nội dung lỗi thời.**
@@ -1223,13 +1281,23 @@ Ba lý do cụ thể hơn:
 2. **Nó vô hiệu hoá lý do tồn tại của bản OSS.** §28 nêu rõ Repro là ứng viên tốt cho mã nguồn mở **chính vì** dữ liệu execution production rất nhạy cảm `[stated §28]`. Nếu bản OSS không bảo vệ được thứ nhạy cảm đó, lập luận mã nguồn mở tự mâu thuẫn.
 3. **Nó tạo ra một rủi ro thương hiệu bất đối xứng.** Sự cố dữ liệu đầu tiên xảy ra trên một bản self-host không có access control sẽ được ghi nhận là "sự cố của Repro", bất kể ai triển khai.
 
-**`✅ ĐÃ CHỐT 2026-08-14`** — Đây là quyết định của chủ sản phẩm. Nó đụng tới mô hình kinh doanh, không chỉ tới bảo mật, và lens bảo mật không có thẩm quyền quyết định ranh giới thương mại; vì vậy tài liệu này đã **không** tự viết dứt khoát một phía mà trình bày cả hai. **Khuyến nghị trên đã được chấp thuận** đối với phần authn/authz/audit (`SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` ⇒ `MUST-V0.1` trong OSS core). **Phần crypto-shred (`SEC-016`) KHÔNG được chốt** và giữ nguyên `DEFER` `[cần validate]` — mục 11.c. Không còn requirement nào trong tài liệu này mang nhãn `[cần anh chốt]`.
+**`✅ ĐÃ CHỐT 2026-08-14`** — Đây là quyết định của chủ sản phẩm. Nó đụng tới mô hình kinh doanh, không chỉ tới bảo mật, và lens bảo mật không có thẩm quyền quyết định ranh giới thương mại; vì vậy tài liệu này đã **không** tự viết dứt khoát một phía mà trình bày cả hai. **Khuyến nghị trên đã được chấp thuận** đối với phần authn/authz/audit (`SEC-018`, `SEC-019`, `SEC-020`, `SEC-021` ⇒ `MUST-V0.1` trong OSS core). **Phần crypto-shred (`SEC-016`) KHÔNG được chốt bởi `D2`** — ở thời điểm ngay sau `D2`, yêu cầu đó vẫn còn ở nhóm hoãn-chờ-quyết-định (mục 11.c). ⚠ **Cập nhật: phần còn lại của khuyến nghị nay CŨNG đã được chấp thuận** — `✅ CHỐT GATE-05b — 2026-08-14`: `SEC-016` ⇒ **`MUST-V0.1`**, quyết bởi `@TrisJr`. Nghĩa là **toàn bộ** khuyến nghị của lens bảo mật ở mục này (authn/authz, audit, xoá cứng **và** crypto-shred) đã được chấp thuận, nhưng bằng **hai quyết định rời nhau** — `D2` cho ba phần đầu, `GATE-05b` cho phần crypto-shred. Không còn requirement nào trong tài liệu này mang nhãn `[cần anh chốt]`, và **không còn requirement nào mang `[cần validate]` vì chờ quyết định crypto-shred**.
 
 **Ghi chú xác nhận chéo**: lens phân tích nghiệp vụ độc lập cũng phát hiện đúng mâu thuẫn này từ một góc khác (`FR-025`) — hai lens, hai đường tiếp cận, cùng một chỗ.
 
 #### Hệ quả còn lại sau quyết định — `GAP-04` nay là nợ tường minh, và nặng hơn trước
 
 `D2` đóng câu hỏi *"các control này có tồn tại không"*. Nó **không** đóng câu hỏi *"ai bấm nút nào để vận hành chúng"*.
+
+> **`✅ CHỐT GATE-04 — 2026-08-14` — sàn tối thiểu của Capsule Store đã đóng, `GAP-04` thì KHÔNG.**
+> **Mapping tên gọi**: `GATE-01` = G1 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5.
+>
+> **Phần đã đóng** — `@TrisJr` chốt sàn tối thiểu của Capsule Store = **object/file storage + một index + authn/authz/audit hook**, với 3 thao tác tối thiểu theo `SDD §5.4` (neo kiến trúc nằm ở [SDD-Repro](../Architecture/SDD-Repro.md) và [ADR-009](../Architecture/ADR-009-Private-Self-Hosted-Topology.md), **không** ở tài liệu này). Ý nghĩa bảo mật: **`authn/authz/audit hook` nay là thành phần bắt buộc của sàn**, không còn là thứ có thể bị cắt khi tối giản hoá store — đây là điều kiện tồn tại của `SEC-018`/`SEC-019`/`SEC-020` mà `D2` yêu cầu.
+>
+> **Phần KHÔNG đóng — ba thứ, phải đọc rời nhau** (`GATE-04-r`, định nghĩa ở [Risk-Register §4.2](../../010-Planning/Risk-Register.md)):
+> 1. **Cơ chế** authn/authz cụ thể vẫn **`TBD`**. `GATE-04` chốt *cái gì phải có*, không chốt *làm bằng cách nào*. Một `hook` chưa phải một cơ chế; residual của `THREAT-008` (*hiện thực authz đúng*) **không** giảm chút nào nhờ `GATE-04`.
+> 2. **`GAP-04` còn nguyên**: §18 vẫn không có một CLI verb nào cho authz/audit/retention — xem đoạn ngay dưới, giữ nguyên toàn bộ.
+> 3. `A-09`/`A-11`/`A-12` — ba asset mà `RQ.md` không coi là asset — **không** được `GATE-04` chạm tới.
 
 `RQ.md §18` khai báo đúng **sáu** CLI verb — `repro list`, `pull`, `inspect`, `replay`, `diff`, `verify` `[stated §18]` — và **cả sáu đều developer-side**. Không có verb nào để: cấp hoặc thu quyền truy cập capsule, đọc và xuất audit log, đặt hoặc kiểm tra retention policy, thực thi xoá cứng theo yêu cầu. Đây là `GAP-04`.
 
@@ -1243,21 +1311,39 @@ Hệ quả bảo mật cụ thể: một control tồn tại trong code nhưng k
 
 **Việc phải làm, và nó KHÔNG thuộc thẩm quyền của tài liệu này**: quyết định giao diện vận hành cho SRE/admin (thêm CLI verb, hay một giao diện khác) là quyết định phạm vi sản phẩm. Threat model nêu ràng buộc — *phải có đường để cấp/thu quyền, đọc audit, đặt retention, và xoá cứng* — nhưng **không tự chốt hình dạng của nó**.
 
+> **Câu trên VẪN ĐÚNG sau `GATE-04` — `GAP-04` CHƯA ĐÓNG.** `GATE-04` chốt **sàn của store**, không chốt **giao diện vận hành**. Đây là hai câu hỏi khác nhau và chỉ câu thứ nhất được trả lời. Sau `GATE-04`, `GAP-04` **nặng thêm lần thứ hai**: `D2` làm authz/audit/retention *chắc chắn phải tồn tại*, `GATE-04` đưa `authn/authz/audit hook` vào *sàn bắt buộc của store* — nhưng vẫn **không có verb nào** để cấp/thu quyền, đọc/xuất audit, đặt/kiểm tra retention. Nay lại thêm một khoản phải vận hành mà không có giao diện: **retention 30 ngày** (`GATE-05a`) và **phá khoá crypto-shred** (`GATE-05b`) — cả hai đều là thao tác của SRE/admin, và cả hai đều không có verb. Trỏ `GATE-04-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md).
+
 ---
 
 ## 11. Ba mục TBD
 
-Ba mục dưới đây **cố ý không được điền**. Chúng là những chỗ mà tài liệu này có thể đưa ra một con số nghe hợp lý, và việc đó sẽ là bịa. Mỗi mục ghi rõ: **phần khẳng định được** và **phần cần ai quyết**.
+> **Trạng thái sau `GATE-05` — 2026-08-14: còn `1` trong `3`.** Tiêu đề *"Ba mục TBD"* và số thứ tự `11.a`/`11.b`/`11.c` **giữ nguyên** vì các tài liệu khác đã trích dẫn chúng theo số — đóng một mục nghĩa là **đổi trạng thái của mục đó**, không xoá mục và không đánh số lại (cùng nguyên tắc mà tài liệu này đã áp cho `THREAT-008` ở run trước).
+>
+> | Mục | Trước 2026-08-14 | Sau `GATE-05` |
+> |---|---|---|
+> | `11.a` — TTL mặc định (`SEC-022`) | `TBD` | **✅ CHỐT GATE-05a** — 30 ngày, `@TrisJr` |
+> | `11.b` — row cap / byte cap (`SEC-008`) | `TBD` | **vẫn `TBD`** — chờ số liệu spike §22; spike **đã được bật** (`GATE-01`), ngưỡng **vẫn chưa có** |
+> | `11.c` — crypto-shred (`SEC-016`) | `TBD` / `DEFER` | **✅ CHỐT GATE-05b** — `MUST-V0.1`, `@TrisJr`, kèm `GATE-05b-r` và `GATE-05b-r2` |
 
-### 11.a — Giá trị TTL mặc định (`SEC-022`)
+Ba mục dưới đây **cố ý không được điền tại thời điểm lập tài liệu**. Chúng là những chỗ mà tài liệu này có thể đưa ra một con số nghe hợp lý, và việc đó sẽ là bịa. Mỗi mục ghi rõ: **phần khẳng định được** và **phần cần ai quyết** — và với hai mục đã chốt, **ai đã quyết trên thực tế**, kể cả khi người đó khác với dòng *"Cần ai"* ghi ban đầu.
+
+### 11.a — Giá trị TTL mặc định (`SEC-022`) · `✅ CHỐT GATE-05a — 2026-08-14`
+
+> **Mapping tên gọi**: `GATE-01` = G1 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. Trong tài liệu **chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị `PRD-Repro.md §Goals` chiếm, `D1`/`D2` là quyết định của run trước.
+
+**Đây là neo chính của `GATE-05a` trong tài liệu này.** Mục này **đã được điền** ngày 2026-08-14. Phần *"vì sao không khẳng định được"* bên dưới **giữ nguyên 100%** — nó là bằng chứng vì sao lens bảo mật đã từ chối tự chọn con số, không phải nội dung lỗi thời.
 
 | | |
 |---|---|
+| **✅ Quyết định** | **TTL mặc định của capsule = `30 ngày`.** Đây là **giá trị mặc định khi không cấu hình**, không phải giới hạn cứng: TTL vẫn **cấu hình được** theo `FR-024`. Mệnh đề *"hệ thống từ chối TTL vô hạn"* của `SEC-022` **không đổi** — nay nó có thêm một giá trị mặc định để áp khi cấu hình vắng mặt. |
+| **Ai quyết** | **`@TrisJr`** (chủ sản phẩm), ngày **2026-08-14**. Đóng `U-06b`. |
+| **⚠ Quyết định này KHÔNG đi qua pháp chế** | Dòng *"Cần ai"* bên dưới ghi **PM + pháp chế**. Thực tế: **`@TrisJr` quyết một mình, không có pháp chế tham gia.** Đây là **rủi ro được chấp nhận có ý thức**, không phải sơ suất và cũng không phải một xác nhận pháp lý. Vế (2) của *"Vì sao không"* — nghĩa vụ pháp lý về thời gian lưu trữ tối đa theo từng loại dữ liệu và từng khu vực pháp lý — **vẫn chưa được ai kiểm**. Con số 30 ngày vì vậy là **quyết định sản phẩm**, không phải kết luận tuân thủ; mục 1.2 và mục 8 vẫn áp: tài liệu này không cấp trạng thái tuân thủ. Cùng rủi ro này được PM ghi ở [Charter-Repro §5](../../010-Planning/Charter-Repro.md). |
 | **Khẳng định được** | TTL **phải là một giá trị hữu hạn**. Hệ thống phải **từ chối** cấu hình TTL vô hạn hoặc thiếu TTL. Điều này là kết luận chắc chắn từ mục 8.1 (nguyên tắc giới hạn lưu trữ) và `THREAT-016`. |
-| **Không khẳng định được** | Giá trị cụ thể là bao nhiêu ngày. |
-| **Vì sao không** | Con số này là **giao điểm của ba thứ mà lens bảo mật không có**: (1) chu kỳ debug thực tế của tổ chức — capsule phải sống đủ lâu để người ta kịp dùng, nếu không sản phẩm vô dụng; (2) nghĩa vụ pháp lý về thời gian lưu trữ tối đa cho từng loại dữ liệu và từng khu vực pháp lý; (3) chính sách nội bộ của tổ chức triển khai. Chọn một con số ở đây là chọn hộ cả ba. |
-| **Cần ai** | **PM** (chu kỳ debug thực tế) + **pháp chế** (nghĩa vụ lưu trữ). |
-| **Hệ quả nếu chọn sai** | Quá ngắn ⇒ capsule hết hạn trước khi developer kịp dùng ⇒ người dùng sẽ đòi kéo dài, rồi đòi bỏ TTL. Quá dài ⇒ cửa sổ phơi nhiễm mở rộng vô ích. Cả hai hướng đều dẫn ngược về mục 6.5: control gây ma sát sai sẽ bị vô hiệu hoá. |
+| **Không khẳng định được** *(giữ nguyên — bằng chứng tại thời điểm lập, trước gate)* | Giá trị cụ thể là bao nhiêu ngày. |
+| **Vì sao không** *(giữ nguyên — đây là lý do lens bảo mật không tự chọn, và nay là lý do con số phải được rà lại khi có bối cảnh tổ chức)* | Con số này là **giao điểm của ba thứ mà lens bảo mật không có**: (1) chu kỳ debug thực tế của tổ chức — capsule phải sống đủ lâu để người ta kịp dùng, nếu không sản phẩm vô dụng; (2) nghĩa vụ pháp lý về thời gian lưu trữ tối đa cho từng loại dữ liệu và từng khu vực pháp lý; (3) chính sách nội bộ của tổ chức triển khai. Chọn một con số ở đây là chọn hộ cả ba. |
+| **Cần ai** *(nguyên văn tại thời điểm lập)* | **PM** (chu kỳ debug thực tế) + **pháp chế** (nghĩa vụ lưu trữ). — **Đã quyết bởi `@TrisJr` ngày 2026-08-14, KHÔNG qua pháp chế** (xem dòng ⚠ trên). |
+| **Hệ quả nếu chọn sai** *(giữ nguyên — nay là tiêu chí rà lại giá trị 30 ngày)* | Quá ngắn ⇒ capsule hết hạn trước khi developer kịp dùng ⇒ người dùng sẽ đòi kéo dài, rồi đòi bỏ TTL. Quá dài ⇒ cửa sổ phơi nhiễm mở rộng vô ích. Cả hai hướng đều dẫn ngược về mục 6.5: control gây ma sát sai sẽ bị vô hiệu hoá. |
+| **Hệ quả bảo mật của quyết định** | Nhánh xấu *"mặc định trôi vào TTL vô hạn"* (mục 11.d) **đã bị chặn**. `THREAT-016` mất phần *"tồn tại vô thời hạn"*: đây là mitigation **vô điều kiện**, không phụ thuộc key custody — xem `THREAT-016` và callout ba con số ở mục 4.3. Phần *"không xoá được"* của `THREAT-016` do `GATE-05b` xử lý và **có điều kiện**. |
 
 ### 11.b — Ngưỡng row cap và byte cap (`SEC-008`)
 
@@ -1267,28 +1353,43 @@ Ba mục dưới đây **cố ý không được điền**. Chúng là những c
 | **Không khẳng định được** | Con số cụ thể của hai ngưỡng. |
 | **Vì sao không** | Ngưỡng này là đánh đổi giữa **tỉ lệ replay thành công** (cắt quá sớm ⇒ thiếu dữ liệu ⇒ replay hỏng) và **overhead + kích thước capsule**. Không có dữ liệu nào để cân đánh đổi này — RQ.md tự nói cần một technical spike để đo `[stated §22, §23]`. **Bốn ngưỡng ở §24 không dùng được** cho việc này: chúng là mục tiêu của chính spike đó và RQ.md ghi rõ chúng là *"initial hypotheses, not final product commitments"* `[stated §24]` (mục 1.4). |
 | **Cần ai** | Số liệu đo được từ **technical spike §22** — cụ thể là phân bố kích thước kết quả truy vấn và tỉ lệ replay thành công theo từng mức cắt. |
+| **Trạng thái sau `GATE-01`** | **Spike đã được bật** — `GATE-01 = Go` ngày 2026-08-14, Phase 0 technical spike được coi là **điều kiện đầu tư**; `Sponsor` = `@TrisJr`, `Manager` = `@TrisJr` (xem [Roadmap](../../010-Planning/Roadmap.md) Phase 0 và [Charter-Repro §7](../../010-Planning/Charter-Repro.md)). **Mục 11.b vẫn `TBD`** — điều đổi là *lý do* chờ: từ *"chưa biết có chạy spike không"* sang *"đang chờ kết quả spike"*. |
+| **⚠ `GATE-01-r`** | `Go` **không tự làm cho spike đo được**. `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở — không có denominator, không có định nghĩa *"reproduced"*, không có tiêu chí chọn test case, không có *Supported Execution Class*. Hệ quả trực tiếp lên tài liệu này: `SEC-008` **vẫn chưa có ngưỡng**, và một spike chạy mà không kết luận được pass/fail thì cũng không cấp được con số cho mục này. Định nghĩa rủi ro ở [Risk-Register §4.2](../../010-Planning/Risk-Register.md). |
 | **Hệ quả nếu chọn sai** | Đặt bừa một con số rồi để nó thành mặc định vĩnh viễn là cách phổ biến nhất để một ngưỡng sai tồn tại nhiều năm. Ghi `TBD` và buộc spike trả lời là lựa chọn đúng hơn. |
 
-### 11.c — Khoá giữ phía server (crypto-shred) hay replay offline? (`SEC-016`)
+### 11.c — Khoá giữ phía server (crypto-shred) hay replay offline? (`SEC-016`) · `✅ CHỐT GATE-05b — 2026-08-14`
+
+> **Mapping tên gọi**: `GATE-01` = G1 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. Trong tài liệu **chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị `PRD-Repro.md §Goals` chiếm, `D1`/`D2` là quyết định của run trước.
+
+**Đây là neo chính của `GATE-05b` trong tài liệu này.** `SEC-016` rời `DEFER` sang **`MUST-V0.1`**. Phần *"vì sao không khẳng định được"* bên dưới **giữ nguyên 100%** — nó chính là bảng giá của quyết định, và cái giá đó nay **đã được trả có ý thức**, không phải bị bỏ qua.
 
 | | |
 |---|---|
+| **✅ Quyết định** | **Crypto-shredding = ÁP DỤNG. `SEC-016` phân loại `MUST-V0.1`.** Khoá giữ **phía server** (Zone 2), không đi kèm capsule; **xoá khoá ⇒ capsule không giải được**. |
+| **Ai quyết** | **`@TrisJr`** (chủ sản phẩm), ngày **2026-08-14**. Đóng `U-06c`. |
+| **Lệch so với dòng *"Cần ai"*** | Dòng *"Cần ai"* bên dưới ghi **architect**. Thực tế **`@TrisJr` quyết**; hệ quả kiến trúc phải được ghi lại ở [ADR-002](../Architecture/ADR-002-Repro-Capsule-Format-Contract.md) (capsule self-contained) và [ADR-009](../Architecture/ADR-009-Private-Self-Hosted-Topology.md) (`D5`, key custody) — hai file này do lượt `architect` của cùng run cập nhật, **không** thuộc tài liệu này. Cho tới khi hai ADR đó phản ánh xong, trạng thái *"đã chốt"* chỉ đứng vững ở tầng requirement, chưa ở tầng ADR. |
 | **Khẳng định được** | Crypto-shredding là **cơ chế duy nhất được biết** biến `TB-4` từ bất khả hồi thành khả hồi, và là cơ chế duy nhất làm cho quyền xoá dữ liệu có hiệu lực thật trên các bản copy (mục 8.1.2). Điều này là kết luận kỹ thuật, không phải sở thích. |
-| **Không khẳng định được** | Rằng nên chọn nó. |
-| **Vì sao không** | Vì cái giá là **mất replay offline** — và replay offline có thể là điều kiện cần của trải nghiệm sản phẩm. §33 đặt "Developer-first" và CLI tối giản làm nguyên tắc `[stated §33]`; §20.14 xếp adoption là rủi ro Critical `[stated §20.14]`. Một sản phẩm debug mà không chạy được khi mất mạng, hoặc không chạy được khi chính hệ thống Repro đang có sự cố, là một đánh đổi lớn về sản phẩm. Thêm nữa nó làm bản self-host phức tạp hơn hẳn (vận hành key store, sao lưu key, và nghịch lý ở mục 8.1.2). |
-| **Cần ai** | **Architect** — đây là quyết định kiến trúc có hệ quả bảo mật, không phải quyết định bảo mật có hệ quả kiến trúc. Cần được ghi thành ADR với đầy đủ hệ quả. |
-| **Trạng thái** | `SEC-016` = `DEFER`, gắn nhãn `[cần validate]`. **Không** được đọc như đã chốt ở bất kỳ tài liệu hạ nguồn nào. RQ.md không nhắc tới crypto-shredding ở bất kỳ đâu `[GAP]`, nên đánh đổi này **chưa từng được ai cân**. **Quyết định `D2` ngày 2026-08-14 (mục 10) KHÔNG chạm tới mục này** — `D2` chỉ chốt authn + authz + audit. Mục 11.c vẫn mở. |
-| **Ràng buộc thời điểm** | Dù chọn hướng nào, quyết định **ràng buộc capsule format** (capsule mã hoá bằng khoá riêng có cấu trúc manifest khác) ⇒ phải chốt **trước khi** capsule format v1 đóng băng. Cùng tính chất với `THREAT-006` đường 2. |
+| **Không khẳng định được** *(nguyên văn tại thời điểm lập)* | Rằng nên chọn nó. — **Nay đã có người chọn: `@TrisJr`.** Lens bảo mật vẫn **không** tự khẳng định điều này; nó ghi lại rằng chủ sản phẩm đã khẳng định. |
+| **Vì sao không** *(giữ nguyên 100% — đây là cái giá đã được chấp nhận, không phải phản đối bị gạt bỏ)* | Vì cái giá là **mất replay offline** — và replay offline có thể là điều kiện cần của trải nghiệm sản phẩm. §33 đặt "Developer-first" và CLI tối giản làm nguyên tắc `[stated §33]`; §20.14 xếp adoption là rủi ro Critical `[stated §20.14]`. Một sản phẩm debug mà không chạy được khi mất mạng, hoặc không chạy được khi chính hệ thống Repro đang có sự cố, là một đánh đổi lớn về sản phẩm. Thêm nữa nó làm bản self-host phức tạp hơn hẳn (vận hành key store, sao lưu key, và nghịch lý ở mục 8.1.2). |
+| **Cần ai** *(nguyên văn tại thời điểm lập)* | **Architect** — đây là quyết định kiến trúc có hệ quả bảo mật, không phải quyết định bảo mật có hệ quả kiến trúc. Cần được ghi thành ADR với đầy đủ hệ quả. |
+| **Trạng thái** | `SEC-016` = **`MUST-V0.1`** — `✅ CHỐT GATE-05b — 2026-08-14`, quyết bởi `@TrisJr`. Nhãn `[cần validate]` **được gỡ**: đánh đổi đã được cân và chọn. **Mệnh đề vẫn đúng và phải giữ**: `RQ.md` **không nhắc tới crypto-shredding ở bất kỳ đâu** `[GAP]` — đó là sự thật về `RQ.md`, không phải trạng thái quyết định; mitigation này đến từ **quyết định sản phẩm**, không từ tài liệu nguồn. **Quyết định `D2` (mục 10) vẫn KHÔNG chạm tới mục này** — `D2` chỉ chốt authn + authz + audit; thứ chốt `SEC-016` là `GATE-05b`, một quyết định khác, ngày khác trong cùng ngày ghi nhận. |
+| **Ràng buộc thời điểm — đã chốt ĐÚNG LÚC** | Quyết định **ràng buộc capsule format** (capsule mã hoá bằng khoá riêng có cấu trúc manifest khác) ⇒ phải chốt **trước khi** capsule format v1 đóng băng. **Điều kiện này được thoả**: dự án đang ở `Status: Concept`, `src/` rỗng, capsule format v1 **chưa đóng băng** và `ADR-002` vẫn đang được sửa trong cùng run. Không có capsule nào đã được tạo để bị phá vỡ. Cùng tính chất với `THREAT-006` đường 2 — mục đó **vẫn chưa** được chốt. |
+| **⚠ `GATE-05b-r` — hệ quả được chấp nhận có ý thức** | *"Replay không cần kết nối mạng"* **thôi là bất biến**. `SEC-016 = MUST-V0.1` va trực tiếp vào `ADR-002` (capsule self-contained), `SDD:1145`, và nguyên tắc §33.6 *Safe by default* `[stated §33]`. Đây **không** phải phát hiện muộn — nó là chính cái giá ở dòng *"Vì sao không"*, được nêu trước khi quyết và vẫn được chọn. Định nghĩa đầy đủ ở [Risk-Register §4.2](../../010-Planning/Risk-Register.md). |
+| **⚠ `GATE-05b-r2` — `U-06d` (key custody) từ open item phụ THÀNH BLOCKER** | Không có key management thì crypto-shredding **không thực thi được**: quyết định `MUST-V0.1` chỉ có giá trị khi có **nơi giữ khoá và cơ chế xoá khoá**. Mọi chỗ trong tài liệu này nói *"crypto-shred làm bản copy khả hồi"* đều mang điều kiện này — xem `THREAT-016`, `THREAT-007`, `THREAT-011`, mục 3.5, mục 8.1.2. `U-06d` sống ở [ADR-009](../Architecture/ADR-009-Private-Self-Hosted-Topology.md) `Open items`; định nghĩa rủi ro ở [Risk-Register §4.2](../../010-Planning/Risk-Register.md). Nghịch lý sao lưu khoá (mục 8.1.2) nay là một hạng mục thiết kế **bắt buộc**, không còn là ghi chú. |
 
 ### 11.d — Ghi chú: ba mục này khác nhau về bản chất
 
 | Mục | Loại chưa biết | Giải bằng cách nào |
 |---|---|---|
-| 11.a | Chưa biết **bối cảnh** | Hỏi PM và pháp chế |
-| 11.b | Chưa biết **dữ kiện** | Đo bằng spike §22 |
-| 11.c | Chưa có **quyết định** | Architect cân đánh đổi và ghi ADR |
+| 11.a | Chưa biết **bối cảnh** | Hỏi PM và pháp chế — **đã quyết bởi `@TrisJr` (không qua pháp chế), `GATE-05a`** |
+| 11.b | Chưa biết **dữ kiện** | Đo bằng spike §22 — **spike đã bật (`GATE-01`), dữ kiện vẫn chưa có** |
+| 11.c | Chưa có **quyết định** | Architect cân đánh đổi và ghi ADR — **đã quyết bởi `@TrisJr`, `GATE-05b`**; phần *ghi ADR* thuộc `ADR-002`/`ADR-009` |
 
 Phân biệt này quan trọng cho close-step: 11.b sẽ tự giải khi spike chạy; 11.a và 11.c **không tự giải** — chúng cần có người quyết, và nếu không ai quyết thì chúng sẽ mặc định trôi vào trạng thái xấu (TTL vô hạn, không có crypto-shred).
+
+> **✅ Đã có người quyết — 2026-08-14. Cả hai nhánh xấu đã bị chặn.** `@TrisJr` quyết cả hai mục: `11.a` → TTL mặc định **30 ngày** (`GATE-05a`) chặn nhánh *TTL vô hạn*; `11.c` → `SEC-016` **`MUST-V0.1`** (`GATE-05b`) chặn nhánh *không có crypto-shred*. Câu trên **vẫn được giữ nguyên** vì nó đúng về bản chất hai mục này (chúng không tự giải, chúng cần người quyết) — và nó là lý do vì sao việc có người quyết là điều kiện, không phải thủ tục.
+>
+> **Điều KHÔNG được đọc thành "đã xong"**: `11.b` vẫn `TBD` (`GATE-01-r`); `GATE-05b` mở ra `GATE-05b-r2` — **`U-06d` key custody nay là blocker**, và nhánh xấu *"không có crypto-shred"* bị chặn ở tầng **quyết định**, chưa ở tầng **thực thi**. Không có nơi giữ và xoá khoá thì `SEC-016` là một `MUST-V0.1` chưa thực thi được.
 
 ---
 
@@ -1299,10 +1400,11 @@ Phân biệt này quan trọng cho close-step: 11.b sẽ tự giải khi spike c
 | Tài liệu | Đường dẫn | Quan hệ |
 |---|---|---|
 | SDD — Repro | [SDD-Repro](../Architecture/SDD-Repro.md) | §7 Security & Compliance của SDD tham chiếu tài liệu này thay vì lặp lại 43 requirement; trust boundary ở mục 3 là đầu vào cho §7.1 |
-| ADR-002 — Capsule Format Contract | [ADR-002](../Architecture/ADR-002-Repro-Capsule-Format-Contract.md) | Ràng buộc từ tài liệu này lên capsule format: chỗ chứa digest/signature trong manifest v1 (`SEC-027`), `redaction_applied[]` (`SEC-047`), `data_classification` (`SEC-024`), fingerprint config (`SEC-010`), và hệ quả của `THREAT-006` đường 2 + `SEC-016` |
+| ADR-002 — Capsule Format Contract | [ADR-002](../Architecture/ADR-002-Repro-Capsule-Format-Contract.md) | Ràng buộc từ tài liệu này lên capsule format: chỗ chứa digest/signature trong manifest v1 (`SEC-027`), `redaction_applied[]` (`SEC-047`), `data_classification` (`SEC-024`), fingerprint config (`SEC-010`), và hệ quả của `THREAT-006` đường 2 + `SEC-016`. **Sau `GATE-05b` (2026-08-14)**: ràng buộc từ `SEC-016` **không còn là đề xuất** — capsule mã hoá bằng khoá riêng giữ ở Zone 2 là `MUST-V0.1`, và nó **va vào tiền đề capsule self-contained** của ADR này (`GATE-05b-r`). Quyết định được chốt **trước khi** capsule format v1 đóng băng — mục 11.c |
+| ADR-009 — Open items `U-06b` / `U-06c` / `U-06d` | [ADR-009](../Architecture/ADR-009-Private-Self-Hosted-Topology.md) | `U-06b` **đóng** (TTL = 30 ngày, `GATE-05a`) · `U-06c` **đóng** (crypto-shred áp dụng, `GATE-05b`) · ⚠ **`U-06d` (key custody) nay là BLOCKER** — `GATE-05b-r2`: không có nơi giữ và xoá khoá thì `SEC-016` không thực thi được. Sàn Capsule Store của `GATE-04` cũng sống ở ADR này |
 | ADR-005 — Default-Deny Write & Side Effects | [ADR-005](../Architecture/ADR-005-Default-Deny-Write-Side-Effects.md) | `THREAT-018`, `SEC-032`, `SEC-033` — cơ chế phân loại READ/WRITE phải fail-closed |
 | ADR-009 — Private / Self-Hosted Topology | [ADR-009](../Architecture/ADR-009-Private-Self-Hosted-Topology.md) | Mục 8.5 (đáp án §38 Q12) là đầu vào cho phần Context: lập luận compliance mạnh hơn lập luận bảo mật của §20.6 |
-| Risk Register | [Risk-Register](../../010-Planning/Risk-Register.md) | 11 threat không có mitigation **trong RQ.md** là **risk mới**, không nằm trong §20/§21. Sau quyết định `D2` (2026-08-14): con số **11 giữ nguyên** (nó đo RQ.md), nhưng số threat **không có mitigation từ bất kỳ nguồn nào** là **10** — `THREAT-008` đã rời nhóm đó, xem 4.3 và 4.5 |
+| Risk Register | [Risk-Register](../../010-Planning/Risk-Register.md) | 11 threat không có mitigation **trong RQ.md** là **risk mới**, không nằm trong §20/§21. Sau quyết định `D2` (2026-08-14): con số **11 giữ nguyên** (nó đo RQ.md), nhưng số threat **không có mitigation từ bất kỳ nguồn nào** là **10** — `THREAT-008` đã rời nhóm đó. **Sau `GATE-05a`/`GATE-05b` (2026-08-14): con số dẫn xuất là `9`** — `THREAT-016` rời nhóm; `THREAT-007` và `THREAT-011` **ở lại** vì mitigation duy nhất của chúng treo trên key custody `U-06d`. Xem callout ba con số ở 4.3 và bảng 4.5. `§4.2` của Risk Register giữ định nghĩa `GATE-01-r`, `GATE-04-r`, `GATE-05b-r`, `GATE-05b-r2` mà tài liệu này trỏ tới |
 | NFR — Repro | [NFR-Repro](../../020-Requirements/NFR-Repro.md) | Chi tiết bảo mật nằm ở tài liệu này; NFR tham chiếu, không lặp lại |
 | PRD — Repro | [PRD-Repro](../../020-Requirements/PRD-Repro.md) | Mục 5 của PRD nêu bốn thay đổi mặc định (9.2) và `M2`, link về đây cho chi tiết |
 | Analysis — Target Users | [Analysis-Target-Users](../../050-Research/Analysis-Target-Users.md) | §4.1 định nghĩa `GAP-04` (SRE không có CLI verb nào của §18). Sau `D2`, `GAP-04` là hệ quả còn lại của `THREAT-008` — xem cuối mục 10 |
@@ -1324,8 +1426,8 @@ Section của RQ.md được trích dẫn trong tài liệu này: §1, §6, §7,
 | **Trạng thái** | `draft` — chưa được ai duyệt |
 | **Loại** | Threat model của **một thiết kế**. `src/` rỗng; không có code nào được audit |
 | **Không cấp** | Trạng thái tuân thủ cho bất kỳ tổ chức nào; kết luận pháp lý; điểm CVSS |
-| **Cần xác nhận** | Toàn bộ mục 8 cần **pháp chế**; phạm vi PCI DSS cần **QSA**; mục 11.a cần **PM + pháp chế**; mục 11.b cần **số liệu spike §22**; mục 11.c cần **architect**. Mục 10 (`M2`) **đã được chủ sản phẩm chốt 2026-08-14** — không còn chờ ai |
-| **Còn mở sau 2026-08-14** | `GAP-04` (giao diện vận hành authz/audit/retention — mục 10, cuối mục) cần **quyết định phạm vi sản phẩm**; ba mục `TBD` ở mục 11 |
+| **Cần xác nhận** | Toàn bộ mục 8 cần **pháp chế**; phạm vi PCI DSS cần **QSA**. Mục 10 (`M2`) **đã được chủ sản phẩm chốt 2026-08-14** — không còn chờ ai. **Cập nhật sau `GATE-05` — 2026-08-14**: mục **11.a** *(từng ghi: cần PM + pháp chế)* → **đã quyết bởi `@TrisJr`, KHÔNG qua pháp chế** ⇒ con số 30 ngày là quyết định sản phẩm, **phần nghĩa vụ pháp lý vẫn chưa được ai kiểm**; mục **11.c** *(từng ghi: cần architect)* → **đã quyết bởi `@TrisJr`**, phần *ghi thành ADR* thuộc `ADR-002`/`ADR-009`; mục **11.b** vẫn cần **số liệu spike §22** — spike đã được bật (`GATE-01`) nhưng `ACG-01`/`02`/`03`/`07` chưa cho phép kết luận pass/fail (`GATE-01-r`) |
+| **Còn mở sau 2026-08-14** | **Ba mục `TBD` của mục 11 nay còn `1`**: chỉ `11.b` (row cap / byte cap của `SEC-008`) — và nó **tự giải khi spike chạy và cấp được số liệu**. `11.a` và `11.c` đã chốt. **Còn mở, không liên quan tới mục 11**: `GAP-04` (giao diện vận hành authz/audit/retention — cuối mục 10) cần **quyết định phạm vi sản phẩm**, `GATE-04` **không** đóng nó · **cơ chế** authn/authz của Capsule Store vẫn `TBD` (`GATE-04-r`) · **`U-06d` key custody — blocker** của `SEC-016` (`GATE-05b-r2`) · `SEC-025` và `SEC-039` giữ `DEFER` · `Enterprise security` §28 vẫn chưa được quyết định nào phán xử · `THREAT-006` đường 2 (ràng buộc capsule format cho regression test) vẫn chờ `ADR-002` · **9 threat** vẫn không có mitigation từ bất kỳ nguồn nào (4.3) |
 | **Cần làm lại khi** | Có implementation — lúc đó threat model phải được kiểm chứng lại trên code thật, và CVSS mới có ý nghĩa để gán |
 
 

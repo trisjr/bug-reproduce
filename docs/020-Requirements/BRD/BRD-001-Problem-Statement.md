@@ -4,6 +4,7 @@ type: brd
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # 🧩 BRD-001 — Problem Statement (Repro)
@@ -392,12 +393,21 @@ Bốn câu hỏi dưới đây thuộc §38 (*Questions for PM Review*), trích 
 | **Q1** | *Is production → local reproduction a sufficiently painful problem to justify a dedicated tool?* | Chất vấn **mục 1 và mục 4** — vấn đề có đủ đau để cần một công cụ riêng không. Không có user research thì không trả lời được |
 | **Q2** | *Is "Execution Replay" a compelling enough value proposition for developers?* | Chất vấn **mục 5** — insight nền tảng có thuyết phục với người dùng thật không |
 | **Q3** | *Is Execution Diff valuable enough to be a core feature?* | Chất vấn giá trị của nhánh *"không reproduce được nhưng chỉ ra khác biệt"* (§9). §9 tự khẳng định *"This is a key product capability"* — nhưng đó là **giả định của tác giả**, chưa validate |
-| **Q7** | *What percentage of real-world production bugs can realistically be replayed?* | Chất vấn **mục 6** — kích thước thật của phần vấn đề mà Repro giải được. Bị chặn bởi technical spike §22 và bởi `ACG-07` (chưa có "Supported Execution Class" thì không có mẫu số) |
+| **Q7** | *What percentage of real-world production bugs can realistically be replayed?* | Chất vấn **mục 6** — kích thước thật của phần vấn đề mà Repro giải được. Bị chặn bởi technical spike §22 và bởi `ACG-07` (chưa có "Supported Execution Class" thì không có mẫu số). **Trạng thái đổi sau `✅ CHỐT GATE-01 — 2026-08-14`**: xem ghi chú dưới bảng |
+
+> ✅ **`CHỐT GATE-01 — 2026-08-14` — Q7: lý do chưa trả lời được ĐÃ ĐỔI, nhưng Q7 VẪN CHƯA ĐƯỢC TRẢ LỜI.**
+>
+> | | Trước 2026-08-14 | Sau `GATE-01` |
+> |---|---|---|
+> | Vì sao Q7 chưa có đáp án | **Chưa có quyết định chạy spike** — không ai biết bao giờ mới có dữ liệu | **Đang chờ kết quả spike** — Phase 0 technical spike đã được bật (`Go`), `Sponsor`/`Manager` = **`@TrisJr`** |
+> | Trạng thái Q7 | ❌ Chưa trả lời | ❌ **Vẫn chưa trả lời** |
+>
+> ⚠️ **`GATE-01-r` áp trực tiếp vào Q7**: `Go` **không tự làm cho spike trả lời được Q7**. Q7 là một tỷ lệ, và một tỷ lệ cần **mẫu số** — thứ `ACG-07` (*"Supported Execution Class"*) vẫn chưa cấp, cùng với `ACG-02` (tiêu chí *meaningful*) và `ACG-03` (định nghĩa *reproduced*). Cả ba **vẫn hở**. ⇒ Spike có thể chạy xong mà Q7 vẫn không có con số kiểm chứng được. Xem [NFR-Repro](../NFR-Repro.md) mục 7 và [Risk-Register](../../010-Planning/Risk-Register.md) §4.2.
 
 **Điều kiện để đóng bốn câu hỏi này**:
 
 - Q1, Q2, Q3 — cần **user research với người dùng thật**; repo hiện không có bất kỳ dữ liệu nào loại này (xem [Analysis-Target-Users](../../050-Research/Analysis-Target-Users.md) mục 1).
-- Q7 — cần kết quả **technical spike §22** (10 scenario) và một định nghĩa "Supported Execution Class" (`ACG-07`).
+- Q7 — cần kết quả **technical spike §22** (10 scenario) và một định nghĩa "Supported Execution Class" (`ACG-07`). **Spike đã được bật** (`✅ CHỐT GATE-01 — 2026-08-14`) ⇒ điều kiện thứ nhất **đang được thực hiện**; điều kiện thứ hai (`ACG-07`) **vẫn chưa có**, owner **`@TrisJr`**.
 
 Trạng thái đầy đủ của các câu hỏi §38 khác: [PRD-Repro](../PRD-Repro.md) mục 10.
 

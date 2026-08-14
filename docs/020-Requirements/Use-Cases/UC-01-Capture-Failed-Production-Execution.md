@@ -220,11 +220,25 @@ Redaction dựa-trên-danh-sách về nguyên tắc **không thể** bắt đư�
 
 **Điều kiện kích hoạt**: bước 9 thất bại (mất mạng, storage từ chối, hết quyền).
 
-**Hành vi**: ⚠️ **`TBD` — `RQ.md` hoàn toàn không đặc tả Capsule Store.**
+**Hành vi**: **sàn của Capsule Store đã chốt** — `✅ CHỐT GATE-04 — 2026-08-14`; **cơ chế** authn/authz **vẫn `TBD`**.
 
-[PRD-Repro](../PRD-Repro.md) mục 10.5 (`U-06`) đã ghi nhận: `repro pull` (§8) và `repro list` (§18) **hàm ý** tồn tại một store ở xa có API và có auth; §20.6 vẽ *"Private Storage"*; §28 xếp *"Basic Self-hosting"* vào OSS core — nhưng `RQ.md` **không có một dòng đặc tả nào**: không API, không auth, không storage backend, không mô hình triển khai.
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`.**
 
-⇒ Không có đặc tả store thì không spec được hành vi khi upload lỗi (retry? buffer trên đĩa? drop? và ràng buộc `N-10` áp thế nào lên phần retry đó). **Không tự quyết.** Chi tiết: [SDD-Repro](../../030-Specs/Architecture/SDD-Repro.md).
+**Bằng chứng gốc — giữ nguyên.** [PRD-Repro](../PRD-Repro.md) mục 10.5 (`U-06`) đã ghi nhận: `repro pull` (§8) và `repro list` (§18) **hàm ý** tồn tại một store ở xa có API và có auth; §20.6 vẽ *"Private Storage"*; §28 xếp *"Basic Self-hosting"* vào OSS core — nhưng `RQ.md` **không có một dòng đặc tả nào**: không API, không auth, không storage backend, không mô hình triển khai. Mệnh đề về `RQ.md` này **vẫn đúng** sau `GATE-04`: quyết định của anh cấp đặc tả **từ ngoài** `RQ.md`, nó không sửa `RQ.md`.
+
+**Sàn tối thiểu đã chốt** (`GATE-04`): **object/file storage + một index + hook authn/authz/audit**, kèm 3 thao tác tối thiểu theo `SDD §5.4` — xem [SDD-Repro](../../030-Specs/Architecture/SDD-Repro.md) §5.4 và [ADR-009](../../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md) `D3`.
+
+⇒ **Ảnh hưởng tới `A5`**: đích upload của bước 9 nay xác định (object/file storage + index), nên `A5` không còn là *"lỗi khi ghi vào một thành phần chưa tồn tại trên giấy"*.
+
+**Nhưng hành vi cụ thể của `A5` VẪN `TBD`** — và `GATE-04` **không** đóng nó:
+
+| Câu hỏi của `A5` | Trạng thái |
+|---|---|
+| Upload lỗi thì retry? buffer trên đĩa? drop? | **`TBD`** — `GATE-04` chốt *sàn của store*, không chốt *hành vi của recorder khi store không với tới được* |
+| `N-10` (*production không bao giờ được chậm đi hoặc lỗi vì Repro*) áp thế nào lên phần retry/buffer đó | **`TBD`** — ràng buộc đã biết, cơ chế chưa có |
+| **Cơ chế** authn/authz để upload | **`TBD`** — `GATE-04` chốt *phải có hook*, **không** chốt *hook làm bằng gì* |
+
+Owner của cả ba: **`@TrisJr`**; điều kiện đóng: quyết định thiết kế recorder + Capsule Store API tại [SDD-Repro](../../030-Specs/Architecture/SDD-Repro.md) §5.4. **Không tự quyết ở tài liệu này.**
 
 ---
 
@@ -238,11 +252,21 @@ Redaction dựa-trên-danh-sách về nguyên tắc **không thể** bắt đư�
 | S2 | Capsule đã **redact** và **anonymize** theo cấu hình | §16, §20.5 | `FR-022`, `FR-023` |
 | S3 | Capsule đã **encrypt at rest** | §16, §21 | `FR-021` |
 | S4 | Capsule chịu **access control** và có **audit log** truy cập | §20.5, §20.17 | `FR-025`, `FR-026` |
-| S5 | Capsule có **retention policy** áp lên nó | §20.5, §20.17 | `FR-024` |
+| S5 | Capsule có **retention policy** áp lên nó — **TTL mặc định = 30 ngày** (`✅ CHỐT GATE-05a — 2026-08-14`), vẫn cấu hình được | §20.5, §20.17; giá trị mặc định từ `GATE-05a` | `FR-024` |
 | S6 | Capsule **pull được** bằng id → chuyển sang [UC-02](./UC-02-Replay-Capsule-Locally.md) | §8, §18 | `FR-027` |
 | S7 | Production **không** chậm đi hoặc lỗi vì Repro | §20.7 | `N-10` |
 
 > ✅ **S4 và S5 đứng vững — M2 ĐÃ CHỐT 2026-08-14**: access control và audit log thuộc **OSS core**, nên hai postcondition này là hành vi bắt buộc của bản OSS, không phải tính năng trả phí. Xem mục 8.2.
+
+> ✅ **`CHỐT GATE-05a — 2026-08-14` — `S5` nay có con số.** Trước quyết định này, `S5` chỉ nói *"có retention policy áp lên nó"* mà `RQ.md` **không cấp giá trị mặc định nào** (§20.5 chỉ nói *"configurable retention"*) ⇒ `S5` là một postcondition **không kiểm được**. Nay: **TTL mặc định = 30 ngày** khi không cấu hình; retention **vẫn cấu hình được** theo `FR-024`. ⇒ `S5` kiểm được: sau UC này, capsule phải mang một thời điểm hết hạn, và mặc định là **capture time + 30 ngày**. Neo bảo mật: `SEC-022`.
+
+> ✅ **`CHỐT GATE-05b — 2026-08-14` — hệ quả lên capsule vừa được UC này tạo ra.** **Crypto-shredding = `MUST-V0.1`** (`SEC-016`): capsule mã hoá bằng **key riêng từng capsule, khoá giữ phía server**; xoá khoá ⇒ **capsule không giải được**, kể cả bản đã pull về laptop. Ba hệ quả trực tiếp lên UC này:
+>
+> 1. **`S3` (encrypt at rest, `FR-021`) siết lại**: encryption không còn được thoả bằng một khoá chung cấp store — mỗi capsule phải mã hoá bằng **khoá riêng của chính nó**, và khoá đó **không** được đóng gói bên trong capsule. Nếu khoá nằm trong capsule thì việc phá khoá không xoá được gì.
+> 2. **`S5` + `S3` gắn với nhau**: hết retention (`S5`) nay có thể thực thi bằng **phá khoá**, chứ không chỉ bằng xoá bản gốc trong store — đó là điều duy nhất chạm được tới các bản copy đã rời khỏi hạ tầng tổ chức.
+> 3. **`S6` (capsule pull được) mang điều kiện mới** — `GATE-05b-r`: capsule **không còn self-contained tuyệt đối**; bên nhận cần **lấy được khoá từ server** mới giải được. Chi tiết ở [UC-02](./UC-02-Replay-Capsule-Locally.md) `I5`.
+>
+> **`TBD` mới nổi lên thành blocker — `GATE-05b-r2`**: **key custody** (`U-06d`) — khoá giữ ở đâu, ai cấp, xoay vòng thế nào, xoá bằng thao tác nào. Không có key management thì cả `S3` lẫn `S5` **không thực thi được**. Owner: **`@TrisJr`**; điều kiện đóng: quyết định thiết kế key management tại [ADR-009](../../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md) `Open items`. Rủi ro tại [Risk-Register](../../010-Planning/Risk-Register.md) §4.2. Chi tiết NFR: [NFR-Repro](../NFR-Repro.md) mục 5.4.
 
 ### 7.2 Thất bại
 
@@ -264,7 +288,7 @@ Tra theo **hợp đồng traceability** ở [PRD-Repro](../PRD-Repro.md) mục 5
 | Capture nội dung | `FR-003`…`FR-011` | HTTP request, stack trace, DB query/result, external HTTP response, feature flag, clock, Git commit + app version, runtime + dependency versions, schema version (§18, §15) |
 | Capture chính sách | `FR-012`…`FR-016` | Chỉ capture failed execution (**E5**), asynchronous, bounded buffer, sampling, **capture limits + selective capture** (§20.7, §20.12) |
 | Capsule | `FR-017`…`FR-020` | Cấu trúc §6, chỉ chứa thông tin cần thiết, compression + size limits, deduplication + content hashing |
-| Bảo mật / compliance | `FR-021`…`FR-026` | Encryption at rest, automatic redaction, PII anonymization, retention + deletion, strict access control, audit log (§16, §20.5, §20.17) |
+| Bảo mật / compliance | `FR-021`…`FR-026` | Encryption at rest **(khoá riêng từng capsule, giữ phía server — `GATE-05b`)**, automatic redaction, PII anonymization, retention + deletion **(TTL mặc định 30 ngày — `GATE-05a`)**, strict access control, audit log (§16, §20.5, §20.17; giá trị mặc định và cơ chế crypto-shred từ `GATE-05a`/`GATE-05b` ngày 2026-08-14) |
 | Deployment | `FR-054`, `FR-055` | Self-hosting bắt buộc từ V0.1 (**E7**); topology mặc định `Production → Private Recorder → Encrypted Capsule → Private Storage` (§20.6, §28) |
 
 > **Ghi chú định danh — quan trọng**: `FR-016` là **capture limits + selective capture** (§20.7, §20.12), **không** phải Redis capture. Theo **E1**, Redis **không thuộc V0.1**; Redis capture/replay nằm ở `FR-065` (post-MVP, §26 V0.3). Xem [PRD-Repro](../PRD-Repro.md) mục 3.5 và 5.1.
@@ -288,6 +312,8 @@ Tra theo **hợp đồng traceability** ở [PRD-Repro](../PRD-Repro.md) mục 5
 **Lý do**: authn trả lời *bạn là ai*, authz quyết định *bạn xem được capsule nào*, audit ghi lại *ai đã pull gì*. Thiếu authz thì bản self-host vẫn là bản **ai đăng nhập cũng đọc được mọi capsule production**; thiếu audit thì tổ chức **kiểm soát được nhưng không chứng minh được**, trong khi §20.17 (🟠 High) yêu cầu audit log như mitigation.
 
 **Hệ quả cho UC này**: S4/S5 nay **chắc chắn phải triển khai ở V0.1**, nhưng §18 **không có CLI verb nào** để cấu hình hay kiểm tra chúng — cả 6 verb (`list`, `pull`, `inspect`, `replay`, `diff`, `verify`) đều developer-side. Giao diện vận hành cho S4/S5 là **`TBD` tường minh**, không phải chỗ hở âm thầm.
+
+> **Cập nhật sau `✅ CHỐT GATE-04 — 2026-08-14`**: sàn của Capsule Store đã đóng (xem `A5`) ⇒ đã có **chỗ để cắm** authz và audit của S4. Nhưng đoạn trên **vẫn đúng nguyên văn**: §18 vẫn **không có CLI verb nào** để vận hành S4/S5, và **cơ chế** authn/authz vẫn `TBD`. `GAP-04` **chưa đóng** — rủi ro **`GATE-04-r`** tại [Risk-Register](../../010-Planning/Risk-Register.md) §4.2 và `GAP-04` tại [Analysis-Target-Users](../../050-Research/Analysis-Target-Users.md) mục 4.1.
 
 Xem [PRD-Repro](../PRD-Repro.md) mục 10.4 và [NFR-Repro](../NFR-Repro.md) mục 5.4.
 

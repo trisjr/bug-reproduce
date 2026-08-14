@@ -9,8 +9,18 @@ updated: 2026-08-14
 
 # ADR-006: Execution Verification By Equivalence
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
+>
+> 🔴 **Đọc kỹ: ADR này là ví dụ điển hình nhất của `GATE-03-r`, phải nói tường minh chứ không được để người đọc tự suy.** ADR này mang nhãn `Accepted` **trong khi `U-04` — *"execution path"* và *"sufficiently equivalent"*, TBD LÕI của cả bộ tài liệu — vẫn chưa được giải**, và `N-05` **vẫn chưa có tiêu chí pass/fail**. Nghĩa là: cái được duyệt ở đây là **hướng** *"xác nhận bằng tương đương, không bằng 'chạy xong không lỗi'"*; **cơ chế** để phán quyết tương đương thì **chưa tồn tại**. Hệ quả phải hiểu đúng:
+> - `Accepted` ở đây **KHÔNG** có nghĩa là đã định nghĩa được equivalence, **KHÔNG** cho phép tài liệu hạ nguồn hay người hiện thực chọn một trong bốn ứng viên (a)/(b)/(c)/(d) ở §Open items như thể nó đã được chốt, và **KHÔNG** biến bốn ngưỡng §24 thành acceptance criteria.
+> - Vì `M1` đã đưa *số bug đạt trạng thái `Execution matched`* thành chỉ số thành công của V0.1, `Accepted` mà `U-04` còn mở nghĩa là **V0.1 được phê chuẩn hướng đo thành công nhưng chưa đếm được thành công của mình**. Đây đúng là rủi ro `GATE-03-r` mô tả: đọc `Accepted` thành *"mọi thứ trong ADR này đã chốt"*.
+> - PM đã cảnh báo trước gate (*"duyệt bây giờ là phê chuẩn tiền đề chưa kiểm chứng"*) và người có thẩm quyền vẫn chọn duyệt. Ghi lại để về sau không ai đọc đây là chỗ bị bỏ sót.
 
 ## Context
 
@@ -88,6 +98,10 @@ Ví dụ của §10 so sánh bốn đại lượng giữa production và local �
 | **`N-05`** | **Chỉ số thành công chính thức của V0.1 chưa có tiêu chí pass/fail.** Sau `M1` (✅ ĐÃ CHỐT 2026-08-14, xem dưới), chỉ số thành công của V0.1 là *số bug đạt trạng thái `Execution matched`* (§10) — đại lượng được đo bởi đúng metric này. `N-05` vì thế **không còn là một metric phụ thiếu ngưỡng**; nó là **thước đo chính của V0.1**. §23 yêu cầu đo `Equivalent executions / Total replays`. §24 đặt ngưỡng cho bốn thứ khác (`≥80%` reproduced, `<5%` latency overhead, `<10MB` capsule, `<30s` replay) — và §24 **tự nói** chúng là *"initial hypotheses, not final product commitments"* — nhưng **không có ngưỡng nào cho match rate**, dù §20.3 và §21 xếp false replay equivalence là **Critical**. Cộng với `U-04`, V0.1 vừa **chưa tính được** chỉ số thành công của mình, vừa **chưa có tiêu chí đạt/không-đạt** cho nó. | Không bịa số. Cần một ngưỡng, và nó phải đến từ dữ liệu của spike §22 chứ không từ tài liệu. *cần anh chốt sau spike*. | Chặn mọi cổng đạt/không-đạt cho spike (§39) đối với đúng risk mà ADR này tồn tại để giảm thiểu; chặn khả năng nói "verification đã đủ tốt". **Và nay chặn thêm**: không có ngưỡng thì **không phát biểu được V0.1 thành công hay thất bại**, vì đây chính là chỉ số định nghĩa thành công của V0.1. Đây là chỗ hở nghiêm trọng nhất còn lại của ADR này. |
 | **`U-11`** | **Interaction không khớp được phân loại thế nào**: divergence hay một hạng kết quả riêng ("incomplete capture"). | Hạng riêng — gộp vào "diverged" sẽ trộn *"code local khác"* với *"capsule thiếu"*, hai nguyên nhân đòi hai hành động khác nhau. *cần validate*. | Chặn phân loại outcome dùng chung với ADR-003 và ADR-005; chặn cách trình bày của `repro diff` (§9). |
 | — | **Nguyên nhân divergence phải phân loại được**: do code, do redaction (§16 — đã chốt ở ADR-002), do code/version mismatch (§15), do schema drift (§20.9), do external dependency drift (§20.10), do capsule thiếu (`E9`). RQ.md §9 chỉ trình bày divergence, không phân loại nguyên nhân. | Phân loại tường minh trong output của verification. *cần validate*. | Chặn giá trị sử dụng của §9 Execution Diff (một divergence không quy được nguyên nhân thì không hành động được); chặn `U-08`. |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — spike §22 (bước *"Verify execution"*) và cổng go/no-go §39 **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Với `N-05`, câu *"ngưỡng phải đến từ dữ liệu của spike §22 chứ không từ tài liệu"* nay đã có **nguồn dữ liệu được cấp phép**.
+>
+> ⚠️ **`U-04` và `N-05` VẪN `TBD` — `GATE-01` không giải mục nào, và `GATE-03` cũng không.** Bốn ứng viên của `U-04` vẫn ở nhãn *cần validate*; `N-05` vẫn *cần anh chốt sau spike*. Tệ hơn, ở đúng ADR này `Go` **chưa** làm spike đo được: bước *"Verify execution"* của §22 cần một định nghĩa equivalence để chấm điểm, mà định nghĩa đó **chính là `U-04`** — nên spike hiện **chưa kết luận được pass/fail** cho đúng risk Critical §20.3 mà ADR này tồn tại để giảm thiểu. `ACG-01` (cùng chỗ hở với `U-04`), `ACG-02`, `ACG-03`, `ACG-07` đều vẫn hở. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ### Mâu thuẫn M1 — ✅ ĐÃ CHỐT 2026-08-14
 

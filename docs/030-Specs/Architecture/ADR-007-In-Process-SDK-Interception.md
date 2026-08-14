@@ -4,12 +4,18 @@ type: adr
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # ADR-007: In-Process SDK Interception
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
 
 ## Context
 
@@ -95,6 +101,10 @@ Cơ chế hiện thực cụ thể của việc chặn (`pg`, HTTP inbound/outbo
 | `U-19` | **Library vs process wrapper** — `repro.init()` trong code (A5 là `repro run …`)? Hay hỗ trợ cả hai? | §20.14 chỉ nêu hình thái library (`npm install` + `repro.init()`). RQ.md **không cân** phương án wrapper. | Chặn: hợp đồng cài đặt trong tài liệu onboarding; chặn câu hỏi §38.13 (*"What is the minimum integration effort that developers will accept?"*) — vốn RQ.md để mở; chặn việc chặn được các dependency được nạp **trước** `repro.init()` (vấn đề thứ tự khởi tạo mà hình thái library luôn có còn wrapper thì không). |
 | `U-C1` | **Compatibility matrix là nợ vĩnh viễn — chưa có chính sách.** Hỗ trợ bao nhiêu major version của driver? Hành vi khi gặp phiên bản chưa biết: từ chối chạy, chạy mà cảnh báo, hay im lặng không capture? | §21 khai risk `Compatibility matrix / Medium / MVP? Yes / Narrow initial support`. "Narrow initial support" là *hướng*, không phải *chính sách*. | Chặn: hợp đồng hành vi của SDK khi gặp môi trường ngoài matrix; chặn cam kết bảo trì trong tài liệu OSS (§28); và im lặng-không-capture là kịch bản tệ nhất vì nó tạo capsule thiếu input — nối vào quyết định **E9** (thiếu input lúc replay ⇒ divergence + incomplete capture, không crash, **không** fallback gọi hệ thống thật). |
 | `U-C2` | **Ngưỡng an toàn của lớp chặn**: lỗi trong recorder có được phép ném ra ứng dụng không? | §20.7 chỉ nêu nguyên tắc *"never become the reason production becomes slower or fails"* — không nêu cơ chế. | Chặn: đặc tả xử lý lỗi của SDK; là điều kiện cần để [ADR-008](./ADR-008-Async-Bounded-Failure-Triggered-Capture.md) có nghĩa. |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — technical spike §22 **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Cột *"Nó chặn cái gì"* của `U-01` ghi *chặn technical spike §22* — quan hệ đó nay **đảo chiều một nửa**: spike đã có ngân sách và người chịu trách nhiệm, nên nó là **nơi để thử** các cơ chế chặn driver `pg`.
+>
+> ⚠️ **`U-01` VẪN `TBD`, và `U-03` cũng vậy.** RQ.md vẫn **không có một dòng nào** về cơ chế; bốn ứng viên của `U-01` (monkey-patch prototype · wrapper client · hook tầng protocol · diagnostics channel) **chưa có ứng viên nào được chọn**, và `GATE-01` **không** chọn hộ. `Go` cũng không tự làm spike đo được — `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ## Related Documents
 

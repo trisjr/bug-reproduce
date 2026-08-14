@@ -24,6 +24,10 @@ updated: 2026-08-14
 | `SPIKE` | Phải trả lời bằng technical spike §22 trước khi hiện thực |
 | **cần anh chốt** | Mâu thuẫn nội tại của `RQ.md`, tài liệu này **không** tự phân xử |
 | ✅ **ĐÃ CHỐT `<ngày>`** | Mâu thuẫn nội tại của `RQ.md` **đã được người có thẩm quyền chọn phía**. Bối cảnh hai phía **vẫn được giữ nguyên** bên dưới nhãn — vì `RQ.md` vẫn tự nói ngược ở chính chỗ đó, và không giữ bằng chứng thì về sau không ai hiểu vì sao tài liệu dẫn xuất chọn phía này |
+| ✅ **CHỐT GATE-0N — 2026-08-14** *(dạng nhãn chuẩn: **không** đặt backtick quanh `GATE-0N`, để `grep 'CHỐT GATE-0'` bắt được mọi chỗ)* | **Quyết định gate** của người có thẩm quyền (`@TrisJr`) ngày **2026-08-14**: năm quyết định `GATE-01`…`GATE-05b`. Khác nhãn ngay trên: nhãn này ghi một **quyết định gate về đầu tư / phê duyệt / phạm vi**, không phải phân xử một mâu thuẫn nội tại của `RQ.md`. Bằng chứng và bối cảnh bên dưới nhãn **vẫn giữ nguyên**. Hai họ nhãn **không được trộn** — nhãn `✅ ĐÃ CHỐT <ngày>` thuộc riêng `M1`/`M2` |
+
+> **Mapping tên gọi** — `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5.
+> **Trong tài liệu chỉ dùng `GATE-0N`**: `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) chiếm làm Goals của V0.1, và `D1`/`D2` là hai quyết định `M1`/`M2` của run trước — dùng lại là tạo dead link ngữ nghĩa.
 
 ---
 
@@ -41,6 +45,10 @@ Tài liệu phục vụ hai mục tiêu, theo đúng thứ tự ưu tiên mà `R
 2. Cung cấp blueprint để MVP V0.1 được hiện thực **sau khi** spike trả lời `[stated]` §39: *"Can we capture enough information from a real production execution to deterministically replay a meaningful class of production bugs?"*
 
 `RQ.md` §39 nói rõ `[stated]`: **không** bắt đầu bằng cách xây toàn bộ platform. Nếu spike trả lời "no", phạm vi sản phẩm phải được thu hẹp trước khi tài liệu này được nâng lên `status: approved`.
+
+> ✅ **CHỐT GATE-01 — 2026-08-14.** **Phase 0 technical spike (§22) đã được BẬT** — quyết định `Go` của `@TrisJr`, coi spike là **điều kiện đầu tư**, không phải một task trong kế hoạch. `Sponsor` = **`@TrisJr`** · `Manager` = **`@TrisJr`** · Owner của **18/18 risk** = **`@TrisJr`**. Mục tiêu #1 của tài liệu này (cấp đủ cấu trúc để spike thiết kế được) vì thế **không còn là điều kiện giả định** mà là việc đang tới hạn.
+>
+> ⚠️ **`GATE-01-r` — `Go` KHÔNG tự làm cho spike đo được.** Bốn khoảng hở `ACG-01` / `ACG-02` / `ACG-03` / `ACG-07` vẫn nguyên: không có denominator, không có định nghĩa *"reproduced"*, không có tiêu chí chọn test case, không có *Supported Execution Class*. Chạy spike lúc này vẫn **không kết luận được pass/fail** — xem `GATE-01-r` tại [Risk-Register](../../010-Planning/Risk-Register.md) và kế hoạch spike ở §8.2. Trạng thái `status: draft` của tài liệu này **không đổi** vì `GATE-01`: nó chỉ được nâng khi spike trả lời, đúng câu §39 ở trên.
 
 ### 1.2 Product thesis
 
@@ -127,7 +135,11 @@ Cộng thêm các mục PM đã chốt cho run này:
 
 *Nguồn: toàn bộ `RQ.md`; tập ADR do `findings/architect.md` đề xuất.*
 
-Mọi ADR ở trạng thái **Proposed** — chưa có ai duyệt thật.
+✅ **CHỐT GATE-03 — 2026-08-14.** **11/11 ADR ở trạng thái `Accepted`**, người duyệt **`@TrisJr`**, ngày **2026-08-14**. Câu trước đây của mục này — *"chưa có ai duyệt thật"* — **không còn đúng**: đã có người duyệt, có tên và có ngày.
+
+> ⚠️ **`Accepted` xác nhận hướng quyết định, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register](../../010-Planning/Risk-Register.md).
+>
+> Cụ thể ở tài liệu này: **6 unknown vẫn hở bên trong 11 ADR đã `Accepted`** — `U-01`, `U-02`, `U-03`, `U-04`, `U-13`, `U-20` (§8.3). `GATE-03` **không** biến chúng thành đã trả lời, và **không** được đọc là *"mọi thứ trong ADR đã chốt"*. `U-04` vẫn là **unknown lớn nhất tài liệu**; `ACG-07` vẫn là nợ khái niệm chưa trả.
 
 | ADR | Nội dung | Component / mục SDD liên quan |
 |---|---|---|
@@ -489,6 +501,11 @@ Kỹ thuật §20.12 liệt kê `[stated]`: compression, deduplication, content 
 
 Hệ quả: Replay Runtime **không bao giờ** cần kết nối tới production. Đây cũng là điều làm replay offline khả thi — và là lý do `E12` (crypto-shredding, §4.9) là một đánh đổi thật chứ không phải bổ sung miễn phí.
 
+> ✅ **CHỐT GATE-05b — 2026-08-14 — đánh đổi đó ĐÃ được cân và chấp nhận.** `E12` (`SEC-016`) nay là **`MUST-V0.1`**. Hai mệnh đề trên phải được đọc tách nhau sau quyết định này:
+>
+> - *"Replay Runtime không bao giờ cần kết nối tới **production**"* — **vẫn đúng nguyên vẹn.** `E3` không bị lật; capsule vẫn không fetch dữ liệu từ production lúc replay.
+> - *"replay offline khả thi"* — **thôi là bất biến.** Khoá giải mã giữ **phía server** (Capsule Store, §3.6), `replay` lấy khoá just-in-time ⇒ replay cần kết nối tới **store**, dù vẫn không cần tới production. Xem §6.3, §4.9, §7.4 và `GATE-05b-r` tại [Risk-Register](../../010-Planning/Risk-Register.md).
+
 ### 3.6 Capsule Store
 
 *Nguồn: `RQ.md` §8 (`repro pull`), §18 (`repro list`), §20.6, §28; guardrail §20.15.*
@@ -499,24 +516,38 @@ Hệ quả: Replay Runtime **không bao giờ** cần kết nối tới producti
 - Nhưng `RQ.md` **không có một dòng đặc tả nào**: không API, không auth, không storage backend, không mô hình triển khai.
 - Và nó va vào chính guardrail của `RQ.md`: §20.15 liệt kê **"Artifact storage"** như một biểu hiện của scope explosion; §20.14 cảnh báo *"significant infrastructure"* hại adoption.
 
-**Quyết định ở mức tối thiểu (`E8`)** — cố ý đặc tả *ít nhất có thể*:
+✅ **CHỐT GATE-04 — 2026-08-14 — SÀN TỐI THIỂU CỦA CAPSULE STORE ĐÃ ĐÓNG.** Đây **không còn là** *"quyết định ở mức tối thiểu (`E8`), cố ý đặc tả ít nhất có thể"* — nó là **quyết định chính thức của `@TrisJr`** về *cái gì bắt buộc phải có*. Phần **sàn ĐÓNG**; **cơ chế** authn/authz cụ thể **vẫn `TBD`** (§5.4, `U-06`).
+
+> **Mapping tên gọi** — `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5.
+>
+> **Sàn đã chốt, đúng ba thành phần — không thêm thành phần nào**: **object/file storage** + **một index** + **authn/authz/audit hook**, với **3 thao tác tối thiểu** theo §5.4 (*ghi capsule* · *liệt kê capsule* · *đọc một capsule*).
+>
+> **`GATE-04` chốt *cái gì phải có*, KHÔNG chốt *cách làm*.** Kỷ luật phạm vi của `E8` **vẫn giữ**: cái được nâng lên là **thẩm quyền** của sàn (từ *"cách xử lý của tài liệu này"* thành *"quyết định của người có thẩm quyền"*), không phải khối lượng của sàn.
+>
+> ⚠️ **`GATE-04-r` — sàn đóng nhưng chưa vận hành được**: `GAP-04` (§18 không có một CLI verb nào cho authz / audit / retention) **còn nguyên**, và **cơ chế** auth vẫn `TBD`. Xem `GATE-04-r` tại [Risk-Register](../../010-Planning/Risk-Register.md).
 
 | Hạng mục | Quyết định V0.1 |
 |---|---|
-| Bản chất | **Object/file storage + một index + authn/authz/audit hook**, **không** phải một service đầy đủ. Ba control cuối là **bắt buộc** sau M2 (§6.6) — store tối thiểu **không còn là** "object storage + index" thuần tuý |
-| Đối tượng lưu | Capsule đã encrypt, bất biến |
+| Bản chất | ✅ **SÀN ĐÃ CHỐT (`GATE-04`, 2026-08-14)**: **object/file storage + một index + authn/authz/audit hook** — **không** phải một service đầy đủ, và **không thêm thành phần nào ngoài ba thứ này**. Ba control cuối là **bắt buộc** từ M2 (§6.6) và nay được `GATE-04` chốt thành **sàn đóng** — store tối thiểu **không còn là** "object storage + index" thuần tuý |
+| Đối tượng lưu | Capsule đã encrypt, bất biến. Sau ✅ **CHỐT GATE-05b — 2026-08-14**: mỗi capsule mã hoá bằng **khoá riêng giữ phía server** (`SEC-016` crypto-shredding, `MUST-V0.1`) — xem §4.9, §7.4 |
 | Ghi vào store | **Recorder tự upload**; **không** có lệnh push phía CLI (`E8`) |
 | Đọc từ store | `repro pull` (§8), `repro list` (§18) |
 | Sở hữu | Tổ chức tự cấu hình và tự vận hành (§20.6, §16) |
-| API | `TBD` — xem §5.4 |
-| Auth / access control | **Bắt buộc phải có** — authn + authz + audit hook thuộc **OSS core** (M2 ✅ **ĐÃ CHỐT 2026-08-14**, §6.6). **Cơ chế** vẫn `TBD` (`U-06`) |
+| 3 thao tác tối thiểu | ✅ **SÀN ĐÃ CHỐT (`GATE-04`)**: *ghi capsule* (recorder upload) · *liệt kê capsule* (`repro list`) · *đọc một capsule* (`repro pull`) — xem §5.4 |
+| API | `TBD` — xem §5.4. `GATE-04` chốt sàn, **không** chốt API |
+| Auth / access control | **Bắt buộc phải có** — authn + authz + audit hook thuộc **OSS core** (M2 ✅ **ĐÃ CHỐT 2026-08-14**, §6.6), và nay là **phần của sàn đã đóng** (✅ **CHỐT GATE-04 — 2026-08-14**). ⚠️ **Cơ chế** vẫn `TBD` (`U-06`) — `GATE-04` **không** chốt cơ chế |
+| Retention TTL | ✅ **CHỐT GATE-05a — 2026-08-14**: mặc định **30 ngày** (`SEC-022`), vẫn **cấu hình được**; 30 ngày là **mặc định khi không cấu hình**. Xem §7.4 |
 | Storage backend cụ thể | `TBD` |
 
 **Căn cứ cho "recorder tự upload, không có push phía CLI"** `[stated]`: §17 vẽ mũi tên từ Recorder tới Capsule rồi tới `pull`; §20.6 vẽ `Private Recorder → Encrypted Capsule → Private Storage`; và §18 liệt kê đủ 6 lệnh CLI mà **không có lệnh push** ⇒ push không phải việc của developer.
 
 **`U-06` — cái bị chặn**: ước lượng khối lượng MVP. Nếu chấp nhận capsule là **file chuyển tay** cho V0.1 thì MVP nhỏ hơn *đáng kể* so với có store. Đây là câu hỏi phạm vi cần trả lời trước khi lập kế hoạch hiện thực, không phải câu hỏi kỹ thuật.
 
+> ✅ **`GATE-04` đã trả lời câu hỏi phạm vi ở trên — phương án *file chuyển tay* BỊ LOẠI.** Câu trên **được giữ nguyên làm bằng chứng** rằng phương án nhỏ hơn đã từng được cân, và cân xong: sàn bắt buộc gồm authn/authz/audit hook (M2, §6.6) nên không có store thì **không có chỗ đặt ba control đó** — phương án C4 không còn thoả sàn (xem [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) §Alternatives `C4`). ⇒ **Ước lượng MVP nay đứng được ở mức sàn** (biết chắc phải xây gì), nhưng **chưa đứng được ở mức cơ chế**.
+
 > ✅ **Hệ quả của M2 (ĐÃ CHỐT 2026-08-14, §6.6) lên `U-06`**: quyết định đưa authn + authz + audit vào OSS core **thu hẹp** `U-06` — sàn tối thiểu của store nay đã biết chắc là *có ba control đó*, nên phương án C4 (*capsule là file chuyển tay*, không có store) không còn thoả được sàn này. Nhưng nó **không giải** `U-06`: **API và cơ chế auth cụ thể vẫn `TBD`** — `RQ.md` vẫn không có một dòng đặc tả nào (§8/§18/§28/§20.6 chỉ *hàm ý* có store). Đồng thời nó **làm nặng thêm** cái mà §20.14 (*"significant infrastructure"*) và §20.15 (`Artifact storage`) cảnh báo — xem [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) §Consequences.
+>
+> ✅ **Hệ quả của `GATE-04` (CHỐT 2026-08-14) lên `U-06` — cộng thêm vào, không thay thế mệnh đề M2 ở trên**: phần **sàn** của `U-06` nay **`CHỐT`**, không còn `TBD` — sàn là **object/file storage + một index + authn/authz/audit hook** với 3 thao tác tối thiểu (§5.4), và **đó là quyết định của người có thẩm quyền**, không phải cách xử lý của tài liệu này. Phần **`TBD` còn lại, nguyên vẹn**: API, **cơ chế** authn/authz, mô hình quyền, storage backend, mô hình triển khai, định danh capsule, hình dạng audit record. `GATE-04` **không** đóng `U-06` — nó đóng **một phần** của `U-06`; xem disposition chính thức ở §8.3 và `GATE-04-r` tại [Risk-Register](../../010-Planning/Risk-Register.md).
 
 Xem [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md).
 
@@ -908,22 +939,30 @@ Hai lựa chọn có hệ quả tích hợp khác nhau `[inferred]`:
 
 ⇒ **Encryption at rest là MVP V0.1**, dù §18 không liệt kê nó trong *"MVP capabilities"*. Xem `E2` ở §8.1 về cách đọc §18 và §21 cho tương thích.
 
-#### `E12` — crypto-shredding: **ràng buộc được đề xuất, cần validate**
+#### `E12` — crypto-shredding: ✅ **ĐÃ CHỐT `MUST-V0.1`** (`GATE-05b`, 2026-08-14)
 
-> ⚠️ **Mục này KHÔNG phải quyết định đã chốt.** Nhãn: *cần validate — đánh đổi với replay offline chưa được giải.*
+> ✅ **CHỐT GATE-05b — 2026-08-14.** **`SEC-016` crypto-shredding = ÁP DỤNG, phân loại `MUST-V0.1`.** Quyết định của **`@TrisJr`**. Nhãn cũ của mục này — *"ràng buộc được đề xuất, cần validate — đánh đổi với replay offline chưa được giải"* — **đã được gỡ**: đánh đổi **đã được cân và chấp nhận có ý thức**.
+>
+> **Cơ chế đã chốt**: khoá giữ **phía server**; **xoá khoá ⇒ capsule không giải được**. Điều này đóng `U-06c` (§8.3, [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) §Open items).
+>
+> ⚠️ **Hai hệ quả được chấp nhận có ý thức, ghi thẳng chứ không làm nhẹ:**
+> - **`GATE-05b-r`** — *"replay không cần kết nối mạng"* **thôi là bất biến** (xem §3.5, §6.3 và đánh đổi #1 bên dưới).
+> - **`GATE-05b-r2`** — **`U-06d` (key custody) từ open item phụ THÀNH BLOCKER**: không có key management thì crypto-shredding **không thực thi được**, và một quyết định `MUST-V0.1` chỉ có giá trị khi có nơi giữ và xoá khoá. Xem `GATE-05b-r`/`GATE-05b-r2` tại [Risk-Register](../../010-Planning/Risk-Register.md).
 
 **Vấn đề nó nhắm tới**: §20.17 yêu cầu hỗ trợ **deletion** `[stated]`. Nhưng capsule là artifact **bất biến đã được copy xuống N máy developer**, có thể đã vào git hoặc chat. Xoá bản gốc ở store **không** xoá được các bản copy — nên "deletion" theo nghĩa `RQ.md` yêu cầu là **không thực hiện được** với thiết kế hiện tại.
 
-**Cơ chế được đề xuất**: mã hoá mỗi capsule bằng **key riêng của chính capsule đó**, key giữ ở phía server; `replay` lấy key just-in-time. Khi đó **xoá = phá key**, và mọi bản copy ở mọi nơi lập tức thành ciphertext vô nghĩa.
+**Cơ chế — nay là cơ chế đã chốt**: mã hoá mỗi capsule bằng **key riêng của chính capsule đó**, key giữ ở phía server; `replay` lấy key just-in-time. Khi đó **xoá = phá key**, và mọi bản copy ở mọi nơi lập tức thành ciphertext vô nghĩa.
 
-**Đánh đổi chưa được giải** — đây là lý do nó không được chốt:
+**Đánh đổi — trước đây là lý do chưa chốt, nay là CHI PHÍ ĐÃ ĐƯỢC CHẤP NHẬN** (✅ **CHỐT GATE-05b — 2026-08-14**). Hai mục dưới **giữ nguyên nội dung** vì chúng vẫn là chi phí thật; điều đổi là chúng không còn treo:
 
-1. **Mất replay offline.** Mâu thuẫn trực tiếp với `E3` (§3.5) và với §40 *"portable"*: capsule không còn tự chứa theo nghĩa dùng được khi không có mạng.
-2. **Tăng độ phức tạp self-host.** Cần một key service — va vào §20.14 (adoption) và §20.15 (scope explosion).
+1. **Mất replay offline.** Mâu thuẫn trực tiếp với `E3` (§3.5) và với §40 *"portable"*: capsule không còn tự chứa theo nghĩa dùng được khi không có mạng. ⇒ Sau `GATE-05b`: đây là **`GATE-05b-r`** — *"replay không cần kết nối mạng"* **thôi là bất biến**, hệ quả **được chấp nhận có ý thức**. Xem §6.3 và [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md) §Consequences.
+2. **Tăng độ phức tạp self-host.** Cần một key service — va vào §20.14 (adoption) và §20.15 (scope explosion). ⇒ Sau `GATE-05b`: chi phí này **đã được nhận**, và nó là lý do `U-06d` (key custody) **thành blocker** (`GATE-05b-r2`).
 
-**Cần ai quyết**: đây là đánh đổi giữa *compliance* và *portability*, hai giá trị mà `RQ.md` đều khẳng định. Không lens nào tự quyết được.
+**Ai đã quyết**: đây là đánh đổi giữa *compliance* và *portability*, hai giá trị mà `RQ.md` đều khẳng định — **không lens nào tự quyết được** (mệnh đề này giữ nguyên, nó đúng về thẩm quyền của các lens). ✅ **Người có thẩm quyền đã quyết: `@TrisJr`, 2026-08-14, chọn phía *compliance*** — `SEC-016` = `MUST-V0.1`.
 
 **Cái bị chặn**: §7.4 (deletion), và [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md) (format phải có chỗ chứa key reference nếu chọn phương án này — lại là một ràng buộc **không retrofit được**).
+
+> ✅ **Sau `GATE-05b`**: mệnh đề *"nếu chọn phương án này"* **đã được giải quyết — phương án ĐÃ được chọn** ⇒ **format v1 BẮT BUỘC có chỗ chứa key reference**, không còn là điều kiện. Ràng buộc *không retrofit được* nay là ràng buộc **đang tới hạn** với [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md). §7.4 (deletion) **được mở khoá về nguyên tắc**: crypto-shredding là cơ chế trả lời nghĩa vụ xoá — nhưng **chỉ khả thi khi `U-06d` (key custody) được giải** (`GATE-05b-r2`).
 
 ---
 
@@ -1053,19 +1092,21 @@ Phân tích đầy đủ ở §3.9. Ở đây ghi hệ quả lên contract: **c�
 
 *Nguồn: `RQ.md` §8, §18, §20.6, §28 — và chỗ trống của chúng.*
 
-**`TBD` — `RQ.md` không có một dòng đặc tả nào.**
+**`TBD` — `RQ.md` không có một dòng đặc tả nào.** (Mệnh đề này là sự thật về `RQ.md` và **giữ nguyên**; sau ✅ **CHỐT GATE-04 — 2026-08-14**, phần **sàn** không còn `TBD` — nhưng nó được chốt bởi **quyết định của `@TrisJr`**, không phải bởi `RQ.md`. Phần `TBD` còn lại: **API** và **cơ chế** auth.)
 
 Điều **suy ra được** từ các lệnh `[inferred]`: store phải hỗ trợ tối thiểu ba thao tác — *ghi capsule* (recorder upload, `E8`), *liệt kê capsule* (`repro list`), *đọc một capsule* (`repro pull`). Ba thao tác này là **giao diện tối thiểu**, không phải đặc tả API.
+
+> ✅ **CHỐT GATE-04 — 2026-08-14.** Ba thao tác trên **thôi là suy luận `[inferred]` của tài liệu này** — chúng là **sàn đã chốt** của Capsule Store, quyết định của **`@TrisJr`**: sàn = **object/file storage + một index + authn/authz/audit hook**, với **đúng 3 thao tác tối thiểu này**. Mệnh đề *"không phải đặc tả API"* **giữ nguyên và vẫn là điểm mấu chốt**: `GATE-04` chốt **cái gì phải có**, **không** chốt **cách làm**. Xem §3.6 và `GATE-04-r` tại [Risk-Register](../../010-Planning/Risk-Register.md).
 
 Chưa xác định, **không bịa**:
 
 - Giao thức (HTTP API? truy cập object storage trực tiếp? cả hai?)
-- **Cơ chế** authentication và authorization. Sau M2 (✅ ĐÃ CHỐT 2026-08-14, §6.6), **việc có authn + authz + audit là bắt buộc và thuộc OSS core** — nhưng *cơ chế* (token dịch vụ cho recorder ghi? danh tính người dùng cho developer đọc? mô hình quyền theo gì?) vẫn **`TBD`**, `RQ.md` không có dòng nào. M2 thu hẹp `U-06`, **không** giải `U-06`
+- **Cơ chế** authentication và authorization. Sau M2 (✅ ĐÃ CHỐT 2026-08-14, §6.6), **việc có authn + authz + audit là bắt buộc và thuộc OSS core** — nhưng *cơ chế* (token dịch vụ cho recorder ghi? danh tính người dùng cho developer đọc? mô hình quyền theo gì?) vẫn **`TBD`**, `RQ.md` không có dòng nào. M2 thu hẹp `U-06`, **không** giải `U-06`. ⚠️ **`GATE-04` (2026-08-14) cũng KHÔNG giải mục này**: nó chốt **sàn** (*cái gì phải có*), cơ chế authn/authz **vẫn `TBD`** — đây là chỗ `GATE-04-r` trỏ tới
 - Mô hình phân trang / lọc cho `list`
 - Storage backend cụ thể
 - Có index riêng hay dùng listing của chính object storage
 
-Xem §3.6 để biết vì sao store được cố ý đặc tả ở mức tối thiểu (`E8`, guardrail §20.15).
+Xem §3.6 để biết vì sao store được cố ý đặc tả ở mức tối thiểu (`E8`, guardrail §20.15) — và để đọc **sàn đã chốt** bởi ✅ **GATE-04 — 2026-08-14**.
 
 ### 5.5 Future surface
 
@@ -1142,7 +1183,12 @@ Kỹ thuật §20.7 `[stated]`: asynchronous capture, bounded buffers, sampling,
 
 Cần: runtime Node.js chạy được code của service, capsule, và CLI. §4 chính là lập luận cho danh sách này — production và local *"are fundamentally different"* và cố sao chép tạo ra *"enormous complexity"* `[stated]`.
 
-> ⚠️ Nếu `E12` (crypto-shredding, §4.9) được chấp nhận, dòng *"không cần kết nối mạng lúc replay"* **không còn đúng**. Đây là chi phí cụ thể của đánh đổi đó, và là lý do nó cần được cân tường minh.
+> ⚠️ ✅ **CHỐT GATE-05b — 2026-08-14: `E12` (crypto-shredding, §4.9) ĐÃ ĐƯỢC CHẤP NHẬN (`SEC-016` = `MUST-V0.1`) ⇒ dòng *"Kết nối mạng tới production lúc replay"* trong bảng trên KHÔNG CÒN ĐÚNG NGUYÊN VẸN.** Viết ở thể khẳng định, không còn là điều kiện:
+>
+> - Replay **vẫn không cần** kết nối tới **production** (`E3`, §3.5 — mệnh đề này còn nguyên).
+> - Replay **CẦN** kết nối tới **Capsule Store** để lấy khoá giải mã just-in-time (khoá giữ phía server). ⇒ **Replay hoàn toàn offline không còn là bất biến của V0.1.**
+>
+> Đây là chi phí cụ thể của đánh đổi đó, và nó **đã được cân tường minh và chấp nhận có ý thức** — xem `GATE-05b-r` tại [Risk-Register](../../010-Planning/Risk-Register.md), §4.9, §7.4, và [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md) §Consequences. Hàng *"Kết nối mạng tới production lúc replay"* của bảng **được giữ nguyên** làm bằng chứng về ràng buộc gốc.
 
 ### 6.4 Replay boundary cho microservices
 
@@ -1206,6 +1252,8 @@ flowchart TD
 > 3. **North Star Metric §31 giữ nguyên** làm metric **dài hạn**, **kích hoạt từ V0.2** — thời điểm regression test generation tồn tại để mà đếm.
 >
 > **Lý do**: §26 là phát biểu phạm vi tường minh; §25/§30/§31 là văn bản minh hoạ và metric. Chọn §26 giữ được phạm vi V0.1 đúng như §39 (*spike trước, platform sau*) và §20.15 (scope explosion).
+>
+> ✅ **CHỐT GATE-02 — 2026-08-14 — *spike trước, platform sau* NAY LÀ QUYẾT ĐỊNH, không còn chỉ là lý do chọn phía §26.** `@TrisJr` chốt **sequencing**: **hoãn phân rã Epic/Story tới sau khi Phase 0 đóng gate**. Lý do của chính quyết định đó trùng với hệ quả ghi ngay bên trên: acceptance criteria dựa trên *"execution matched"* **chưa kiểm chứng được** khi `U-04` chưa có định nghĩa. ⇒ Cụm §39 ở dòng trên **đổi thể**: từ *tiêu chí biện luận* thành **ràng buộc quy trình đã chốt**. Guardrail kèm theo: **không** dùng `N-01`…`N-04` (bốn ngưỡng §24) làm acceptance criteria của story — chúng là hypothesis (§8.1).
 >
 > **Hệ quả kiến trúc — phải đọc kỹ, quyết định này làm một khoảng hở nặng thêm:**
 >
@@ -1279,12 +1327,21 @@ flowchart TD
 >
 > **Hai mục §28 chưa được quyết định này phán xử**: `Retention policies` và `Enterprise security` — quyết định chỉ nói về **authn + authz + audit**. Hook retention vẫn ở §7.4 với giá trị TTL `TBD`; không suy diễn thêm.
 >
+> ⚠️ **CẬP NHẬT 2026-08-14 — hai mục trên nay có trạng thái KHÁC NHAU, phải đọc tách vế.** Câu ngay trên mô tả đúng phạm vi của **M2** và **được giữ nguyên** làm bằng chứng; nhưng sau `GATE-05`, phát biểu *"cả hai chưa được phán xử"* **không còn đúng cho cả hai**:
+>
+> | Mục §28 | Trạng thái sau 2026-08-14 |
+> |---|---|
+> | **`Retention policies`** | ✅ **ĐÃ được `GATE-05` phán xử.** `GATE-05a`: TTL mặc định = **30 ngày** (`SEC-022`), vẫn cấu hình được. `GATE-05b`: crypto-shredding (`SEC-016`) = **`MUST-V0.1`**. ⇒ Giá trị TTL ở §7.4 **không còn `TBD`**, và cơ chế thực thi việc xoá **đã được chọn**. Về packaging: retention nay thuộc **OSS core** cùng authn/authz/audit — retention không có giá trị TTL và không có cơ chế xoá thì chỉ là cái tên |
+> | **`Enterprise security`** | ⚠️ **VẪN CHƯA được phán xử.** Không gate nào ngày 2026-08-14 chạm tới mục này; nó **vẫn ở commercial layer theo §28**. Không suy diễn thêm — `TBD` |
+>
 > **Hệ quả kiến trúc — cả hai chiều, không giấu chiều nào:**
 >
 > - **Chiều tích cực**: mâu thuẫn *"bản self-host được khuyến nghị vì bảo mật lại là bản không có control bảo mật"* **đã được giải quyết**. Khuyến nghị self-host của [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) nay đứng vững cả ở ranh giới tổ chức lẫn bên trong ranh giới đó.
 > - **Chiều chi phí**: authn/authz/audit nay là **thành phần bắt buộc của OSS core**, không phải add-on ⇒ chúng **phải có chỗ trong thiết kế Capsule Store** (§3.6, §5.4) — vốn đang là `U-06`, chỗ mà `RQ.md` **không đặc tả một dòng nào**. Điều này **làm tăng phạm vi hiện thực của V0.1** và va thẳng vào §20.14 (*"significant infrastructure"* hại adoption) cùng §20.15 (`Artifact storage` là biểu hiện scope explosion). Đây là đánh đổi thật, đã được chấp nhận có ý thức.
 >
 > **Ràng buộc lên §3.6 và §5.4 — đã cập nhật**: store tối thiểu **không còn là** *"object storage + index"* thuần tuý; nó **bắt buộc phải có authn + authz + audit hook**. Nhưng **`U-06` chưa được giải, chỉ bị thu hẹp**: *cơ chế* auth và *API* của store vẫn **`TBD`** — xem §8.3.
+>
+> ✅ **CHỐT GATE-04 — 2026-08-14**: đúng cái sàn mà M2 nâng lên nay được **chốt thành sàn đóng** — **object/file storage + một index + authn/authz/audit hook**, 3 thao tác tối thiểu theo §5.4. Câu ngay trên **vẫn đúng nguyên vẹn**: `U-06` **vẫn chưa được giải** — *cơ chế* auth và *API* vẫn `TBD`. Nghĩa là `U-06` nay có **hai nửa trạng thái khác nhau**: nửa *sàn* = `CHỐT`, nửa *cơ chế* = `TBD`. Đây là disposition chính thức ghi ở §8.3.
 
 **Ghi chú phạm vi**: mục này bàn **module seam** (cái gì tách khỏi cái gì về mặt kiến trúc), **không** bàn license hay pricing. §28 nói rõ mô hình thương mại chỉ nên định nghĩa **sau** khi validate adoption `[stated]`.
 
@@ -1369,11 +1426,11 @@ Ràng buộc lên kiến trúc — chỉ phần **hook**, chính sách ở Secur
 
 | Hook | Ràng buộc | Trạng thái |
 |---|---|---|
-| **Retention** | Capsule Store phải có khái niệm TTL và cơ chế xoá tự động. Giá trị TTL mặc định `TBD` — cần PM và pháp chế. Điều khẳng định được: **phải là một giá trị hữu hạn, không được là vô hạn**. | Hook `CHỐT`, giá trị `TBD` |
+| **Retention** | Capsule Store phải có khái niệm TTL và cơ chế xoá tự động. ✅ **Giá trị TTL mặc định = 30 NGÀY** (`SEC-022`) — **CHỐT GATE-05a — 2026-08-14**, quyết định của **`@TrisJr`**; vẫn **cấu hình được**, 30 ngày là **mặc định khi không cấu hình**. Mệnh đề *"cần PM và pháp chế"* **được giữ làm bằng chứng về điều kiện gốc**, và ghi thẳng: quyết định này do **`@TrisJr`** đưa ra, **không qua pháp chế** — rủi ro đó được chấp nhận có ý thức. Điều khẳng định được từ trước **vẫn đúng và nay được thoả**: **phải là một giá trị hữu hạn, không được là vô hạn** — 30 ngày là hữu hạn. | Hook `CHỐT` · giá trị ✅ **`CHỐT` = 30 ngày** (`GATE-05a`), không còn `TBD` |
 | **Audit** | Mọi truy cập capsule phải sinh audit record. §20.17 yêu cầu audit logs `[stated]`. Sau M2, audit là **thành phần bắt buộc của OSS core**, không phải add-on trả phí. | **`CHỐT`** — M2 ✅ **ĐÃ CHỐT 2026-08-14** (§6.6). §28 vẫn xếp `Access control`/`Retention policies` ở commercial layer; quyết định **ghi đè có chủ đích** phần đó cho authn/authz/audit |
-| **Authn + authz** | Store phải nhận diện được chủ thể và quyết định được *chủ thể này đọc được capsule nào*. Không có authz thì bản self-host là bản **ai đăng nhập cũng đọc được mọi capsule production**. | **`CHỐT`** thuộc OSS core (M2, §6.6) — **cơ chế** vẫn `TBD` (`U-06`, §3.6) |
+| **Authn + authz** | Store phải nhận diện được chủ thể và quyết định được *chủ thể này đọc được capsule nào*. Không có authz thì bản self-host là bản **ai đăng nhập cũng đọc được mọi capsule production**. ✅ Sàn *"phải có"* nay là **sàn ĐÃ ĐÓNG** — **CHỐT GATE-04 — 2026-08-14**: object/file storage + một index + authn/authz/audit hook, 3 thao tác tối thiểu (§5.4). | **`CHỐT`** thuộc OSS core (M2, §6.6) **+ sàn đóng** (`GATE-04`) — ⚠️ **cơ chế** vẫn `TBD` (`U-06`, §3.6) và `GAP-04` còn nguyên, xem `GATE-04-r` |
 | **Data residency** | Topology self-host (§6.1) là cơ chế chính. Capsule Store phải cho phép chỉ định vùng lưu trữ. | `CHỐT` ở mức hook |
-| **Deletion** | Xem dưới — đây là mâu thuẫn thiết kế thật | ⚠️ chưa giải |
+| **Deletion** | Xem dưới — đây là mâu thuẫn thiết kế thật. ✅ Sau **`GATE-05b`** (2026-08-14): crypto-shredding (`SEC-016`) = **`MUST-V0.1`** ⇒ **đã có cơ chế được chọn** để trả lời nghĩa vụ xoá. | ⚠️ **cơ chế đã chốt, thực thi CHƯA đảm bảo**: phụ thuộc `U-06d` (key custody) — nay là **BLOCKER**, xem `GATE-05b-r2` |
 
 #### ⚠️ Deletion là một mâu thuẫn thiết kế, không phải "chưa làm"
 
@@ -1386,15 +1443,21 @@ Ràng buộc lên kiến trúc — chỉ phần **hook**, chính sách ở Secur
 
 ⇒ Với thiết kế hiện tại, "deletion" theo nghĩa §20.17 yêu cầu là **không thực hiện được**. Đây phải được ghi thẳng thay vì để tài liệu ngầm hứa.
 
-#### `E12` — crypto-shredding: **ràng buộc được đề xuất**, nhãn *cần validate*
-
-> ⚠️ **Không được viết như đã chốt.** Nhãn đầy đủ: *cần validate — đánh đổi với replay offline chưa được giải.*
+> ✅ **CHỐT GATE-05b — 2026-08-14 — bốn mệnh đề trên VẪN ĐÚNG, nhưng kết luận đã đổi.** Bốn điểm 1–4 là đặc tính của capsule và **được giữ nguyên**. Điều đổi: crypto-shredding (`SEC-016`) nay là **`MUST-V0.1`** ⇒ *"xoá"* **không còn** phải là xoá từng bản copy: **xoá khoá ⇒ mọi bản copy ở mọi nơi thành ciphertext vô nghĩa**. Đây là lý do `GATE-05b` được chốt.
 >
-> 📌 **M2 (✅ ĐÃ CHỐT 2026-08-14, §6.6) KHÔNG chạm tới mục này.** Quyết định đó chỉ nói về **authn + authz + audit**. Crypto-shredding vẫn là **đề xuất**, nhãn *cần validate* giữ nguyên.
+> ⚠️ Nhưng **không được đọc là "deletion đã xong"**: cơ chế **đã được chọn**, việc **thực thi** phụ thuộc `U-06d` (key custody — khoá ở đâu, ai giữ, xoay vòng và xoá thế nào), nay là **BLOCKER** (`GATE-05b-r2`). Không có key management thì crypto-shredding **không thực thi được**, và khi đó bốn mệnh đề 1–4 lại đúng y nguyên.
+
+#### `E12` — crypto-shredding: ✅ **ĐÃ CHỐT `MUST-V0.1`** (`GATE-05b`, 2026-08-14)
+
+> ✅ **CHỐT GATE-05b — 2026-08-14.** **`SEC-016` crypto-shredding = ÁP DỤNG, `MUST-V0.1`**, quyết định của **`@TrisJr`**. Nhãn cũ *"ràng buộc được đề xuất — cần validate — đánh đổi với replay offline chưa được giải"* **đã được gỡ**. Cơ chế đã chốt: **khoá giữ phía server; xoá khoá ⇒ capsule không giải được**. Đóng `U-06c`.
+>
+> 📌 **M2 (✅ ĐÃ CHỐT 2026-08-14, §6.6) KHÔNG chạm tới mục này** — mệnh đề đó **vẫn đúng về M2**, quyết định M2 chỉ nói về **authn + authz + audit**. **Nhưng `GATE-05b` THÌ CÓ CHẠM**: chính nó chốt crypto-shredding. Hai nhãn thuộc hai quyết định khác nhau, **không được đọc lẫn**.
+>
+> ⚠️ Hệ quả được chấp nhận có ý thức: **`GATE-05b-r`** (*"replay không cần kết nối mạng"* thôi là bất biến — §3.5, §6.3) và **`GATE-05b-r2`** (`U-06d` key custody thành **BLOCKER**). Xem [Risk-Register](../../010-Planning/Risk-Register.md) và [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) §Open items.
 
 Đây là cơ chế **duy nhất** được biết có thể biến boundary storage → laptop từ *không thu hồi được* thành *thu hồi được*: mã hoá mỗi capsule bằng key riêng giữ phía server, `replay` lấy key just-in-time ⇒ **xoá = phá key**, mọi bản copy lập tức thành ciphertext vô nghĩa.
 
-**Đánh đổi chưa ai cân**: mất replay offline (mâu thuẫn `E3` §3.5 và §40 *"portable"*), và tăng độ phức tạp self-host (va vào §20.14 adoption, §20.15 scope). Chi tiết ở §4.9. **Cần quyết định của người có thẩm quyền về đánh đổi compliance ↔ portability.**
+**Đánh đổi — nay ĐÃ được cân**: mất replay offline (mâu thuẫn `E3` §3.5 và §40 *"portable"*), và tăng độ phức tạp self-host (va vào §20.14 adoption, §20.15 scope). Chi tiết ở §4.9. ✅ **Người có thẩm quyền ĐÃ quyết đánh đổi compliance ↔ portability: `@TrisJr`, 2026-08-14, chọn phía *compliance*** (`GATE-05b`). Hai chi phí trên **không biến mất** — chúng là **hệ quả được chấp nhận có ý thức** (`GATE-05b-r`).
 
 ### 7.5 Ràng buộc do compliance áp lên thiết kế
 
@@ -1463,6 +1526,21 @@ Production-like execution → Capture → Repro Capsule → Local Replay → Exe
 
 §22 nói rõ `[stated]`: *"The goal is **not** to build the product."*
 
+> ✅ **CHỐT GATE-01 — 2026-08-14 — PHASE 0 TECHNICAL SPIKE ĐÃ ĐƯỢC BẬT.** Quyết định `Go` của **`@TrisJr`**; spike là **điều kiện đầu tư**, không phải một task. `Sponsor` = **`@TrisJr`** · `Manager` = **`@TrisJr`** · Owner **18/18 risk** = **`@TrisJr`**. Kế hoạch dưới đây vì thế **thôi là kế hoạch dự phòng** — nó là kế hoạch đang tới hạn thi hành.
+>
+> ✅ **CHỐT GATE-02 — 2026-08-14**: **spike trước, Epic/Story sau** — phân rã Epic/Story bị hoãn tới **sau khi Phase 0 đóng gate**.
+>
+> ⚠️ **`GATE-01-r` — kế hoạch spike này CHƯA CHO ĐIỂM ĐƯỢC.** `Go` **không** tự làm cho spike đo được. Bốn khoảng hở còn nguyên, và cả bốn đều là điều kiện để đọc được kết quả:
+>
+> | Khoảng hở | Thiếu cái gì | Hệ quả lên spike |
+> |---|---|---|
+> | `ACG-01` | **Định nghĩa *"reproduced"*** — §24 đặt ngưỡng `≥ 80%` test case *reproduced* mà không định nghĩa *reproduced* | Không biết một scenario tính là đạt hay không đạt |
+> | `ACG-02` | **Denominator** — `80%` **của bao nhiêu** không xác định | Không tính được tỉ lệ, kể cả khi đếm đúng tử số |
+> | `ACG-03` | **Tiêu chí chọn test case** — không có quy tắc chọn tập scenario để đo | Kết quả phụ thuộc việc chọn mẫu, không so sánh lại được |
+> | `ACG-07` | **`Supported Execution Class`** — §20.1 lấy chính nó làm mitigation cho risk Critical #1 nhưng **không định nghĩa ở đâu** (§1.4, §8.3) | Không có biên để nói *"nằm ngoài phạm vi nên không tính"* |
+>
+> ⇒ Chạy spike lúc này vẫn **không kết luận được pass/fail** cho câu hỏi §39. Bốn mục trên **vẫn `TBD`** sau `GATE-01` — `GATE-01` **không** giải mục nào trong số đó. Xem `GATE-01-r` tại [Risk-Register](../../010-Planning/Risk-Register.md) và [NFR-Repro](../../020-Requirements/NFR-Repro.md) §7.
+
 **Test app** `[stated]` §22: Node.js, `POST /checkout`. Dependencies: PostgreSQL, **Redis**, external HTTP API, feature flag, system clock.
 
 > 📌 Redis ở đây là **dependency của test app**, **không** phải bằng chứng Repro capture Redis ở V0.1. Xem `E1` (§3.2).
@@ -1496,6 +1574,13 @@ Production-like execution → Capture → Create Repro Capsule
 
 **Unknown mà spike phải trả lời trước khi hiện thực MVP**: `U-01`, `U-02`, `U-03`, `U-04`, `U-09`, `U-13`, `U-20` — xem §8.3.
 
+> ✅ **CHỐT GATE-01 — 2026-08-14 — bổ sung `U-25` vào KIỂM TRA BẮT BUỘC của spike.** Ngoài danh sách unknown trên, spike Phase 0 **phải** chạy thêm một phép kiểm tất định **local↔local**:
+>
+> - **`U-25` — replay HAI LẦN trên cùng một capsule phải cho CÙNG một kết quả** (replay lặp N lần, cùng capsule, cùng code ⇒ **phải** ra cùng kết quả).
+> - **Lý do — chính `U-25` ở §8.3 đã tự nêu**: *"nếu bản thân replay không tất định thì mọi kết luận equivalence đều rỗng"* — kể cả khi `U-04` đã được định nghĩa xong. Nghĩa là phép kiểm này là **điều kiện tiên quyết để đọc được** *Execution Match Rate* (§23), không phải một mục nice-to-have.
+> - **Không thay thế gì cả**: `U-25` là mục **thêm vào**; mười scenario §22, năm metric §23 và **bước *"DESTROY ORIGINAL ENVIRONMENT"*** của quy trình ở trên **giữ nguyên không đổi**.
+> - Disposition của `U-25` ở §8.3 **vẫn `TBD`** — `GATE-01` đưa nó vào phạm vi đo, **không** trả lời nó.
+
 **Tiêu chí đi tiếp** `[stated]` §39: nếu trả lời được *"Can we capture enough information from a real production execution to deterministically replay a meaningful class of production bugs?"* là **yes** ⇒ tiến vào MVP. Nếu **no** ⇒ xác định class bug nào không replay được và **thu hẹp phạm vi sản phẩm tương ứng**. §24 nói rõ hơn `[stated]`: nếu spike không đạt tỷ lệ replay hữu ích, *"the product concept should be reconsidered before building the full platform"*.
 
 ### 8.3 TBD Register — 25 technical unknown
@@ -1506,6 +1591,8 @@ Bảng này là **hợp đồng trung thực của tài liệu**. Mỗi dòng: u
 
 Disposition: **`CHỐT`** = đã quyết · **`TBD`** = chưa biết, có/không có phương án đề xuất · **`SPIKE`** = phải trả lời bằng technical spike §22.
 
+> ⚠️ **Vì sao con số vẫn là 25 sau năm quyết định `GATE-0N` ngày 2026-08-14 — đọc trước khi trích con số này.** `GATE-04` và `GATE-05` **đóng** một phần `U-06` và đóng hẳn `U-06b`/`U-06c` (hai mục sau nằm ở [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) §Open items, **không** phải dòng của bảng này). Register này **vẫn 25 mục** và **không dòng nào bị xoá**. Lý do: bảng này đếm *"tài liệu này khai mình chưa biết gì"* **tại thời điểm lập**. Đóng một mục thì đổi **disposition** của mục đó — **xoá dòng làm mất dấu vết là nó TỪNG chưa biết**, và làm mọi tài liệu trích *"25 technical unknown"* nói sai điều nó đo. Cùng logic đã áp cho `THREAT-008` sau M2. **Không giảm 25 → 23.**
+
 | # | Unknown | Nguồn `RQ.md` | Cái bị chặn | Disposition | Mục |
 |---|---|---|---|---|---|
 | `U-01` | Cơ chế intercept PostgreSQL driver | §11, §18 (không nói cơ chế) | [ADR-007](./ADR-007-In-Process-SDK-Interception.md), [ADR-003](./ADR-003-Database-Record-Replay-Not-Snapshot.md); tính khả thi của toàn bộ DB capture | **`SPIKE`** — phương án đề xuất: monkey-patch entry point `node-postgres`, *cần validate* | §3.2 |
@@ -1513,7 +1600,7 @@ Disposition: **`CHỐT`** = đã quyết · **`TBD`** = chưa biết, có/không
 | `U-03` | Cơ chế intercept HTTP (outbound **và inbound**) | §12, §18 (không phân biệt hai chiều) | [ADR-004](./ADR-004-Record-Replay-External-Inputs-At-Boundary.md), [ADR-007](./ADR-007-In-Process-SDK-Interception.md) | **`SPIKE`** | §3.2 |
 | `U-04` | **"execution path" và "sufficiently equivalent" nghĩa là gì** | §10 dùng `A → B → C` nhưng **không định nghĩa**; §10 cũng chính là chỗ in `✓ Execution matched` | [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md); §4.6; §5.3; `N-05` không đo được; **mitigation cho risk Critical §20.3 rỗng ruột**; **và — sau M1 (✅ ĐÃ CHỐT 2026-08-14, §6.5) — chặn luôn CHÍNH CHỈ SỐ THÀNH CÔNG CỦA V0.1**: metric V0.1 nay là *số bug đạt trạng thái `Execution matched`* (§10), mà `Execution matched` là một phán quyết tương đương ⇒ **không định nghĩa được equivalence thì không đếm được nó**. Làm nặng thêm: §24 **không đặt ngưỡng** cho `N-05` (bốn ngưỡng §24 không có ngưỡng nào cho Execution Match Rate) | **`TBD`** — phương án đề xuất (chuỗi external interaction) gắn nhãn *cần validate*, **KHÔNG chốt**. **Unknown lớn nhất tài liệu**; M1 **không** giải nó, chỉ làm hậu quả của nó lan rộng hơn | §3.9, §5.3, §6.5 |
 | `U-05` | Versioning của capsule format | `RQ.md` **không nhắc tới ở đâu** | [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md); mọi thay đổi format về sau | **`CHỐT`** phải có field version từ v1 · **`TBD`** chính sách tương thích | §4.2 |
-| `U-06` | Capsule Store: API, auth, backend, mô hình triển khai | §8/§18/§28/§20.6 hàm ý có store; **không có đặc tả nào** | §5.4; [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md); **ước lượng khối lượng MVP** | **`CHỐT`** ở mức tối thiểu (`E8`) · **`TBD`** API và **cơ chế** auth. **M2 (✅ ĐÃ CHỐT 2026-08-14, §6.6) THU HẸP nhưng KHÔNG GIẢI mục này**: sàn tối thiểu nay **bắt buộc có authn + authz + audit hook** ⇒ store không còn là "object storage + index" thuần tuý, và phương án *capsule là file chuyển tay* không còn thoả sàn. Nhưng **API và cơ chế auth vẫn `TBD`** — `RQ.md` vẫn im lặng. Kèm chi phí: sàn cao hơn ⇒ phạm vi V0.1 lớn hơn, va §20.14/§20.15 | §3.6, §5.4 |
+| `U-06` | Capsule Store: API, auth, backend, mô hình triển khai | §8/§18/§28/§20.6 hàm ý có store; **không có đặc tả nào** | §5.4; [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md); **ước lượng khối lượng MVP** | ✅ **`CHỐT` (phần sàn)** + **`TBD`** (**cơ chế** auth) — ✅ **CHỐT GATE-04 — 2026-08-14**. **Nửa `CHỐT`**: sàn tối thiểu = **object/file storage + một index + authn/authz/audit hook**, với **3 thao tác tối thiểu** theo §5.4 (*ghi* · *liệt kê* · *đọc một capsule*) — quyết định của **`@TrisJr`**, **phần sàn ĐÓNG**, không thêm thành phần nào. **Nửa `TBD` — nguyên vẹn**: **API**, **cơ chế** authn/authz, mô hình quyền, storage backend, mô hình triển khai, định danh capsule (`1842` ở §8 là gì), hình dạng audit record. **`GATE-04` chốt *cái gì phải có*, KHÔNG chốt *cách làm*.** *(Nền tảng trước đó, giữ nguyên: `CHỐT` ở mức tối thiểu theo `E8`; **M2 ✅ ĐÃ CHỐT 2026-08-14, §6.6 THU HẸP nhưng KHÔNG GIẢI mục này** — sàn bắt buộc có authn + authz + audit hook ⇒ store không còn là "object storage + index" thuần tuý, và phương án *capsule là file chuyển tay* không còn thoả sàn; `RQ.md` vẫn im lặng về cơ chế; sàn cao hơn ⇒ phạm vi V0.1 lớn hơn, va §20.14/§20.15.)* **Vẫn chặn**: ước lượng MVP **ở mức cơ chế** (mức sàn nay đứng được), hợp đồng CLI cho `list`/`pull`, và `GAP-04` (§18 không có CLI verb vận hành) — xem `GATE-04-r` tại [Risk-Register](../../010-Planning/Risk-Register.md). **Dòng này KHÔNG bị xoá** dù một nửa đã chốt | §3.6, §5.4 |
 | `U-07` | Capsule id là incident id hay id riêng của Repro | §8/§25 dùng `1842`; §2.1 có `Trace ID` | §4.8; tích hợp với observability (§34) | **`TBD`** — điều khẳng định được: capsule phải mang cả trace id và incident id | §4.8 |
 | `U-08` | **`verify` và `replay` cần hai bộ tiêu chí equivalence khác nhau** | `RQ.md` **không hề nói** | [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md); §5.3; ý nghĩa của §8 bước 5 | **`TBD`** — phương án đề xuất (tách "input đúng?" khỏi "outcome giống?"), *cần validate* | §3.9, §5.3 |
 | `U-09` | **Nghịch lý capture trigger** — chỉ biết failed *sau khi* execution kết thúc | §20.7 *"capture only failed"* vs thực tế; `RQ.md` **không thừa nhận** | [ADR-008](./ADR-008-Async-Bounded-Failure-Triggered-Capture.md); **`N-02` `< 5%` overhead mất nghĩa xác định** | **`SPIKE`** | §3.3 |
@@ -1532,7 +1619,7 @@ Disposition: **`CHỐT`** = đã quyết · **`TBD`** = chưa biết, có/không
 | `U-22` | Capsule format có chỗ chứa multi-service không | §26 đặt multi-service ở V0.3; format v1 phải cân **ngay** | [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md); `U-05` | **`TBD`** — cần cân khi thiết kế v1, không hoãn tới V0.3 | §4.8 |
 | `U-23` | Capsule format có language-agnostic không | §26 đặt Python/Go ở V0.3 | [ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md); §3.13 runtime adapter | **`TBD`** | §3.13 |
 | `U-24` | **Cơ chế phát hiện *"execution này nằm ngoài phạm vi determinism"*** | §33.5 đặt nghĩa vụ *"explain exactly what was captured and replayed"*; `RQ.md` **không nêu cơ chế phát hiện nào** | [ADR-010](./ADR-010-Bounded-Determinism-Scope.md) `D4` không cài đặt được; **cảnh báo người dùng *trước* khi replay** một execution mà Repro không đảm bảo được; phân biệt *false blame* khi replay thất bại | **`TBD`** — phụ thuộc `ACG-07`: *Supported Execution Class* **không tồn tại ở đâu trong `RQ.md`**, dù §20.1 lấy chính nó làm mitigation cho risk Critical #1. Không lấp bằng định nghĩa tự chế | §3.7, §5.3 |
-| `U-25` | **Replay hai lần trên cùng một capsule có cho cùng kết quả không** (local↔local determinism) | `RQ.md` **không đặt câu hỏi này**; §23 chỉ đo *Execution Match Rate* giữa production↔local | [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md); [ADR-011](./ADR-011-Execution-Diff-First-Class.md); nếu bản thân replay không tất định thì **mọi kết luận equivalence đều rỗng** — kể cả khi `U-04` đã được định nghĩa xong | **`TBD`** — đề xuất: đưa vào spike §22 như một kiểm tra bắt buộc (replay lặp N lần trên cùng capsule, cùng code, **phải** ra cùng kết quả), *cần validate* | §3.9 |
+| `U-25` | **Replay hai lần trên cùng một capsule có cho cùng kết quả không** (local↔local determinism) | `RQ.md` **không đặt câu hỏi này**; §23 chỉ đo *Execution Match Rate* giữa production↔local | [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md); [ADR-011](./ADR-011-Execution-Diff-First-Class.md); nếu bản thân replay không tất định thì **mọi kết luận equivalence đều rỗng** — kể cả khi `U-04` đã được định nghĩa xong | ✅ **Đề xuất đã được NHẬN vào phạm vi spike** — **CHỐT GATE-01 — 2026-08-14**: `U-25` nay là **kiểm tra bắt buộc** của Phase 0 spike (replay lặp N lần trên cùng capsule, cùng code, **phải** ra cùng kết quả) — xem §8.2. ⚠️ Nhưng **câu trả lời vẫn `TBD`**: `GATE-01` đưa nó vào phép đo, **không** trả lời nó | §3.9, §8.2 |
 
 #### Ba nợ khái niệm của chính `RQ.md` (không phải unknown kỹ thuật)
 
@@ -1540,9 +1627,9 @@ Disposition: **`CHỐT`** = đã quyết · **`TBD`** = chưa biết, có/không
 
 | # | Nội dung | Trạng thái |
 |---|---|---|
-| `ACG-07` | **"Supported Execution Class" chưa được định nghĩa.** §20.1 (risk Critical #1) mitigation ghi *"Limit the MVP to a clearly defined class of deterministic request/response executions"* — nhưng class đó **không tồn tại ở đâu trong `RQ.md`**. Không có nó thì denominator của §24 không xác định và §3.3 không spec được. | **`TBD`** — không lấp bằng định nghĩa tự chế |
+| `ACG-07` | **"Supported Execution Class" chưa được định nghĩa.** §20.1 (risk Critical #1) mitigation ghi *"Limit the MVP to a clearly defined class of deterministic request/response executions"* — nhưng class đó **không tồn tại ở đâu trong `RQ.md`**. Không có nó thì denominator của §24 không xác định và §3.3 không spec được. | **`TBD`** — không lấp bằng định nghĩa tự chế. ⚠️ **`GATE-01` (Go, 2026-08-14) KHÔNG giải mục này**: spike đã được bật nhưng vẫn thiếu biên để đọc kết quả ⇒ đây là một trong bốn khoảng hở của `GATE-01-r` (§8.2) |
 | **M1** | Regression test generation: V0.2 (§26) hay V0.1 (§25, §30, §31)? Hệ quả đã phát hiện: **North Star Metric §31 không đo được bằng chính V0.1.** | ✅ **ĐÃ CHỐT 2026-08-14** — §6.5. Chọn phía **§26: V0.2**. Metric V0.1 đổi sang **số bug đạt `Execution matched`** (§10); North Star §31 giữ làm metric **dài hạn, kích hoạt từ V0.2**. **Hệ quả còn mở**: `N-05` nay là chỉ số thành công chính của V0.1 mà **§24 không đặt ngưỡng cho nó**, và **`U-04` nay chặn chính chỉ số đó** |
-| **M2** | Access control / retention / audit: commercial layer (§28) hay MVP (§20.5, §21)? Hệ quả đã phát hiện: **bản self-host được khuyến nghị vì bảo mật lại là bản không có control bảo mật.** | ✅ **ĐÃ CHỐT 2026-08-14** — §6.6. **authn + authz + audit thuộc OSS core**, **ghi đè có chủ đích** phần §28. Commercial layer còn: Hosted storage · Team management · Analytics · AI analysis · Cloud integrations. **Hệ quả còn mở**: `U-06` bị **thu hẹp** (sàn store bắt buộc có ba control) nhưng **chưa giải** — API/cơ chế auth vẫn `TBD`; và phạm vi V0.1 **tăng**, va §20.14/§20.15 |
+| **M2** | Access control / retention / audit: commercial layer (§28) hay MVP (§20.5, §21)? Hệ quả đã phát hiện: **bản self-host được khuyến nghị vì bảo mật lại là bản không có control bảo mật.** | ✅ **ĐÃ CHỐT 2026-08-14** — §6.6. **authn + authz + audit thuộc OSS core**, **ghi đè có chủ đích** phần §28. Commercial layer còn: Hosted storage · Team management · Analytics · AI analysis · Cloud integrations. **Hệ quả còn mở**: `U-06` bị **thu hẹp** (sàn store bắt buộc có ba control) nhưng **chưa giải** — API/cơ chế auth vẫn `TBD`; và phạm vi V0.1 **tăng**, va §20.14/§20.15. ✅ **Cập nhật sau `GATE-04`/`GATE-05` (2026-08-14)**: **sàn** của `U-06` nay `CHỐT` (`GATE-04`) trong khi **cơ chế** vẫn `TBD`; hai mục §28 mà M2 **không** phán xử nay tách đôi — `Retention policies` **đã** được `GATE-05` phán xử (TTL 30 ngày + crypto-shredding `MUST-V0.1`), `Enterprise security` **vẫn chưa** (§6.6) |
 
 ### 8.4 Truy vết risk → mitigation
 
@@ -1554,8 +1641,8 @@ Disposition: **`CHỐT`** = đã quyết · **`TBD`** = chưa biết, có/không
 | Replay non-determinism | 🔴 | Yes | Deterministic inputs | §3.2 (clock, flag) | ADR-010 | ⚠️ `U-13`, `U-20` |
 | False replay equivalence | 🔴 | Yes | Execution verification | §3.9, §5.3, §6.5 | ADR-006 | ❌ **`U-04` chặn** — và sau **M1** (§6.5) nó chặn luôn **chỉ số thành công của V0.1** (`Execution matched`, §10) |
 | Side effects | 🔴 | Yes | Default-deny writes | §3.7, §7.3 | ADR-005 | ⚠️ nguyên tắc `CHỐT`, cơ chế `U-12`/`U-19` |
-| Sensitive data | 🔴 | Yes | Redaction + encryption | §3.4, §4.9, §7.2 | ADR-002, ADR-009 | ⚠️ `U-15` một phần `CHỐT`; `E12` cần validate |
-| Security exposure | 🔴 | Yes | Private/self-hosted architecture | §6.1, §2.7, §7.1 | ADR-009 | ✅ `E7` — **M2 ✅ ĐÃ CHỐT 2026-08-14**: authn/authz/audit thuộc OSS core (§6.6) ⇒ bản self-host **có** control bảo mật. ⚠️ Cơ chế auth vẫn `U-06` |
+| Sensitive data | 🔴 | Yes | Redaction + encryption | §3.4, §4.9, §7.2 | ADR-002, ADR-009 | ⚠️ `U-15` một phần `CHỐT`; ✅ **`E12` ĐÃ CHỐT `MUST-V0.1`** — **CHỐT GATE-05b — 2026-08-14** (`SEC-016`), **không còn** *cần validate*. ⚠️ Thực thi phụ thuộc `U-06d` (**BLOCKER**, `GATE-05b-r2`) |
+| Security exposure | 🔴 | Yes | Private/self-hosted architecture | §6.1, §2.7, §7.1 | ADR-009 | ✅ `E7` — **M2 ✅ ĐÃ CHỐT 2026-08-14**: authn/authz/audit thuộc OSS core (§6.6) ⇒ bản self-host **có** control bảo mật. ✅ **CHỐT GATE-04 — 2026-08-14**: sàn store **đã đóng** (storage + index + authn/authz/audit hook, 3 thao tác §5.4). ⚠️ **Cơ chế auth vẫn `U-06`** và `GAP-04` còn nguyên — `GATE-04-r` |
 | False confidence | 🔴 | Yes | Explicit replay semantics | §5.3 | ADR-006 | ✅ ngôn từ §20.16 `CHỐT` |
 | Developer adoption | 🔴 | Yes | Minimal integration | §3.1, §5.1, §6.1 | ADR-007 | ✅ |
 | Race conditions | 🔴 | **No** | Future | §1.5 out of scope | ADR-010 | ✅ đã hoãn `[stated]` §20.13 |
@@ -1565,11 +1652,13 @@ Disposition: **`CHỐT`** = đã quyết · **`TBD`** = chưa biết, có/không
 | External dependency drift | 🟠 | Yes | Recorded responses | §3.2, §4.5 | ADR-004 | ✅ |
 | Replay boundary | 🟠 | Yes | Explicit service boundaries | §6.4 | ADR-009 | ✅ `E5` |
 | Capsule size | 🟠 | Yes | Compression + limits | §4.7 | ADR-002 | ⚠️ `U-18` |
-| Compliance | 🟠 | Yes | Policies + self-hosting | §7.4, §7.5, §6.1 | ADR-009 | ⚠️ deletion chưa giải; `E12` cần validate |
+| Compliance | 🟠 | Yes | Policies + self-hosting | §7.4, §7.5, §6.1 | ADR-009 | ✅ **`E12` ĐÃ CHỐT `MUST-V0.1`** (`GATE-05b`) + **TTL mặc định 30 ngày** (`GATE-05a`, `SEC-022`) ⇒ *policies* nay có **giá trị** và có **cơ chế**. ⚠️ **deletion vẫn chưa đảm bảo thực thi**: phụ thuộc `U-06d` key custody (**BLOCKER**, `GATE-05b-r2`) |
 | OSS business model | 🟡 | Later | Define after product validation | §6.6 | — | **M2 ✅ ĐÃ CHỐT 2026-08-14** ở phần *module seam* (authn/authz/audit → OSS core). ⚠️ License và pricing vẫn `Later` đúng §28 |
 | Compatibility matrix | 🟡 | Yes | Narrow initial support | §3.1 | ADR-007 | ✅ — nợ vĩnh viễn |
 
 **Đọc bảng này thế nào**: bốn dòng có ❌ hoặc ⚠️ nặng là những chỗ **thiết kế chưa đứng được**. Ba trong số đó (`U-04`, `U-09`, `U-02`) là mitigation cho risk mà chính §21 xếp `Critical` hoặc `High` với `MVP? = Yes`. Đây là lý do §39 yêu cầu **spike trước, platform sau**.
+
+> ✅ **CHỐT GATE-02 — 2026-08-14.** Câu cuối trên **thôi là một lý do**, nó là **quyết định đã chốt** của `@TrisJr`: **spike trước, Epic/Story sau** — phân rã Epic/Story bị **hoãn tới sau khi Phase 0 đóng gate**. Bảng truy vết này chính là căn cứ: chừng nào các ô ❌/⚠️ nặng còn đó thì acceptance criteria dựa trên *"execution matched"* **chưa kiểm chứng được**. Đồng thời ✅ **CHỐT GATE-01 — 2026-08-14**: Phase 0 spike **đã được bật** ⇒ hai gate này khớp nhau, **không** mâu thuẫn: spike chạy trước, phân rã story chờ kết quả spike. Xem §8.2 và [Risk-Register](../../010-Planning/Risk-Register.md).
 
 ---
 

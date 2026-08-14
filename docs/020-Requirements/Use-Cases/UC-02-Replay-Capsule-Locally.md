@@ -4,6 +4,7 @@ type: use-case
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # 🎬 UC-02 — Replay Capsule Locally
@@ -200,6 +201,10 @@ Mitigation §20.3: *"Make **Execution Verification** a core feature. Repro shoul
 > ⚠️ **`ACG-01` — chặn ở đây, không lấp được.** §10 dùng cụm *"sufficiently equivalent"* nhưng **`RQ.md` không định nghĩa nó ở bất kỳ đâu**, và cũng **không định nghĩa** `A`, `B`, `C` trong ký hiệu `A → B → C` là gì: chuỗi **function call**? **code line**? **span**? chuỗi **interaction với dependency**? Bốn cách hiểu cho bốn hệ thống hoàn toàn khác nhau. Cũng không nói so bao nhiêu field, exact hay tolerant, và ngưỡng nào biến so sánh thành kết luận nhị phân.
 >
 > ⇒ **Feature quan trọng nhất về mặt tin cậy của sản phẩm là feature không đo được.** Chi tiết và phương án đề xuất (chưa áp dụng, cần validate qua spike §22): [NFR-Repro](../NFR-Repro.md) mục 7 `ACG-01`. **Tuyệt đối không tự chế định nghĩa ở đây.**
+>
+> ✅ **`CHỐT GATE-01 — 2026-08-14`: spike §22 đã được bật (`Go`)** — `Sponsor`/`Manager` = **`@TrisJr`**. ⚠️ **Nhưng `ACG-01` VẪN HỞ.** `GATE-01` bật *việc chạy spike*, nó **không** cấp định nghĩa *"sufficiently equivalent"*. Không có định nghĩa đó thì `FR-041` vẫn không spec được và `A4` vẫn không có tiêu chí phát hiện. Đây đúng là nội dung **`GATE-01-r`**: spike chạy được **không** đồng nghĩa spike kết luận được. Rủi ro tại [Risk-Register](../../010-Planning/Risk-Register.md) §4.2.
+>
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`.**
 
 ---
 
@@ -269,7 +274,27 @@ Ba khoảng trống chồng nhau:
 | I2 | **Không** truy cập production, kể cả production database | §5, §11, §7, `FR-033` |
 | I3 | Hệ thống giải thích **chính xác** cái gì đã capture và cái gì đã replay | §33.5, `N-13` |
 | I4 | Hệ thống **không** báo thành công khi execution đi đường khác | §10, §20.3, `FR-039` |
-| I5 | Capsule replay được ở môi trường **khác** nơi tạo ra nó — §22 đưa bước *"Destroy original environment"* vào quy trình spike đúng để chứng minh tính chất này | §6, §22, §40, `N-18` |
+| I5 | Capsule replay được ở môi trường **khác** nơi tạo ra nó — §22 đưa bước *"Destroy original environment"* vào quy trình spike đúng để chứng minh tính chất này. ⚠️ **Nay có ĐIỀU KIỆN**: cần **lấy được khoá giải mã từ server** (`GATE-05b`) — xem ghi chú dưới bảng | §6, §22, §40, `N-18`; điều kiện mới từ `GATE-05b` |
+
+> ### ⚠️ `I5` bị `✅ CHỐT GATE-05b — 2026-08-14` làm đổi — đọc kỹ, đây là thay đổi nặng nhất của tài liệu này
+>
+> **Quyết định**: `SEC-016` **crypto-shredding = ÁP DỤNG, phân loại `MUST-V0.1`**. Capsule mã hoá bằng **khoá riêng từng capsule, khoá giữ phía server**; **xoá khoá ⇒ capsule không giải được**. Chi tiết: [NFR-Repro](../NFR-Repro.md) mục 5.4.
+>
+> **Hệ quả lên `I5`** — `GATE-05b-r`: *"capsule replay được ở môi trường khác"* **không còn là một khẳng định vô điều kiện**. Phát biểu đúng của `I5` sau quyết định:
+>
+> | | Trước `GATE-05b` | Sau `GATE-05b` |
+> |---|---|---|
+> | Điều kiện để replay ở môi trường khác | Có capsule **là đủ** | Có capsule **và** lấy được **khoá từ server** |
+> | Replay hoàn toàn offline | ✅ Được coi là bất biến | ❌ **Thôi là bất biến** |
+> | Capsule self-contained tuyệt đối | ✅ | ❌ — va thẳng vào [ADR-002](../../030-Specs/Architecture/ADR-002-Repro-Capsule-Format-Contract.md) |
+>
+> **Bằng chứng gốc giữ nguyên**: §6, §40 và bước *"Destroy original environment"* của §22 **vẫn** yêu cầu capsule portable, và `N-18` **vẫn** là ràng buộc. `GATE-05b` **không** xoá tính portable — capsule vẫn di chuyển được sang máy khác, môi trường khác, và §22 vẫn chứng minh được điều đó. Cái mất là **tính tự-đủ khi ngắt mạng**.
+>
+> **Ranh giới phải đọc đúng — `I2` KHÔNG bị phá**: khoá nằm ở **server của Capsule Store**, **không** phải ở production. `I2` (*"không truy cập production, kể cả production database"* — §5, §11, §7, `FR-033`) **vẫn nguyên**. Chỉ `I5` mang điều kiện mới. **Không được đọc `GATE-05b` như đã nới `I2`.**
+>
+> **Đây là hệ quả được chấp nhận có ý thức**, không phải phát hiện muộn: cảnh báo *"replay không cần kết nối mạng thôi là bất biến"* đã được nêu trước khi anh quyết, và anh vẫn chọn `MUST-V0.1`. Rủi ro tại [Risk-Register](../../010-Planning/Risk-Register.md) §4.2.
+>
+> **`TBD` kèm theo — blocker (`GATE-05b-r2`)**: hành vi khi **không lấy được khoá** lúc replay (báo lỗi phân biệt được với `A6` capsule hỏng? retry? cache khoá có được phép không, và nếu được thì bao lâu?) — **chưa có nguồn**, owner **`@TrisJr`**, điều kiện đóng: quyết định key custody (`U-06d`) tại [ADR-009](../../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md) `Open items`. **Không tự quyết ở tài liệu này.**
 
 ---
 
@@ -316,12 +341,13 @@ Tra theo **hợp đồng traceability** ở [PRD-Repro](../PRD-Repro.md) mục 5
 
 | Tài liệu | Quan hệ |
 |---|---|
-| [PRD-Repro](../PRD-Repro.md) | Hợp đồng FR (mục 5.7); mục 10.5 (`ACG-07`, `U-06`) |
+| [PRD-Repro](../PRD-Repro.md) | Hợp đồng FR (mục 5.7); mục 10.5 — `ACG-07` **vẫn hở**, `U-06` **đã chốt phần sàn** (`✅ CHỐT GATE-04 — 2026-08-14`; **cơ chế** authn/authz vẫn `TBD`); mục 5.2 `FR-024` (TTL mặc định **30 ngày**, `GATE-05a`) |
 | [NFR-Repro](../NFR-Repro.md) | `ACG-01` (chặn `A4`), `ACG-07` (chặn P6 và `A5`), `ACG-09` (`FR-034`…`FR-036`), `ACG-10` (`A1`, `A2`); `N-12`, `N-13`, `N-16`, `N-18`; mục 5.2, 5.3 |
 | [UC-01 — Capture Failed Production Execution](./UC-01-Capture-Failed-Production-Execution.md) | Tạo ra capsule mà UC này tiêu thụ; `A1` của UC-01 sinh ra `A6` của UC này |
 | [UC-03 — Read Execution Diff](./UC-03-Read-Execution-Diff.md) | Bước tiếp theo khi `A3` / `A5` |
 | [UC-04 — Verify Fix](./UC-04-Verify-Fix.md) | Bước tiếp theo sau khi developer fix code |
 | [UC-05 — Browse And Inspect Capsules](./UC-05-Browse-And-Inspect-Capsules.md) | Nguồn của bước 1 (`repro list`); kiểm tra nội dung capsule khi nghi `A5`/`A6` |
 | [BRD-001-Problem-Statement](../BRD/BRD-001-Problem-Statement.md) | Vấn đề gốc — thay `Guess the state` (§2.1) bằng recorded input |
-| [SDD-Repro](../../030-Specs/Architecture/SDD-Repro.md) | Thiết kế replay runtime, interception, capsule store |
+| [SDD-Repro](../../030-Specs/Architecture/SDD-Repro.md) | Thiết kế replay runtime, interception, capsule store — §5.4 giữ 3 thao tác tối thiểu của sàn `GATE-04`; §4.9 và §7.4 giữ hệ quả của `GATE-05b` lên `I5` |
+| [ADR-009 — Private Self-Hosted Topology](../../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md) | Sàn Capsule Store (`D3`) và **key custody `U-06d`** — blocker của điều kiện mới ở `I5` |
 | `docs/999-Resources/RQ.md` | **Nguồn sự thật gốc** — §5, §7, §8, §10, §11, §12, §13, §14, §15, §18, §20.3, §20.4, §20.9, §20.10, §20.11, §20.12, §25, §33 |

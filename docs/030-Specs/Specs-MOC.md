@@ -24,7 +24,16 @@ updated: 2026-08-14
 
 ### Architecture Decision Records
 
-**Tất cả 11 ADR đang ở `Decision status: Proposed` — chưa ai duyệt.**
+**✅ CHỐT GATE-03 — 2026-08-14: tất cả 11 ADR đã được duyệt, `Decision status: Accepted`.** Người duyệt: **`@TrisJr`**.
+
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5.
+
+> [!WARNING]
+> **`Accepted` KHÔNG có nghĩa mọi thứ trong ADR đã chốt.** Nó xác nhận **hướng quyết định**; mục `Open items` của các ADR vẫn giữ **6 unknown chưa giải**: `U-01` (cơ chế chặn driver `pg`), `U-02` (query matching identity — *rủi ro hiện thực cao nhất*), `U-03`, **`U-04`** (*unknown lớn nhất của cả tài liệu*), `U-13`, `U-20`. Bốn trong số đó có disposition `SPIKE`, tức là **chỉ trả lời được sau khi technical spike chạy**.
+>
+> Rủi ro *"hạ nguồn đọc `Accepted` như đã chốt hết"* được ghi thành **`GATE-03-r`** tại [Risk-Register §4.2](../010-Planning/Risk-Register.md). Mỗi ADR mang một callout tường minh về điều này — đó là mitigation.
+>
+> Lưu ý thêm: `GATE-03` đổi **`Decision status`** của ADR. Trường **`status:` trong frontmatter vẫn là `draft`** ở cả 11 file. Hai trường khác nhau.
 
 | ADR | Quyết định |
 |---|---|
@@ -51,10 +60,14 @@ updated: 2026-08-14
 ## ⚠️ Ba điều cần biết trước khi dùng bộ spec này
 
 1. **Hai unknown lõi chưa được giải và cố ý không được giả vờ là đã giải**: `U-04` (định nghĩa *"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, nó chặn `ADR-006`) và `U-02` (query matching identity — rủi ro hiện thực cao nhất, nó chặn `ADR-003`). Cả hai ở dạng `TBD` kèm phương án gắn nhãn *"cần validate"*.
-2. **Mâu thuẫn M2 đã ✅ CHỐT 2026-08-14** — `RQ.md §28` xếp access control vào commercial layer trong khi §20.5/§21 coi là MVP. Quyết định `D2`: **authentication + authorization + audit log thuộc OSS core**, ghi đè §28. `RQ.md` **vẫn nguyên văn nói ngược** — bằng chứng hai phía được giữ nguyên tại [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) và [threat model §10](./Security/Spec-Security-Repro-Threat-Model.md). Hai điểm **không** bị chốt theo: `SEC-016` (crypto-shredding) giữ `DEFER`, và `GAP-04` (chưa có CLI verb nào để vận hành authz/audit) **nặng thêm** sau quyết định này.
-3. **Khi trích dẫn ở tài liệu hạ nguồn, hãy trỏ section cụ thể** (ví dụ `SDD §3.7`) thay vì trỏ cả file — `SDD-Repro.md` và threat model đều dài trên 1200 dòng.
+2. **Mâu thuẫn M2 đã ✅ CHỐT 2026-08-14** — `RQ.md §28` xếp access control vào commercial layer trong khi §20.5/§21 coi là MVP. Quyết định `D2`: **authentication + authorization + audit log thuộc OSS core**, ghi đè §28. `RQ.md` **vẫn nguyên văn nói ngược** — bằng chứng hai phía được giữ nguyên tại [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) và [threat model §10](./Security/Spec-Security-Repro-Threat-Model.md).
+   - **Hai điểm `D2` không chốt theo, nay đã được quyết riêng ngày 2026-08-14:**
+     - `SEC-016` (crypto-shredding) — **✅ CHỐT GATE-05b**: rời `DEFER`, nay là **`MUST-V0.1`**. ⚠ Hệ quả: bất biến *"replay không cần kết nối mạng"* **bị phá** (`GATE-05b-r`), và `U-06d` (key custody) **thành blocker** (`GATE-05b-r2`). Xem [Risk-Register §4.2](../010-Planning/Risk-Register.md).
+     - `GAP-04` (chưa có CLI verb nào để vận hành authz/audit) — **vẫn nặng, KHÔNG được đóng.** `GATE-04` chốt *sàn* Capsule Store nhưng không chốt *ai vận hành nó bằng lệnh nào* (`GATE-04-r`).
+3. **`GATE-04` chốt sàn Capsule Store, nhưng chỉ phần *cái gì*.** Sàn đã chốt: **object/file storage + một index + authn/authz/audit hook**, với 3 thao tác tối thiểu — xem [SDD §3.6](./Architecture/SDD-Repro.md) và [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) `D3`. **Cơ chế** authn/authz cụ thể **vẫn `TBD`** ([SDD §5.4](./Architecture/SDD-Repro.md)).
+4. **Khi trích dẫn ở tài liệu hạ nguồn, hãy trỏ section cụ thể** (ví dụ `SDD §3.7`) thay vì trỏ cả file — `SDD-Repro.md` và threat model đều dài trên 1200 dòng.
 
 ## 📁 Thư mục con theo RULE-001 — chưa tạo
 
-- `API/` — Endpoint Spec và Integration Spec. Chưa có: V0.1 là CLI-first (`RQ.md §33.2`), và Capsule Store API còn là `TBD` (`U-06`).
+- `API/` — Endpoint Spec và Integration Spec. Chưa có: V0.1 là CLI-first (`RQ.md §33.2`). `U-06` nay đã **chốt phần sàn** (`GATE-04`) nhưng **API và cơ chế auth của Capsule Store vẫn `TBD`** ⇒ chưa đủ để viết Endpoint Spec.
 - `Schema/` — DB Entity. Chưa có: V0.1 **không có application database** — "persistence" của Repro là capsule, xem `SDD §4`.

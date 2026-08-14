@@ -62,7 +62,11 @@ _Yêu cầu phi chức năng: Hiệu năng, Bảo mật, Độ tin cậy._
 3. **Validation:** Review với stakeholder → cập nhật trạng thái `approved`.
 4. **Specification:** Chuyển đổi thành User Stories (tại [022-User-Stories](../022-User-Stories/Stories-MOC.md)).
 
-> **Trạng thái hiện tại**: toàn bộ tài liệu trong thư mục này ở `status: draft`. Bước 3 (Validation) **chưa chạy** — chưa có người duyệt được chỉ định. Bước 4 (Specification) chưa bắt đầu; PRD đã để sẵn điểm nối.
+> **Trạng thái hiện tại** *(cập nhật 2026-08-14)*: toàn bộ tài liệu trong thư mục này vẫn ở `status: draft`.
+>
+> - **Bước 3 (Validation)** — **đã có người duyệt được chỉ định**: **`@TrisJr`** (`✅ CHỐT GATE-01 — 2026-08-14`, xem [Charter §5.1](../010-Planning/Charter-Repro.md)). Người duyệt này đã thực thi lần đầu ở `GATE-03` — duyệt 11 ADR sang `Decision status: Accepted`. Nhưng **chưa có tài liệu nào trong thư mục này được chuyển `draft` → `approved`**; `GATE-03` chỉ chạm `Decision status` của ADR, không chạm `status:` frontmatter.
+> - **Bước 4 (Specification)** — **hoãn có chủ ý**: `✅ CHỐT GATE-02 — 2026-08-14` đặt việc phân rã User Story **sau** khi gate ra khỏi Phase 0 đóng. Lý do và điều kiện gỡ hoãn: [Stories-MOC](../022-User-Stories/Stories-MOC.md). PRD đã để sẵn điểm nối.
+> - **Năm quyết định gate** `GATE-01`…`GATE-05` và năm rủi ro chúng sinh ra: [Risk-Register §4.2](../010-Planning/Risk-Register.md).
 
 ---
 

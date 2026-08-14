@@ -15,8 +15,15 @@ updated: 2026-08-14
 **Chưa có tài liệu QA nào cho dự án Repro.** Đây là trạng thái đúng, không phải thiếu sót:
 
 - `src/` và `test/` của repo còn **rỗng** — chưa có gì để kiểm thử. Toàn bộ bộ tài liệu hiện có là thiết kế **trước khi** hiện thực, xem [Specs-MOC](../030-Specs/Specs-MOC.md).
-- `RQ.md §39` khuyến nghị chạy **technical spike trước**, chưa vào MVP. Test plan viết trước spike sẽ phải làm lại.
-- **Chưa có tiêu chí pass/fail cho chỉ số thành công của V0.1.** `N-05` (Execution Match Rate) là thước đo chính của V0.1 sau quyết định `D1`, nhưng `RQ.md §24` **không đặt ngưỡng** cho nó — xem [NFR-Repro §3](../020-Requirements/NFR-Repro.md) và [ADR-006](../030-Specs/Architecture/ADR-006-Execution-Verification-By-Equivalence.md). Đây là rào chắn thật: **không có ngưỡng thì không viết được cổng đạt/không-đạt** cho spike.
+- **Technical spike đã được bật** — `✅ CHỐT GATE-01 — 2026-08-14`: `Go`, owner `@TrisJr` (xem [Roadmap](../010-Planning/Roadmap.md)). Nhưng `RQ.md §39` vẫn đặt spike **trước** MVP, và `✅ CHỐT GATE-02` hoãn phân rã Epic/Story tới sau gate Phase 0 ⇒ **test plan cho V0.1 vẫn phải chờ**. Viết bây giờ sẽ phải làm lại.
+- **Chưa có tiêu chí pass/fail cho chỉ số thành công của V0.1 — `GATE-01` KHÔNG đóng khoảng hở này.** `N-05` (Execution Match Rate) là thước đo chính của V0.1 sau quyết định `D1`, nhưng `RQ.md §24` **không đặt ngưỡng** cho nó, và [NFR §3.1](../020-Requirements/NFR-Repro.md) ghi rõ ngưỡng *"cần anh chốt **sau** spike §22"* — xem thêm [ADR-006](../030-Specs/Architecture/ADR-006-Execution-Verification-By-Equivalence.md). Đây là rào chắn thật: **không có ngưỡng thì không viết được cổng đạt/không-đạt**.
+
+> [!WARNING]
+> **Bản thân technical spike cũng chưa có cổng đạt/không-đạt** — rủi ro `GATE-01-r` tại [Risk-Register §4.2](../010-Planning/Risk-Register.md).
+>
+> Đây là điều QA cần biết trước nhất: `GATE-01 = Go` cho phép **chạy** spike, nhưng bốn khoảng hở ở [NFR §7](../020-Requirements/NFR-Repro.md) làm spike **không kết luận được**: `ACG-03` (ngưỡng `≥80%` không có denominator, không có định nghĩa *"reproduced"*) · `ACG-02` (**không có tiêu chí chọn test case** — mà chính `ACG-02` đòi chốt *trước khi* chạy) · `ACG-01` (*"sufficiently equivalent"*) · `ACG-07` (*"Supported Execution Class"*).
+>
+> ⇒ **Việc QA nên làm sớm nhất không phải test plan cho V0.1, mà là góp phần chốt bốn mục trên trong một spike protocol** — tài liệu đó chưa tồn tại và thuộc hạng mục kế tiếp. Thêm một kiểm tra đáng đưa vào: **`U-25`** — replay hai lần cùng một capsule phải cho cùng kết quả; [SDD §8.3](../030-Specs/Architecture/SDD-Repro.md) tự nêu lý do *"nếu bản thân replay không tất định thì mọi kết luận equivalence đều rỗng"*.
 
 > [!WARNING]
 > Khi bắt đầu viết test plan, **đọc `U-04` ở [SDD §8.3](../030-Specs/Architecture/SDD-Repro.md) trước.** Chừng nào *"sufficiently equivalent"* chưa được định nghĩa, khái niệm *"execution replay đúng"* chưa kiểm thử được một cách khách quan — mọi assertion về equivalence sẽ dựa trên một định nghĩa chưa tồn tại.

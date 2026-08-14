@@ -4,6 +4,7 @@ type: use-case
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # 🎬 UC-03 — Read Execution Diff
@@ -244,6 +245,20 @@ Tra theo **hợp đồng traceability** ở [PRD-Repro](../PRD-Repro.md) mục 5
 **FR liên quan, thuộc UC khác nhưng ràng buộc output của UC này**: `FR-044` (code mismatch → `A1`), `FR-045` (schema drift → `A2`), `FR-038` (recorded response tại boundary → `A3`) — cả ba thuộc [UC-02](./UC-02-Replay-Capsule-Locally.md) theo hợp đồng mục 5.7.
 
 > ⚠️ **`FR-041` là FR không spec được của UC này.** `ACG-01` ([NFR-Repro](../NFR-Repro.md) mục 7): *"sufficiently equivalent"* không có định nghĩa, "execution path" không có định nghĩa, không có tập field so sánh, không có ngưỡng, không có quy tắc quy trách nhiệm divergence. §21 chỉ định **Execution verification** làm mitigation cho risk 🔴 Critical *"False replay equivalence"* ⇒ **feature quan trọng nhất về mặt tin cậy lại là feature không đo được.** Phương án đề xuất **chưa áp dụng**, cần validate qua technical spike §22.
+
+> ⚠️ **Trạng thái sau các quyết định ngày 2026-08-14: KHÔNG ĐỔI. `FR-041` vẫn không spec được, `ACG-01` vẫn hở.**
+>
+> `✅ CHỐT GATE-01 — 2026-08-14` bật **Phase 0 technical spike** (`Go`, `Sponsor`/`Manager` = **`@TrisJr`**). Đó là quyết định **có chạy spike hay không** — nó **không** cấp định nghĩa *"sufficiently equivalent"*, **không** cấp đơn vị của *"execution path"*, **không** cấp tập field so sánh, **không** cấp ngưỡng.
+>
+> | Mục | Trạng thái sau 2026-08-14 |
+> |---|---|
+> | Việc chạy spike §22 | **`Go`** (`GATE-01`) |
+> | `ACG-01` (*sufficiently equivalent*) | **vẫn hở** — owner **`@TrisJr`**; điều kiện đóng: định nghĩa được chốt tường minh, dự kiến sau kết quả spike §22 |
+> | `FR-041` | **vẫn không spec được** — chặn bởi `ACG-01`, không phải bởi việc thiếu spike |
+>
+> ⇒ Đây đúng là nội dung **`GATE-01-r`**: `Go` **không tự làm cho spike đo được**. Spike có thể chạy xong và báo cáo đủ số liệu mà `FR-041` vẫn không có tiêu chí kết luận `Execution matched` / `Execution diverged`. **Tuyệt đối không đọc `GATE-01 = Go` như đã giải `ACG-01`.** Rủi ro tại [Risk-Register](../../010-Planning/Risk-Register.md) §4.2.
+>
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`.**
 
 ---
 

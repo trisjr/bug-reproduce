@@ -30,9 +30,26 @@ Mọi thứ khác để sau. §20.15 nêu đích danh 8 hướng phình scope c�
 
 ---
 
-## Phase 0 — Technical Spike *(trước V0.1)*
+## Phase 0 — Technical Spike *(trước V0.1)* — ✅ CHỐT GATE-01 — 2026-08-14: **Go**
 
 > §39 khuyến nghị **dứt khoát**: KHÔNG bắt đầu bằng việc xây nền tảng Repro đầy đủ.
+
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5.
+
+| Trường | Giá trị |
+|---|---|
+| **Trạng thái** | ✅ **Go** — đã được cấp vốn ngày **2026-08-14** (`GATE-01`) |
+| **Owner** | **`@TrisJr`** |
+| **Phạm vi cấp vốn** | **Đúng Phase 0.** V0.1 và các phase sau **chưa** được cấp vốn |
+| **Cách hiểu** | Đây là **điều kiện đầu tư**, không phải một task. Xem [Charter §6.4](./Charter-Repro.md) |
+| **Phạm vi 10 scenario** | **Không thu hẹp** — anh chọn `Go`, không chọn `Go with narrowed scope`. Bảng 10 scenario bên dưới giữ nguyên |
+
+> [!WARNING]
+> **`Go` KHÔNG có nghĩa spike đã sẵn sàng chạy** — rủi ro `GATE-01-r` tại [Risk-Register §4.2](./Risk-Register.md).
+>
+> Spike ở dạng đặc tả hiện tại **chạy xong vẫn không cho ra pass/fail**, vì bốn khoảng hở ở [NFR-Repro §7](../020-Requirements/NFR-Repro.md) chưa được lấp: `ACG-03` (denominator + định nghĩa *"reproduced"*) · `ACG-02` (tiêu chí chọn test case — chính `ACG-02` đòi chốt **trước khi** chạy) · `ACG-01` (*"sufficiently equivalent"*) · `ACG-07` (*"Supported Execution Class"*).
+>
+> **Việc phải làm trước khi spike chạy**: viết một **spike protocol** chốt bốn mục đó ở dạng *hypothesis có nhãn*, **không** phải định nghĩa sản phẩm. Tài liệu này **chưa tồn tại** và **không** thuộc phạm vi quyết định ngày 2026-08-14.
 
 ### Mục tiêu — đúng một câu hỏi
 
@@ -105,6 +122,31 @@ Replay Success Rate · Execution Match Rate · Capture Overhead (CPU / Memory / 
 - Trả lời **Có** ⇒ tiến vào V0.1.
 - Trả lời **Không** ⇒ **xác định lớp bug nào không replay được và thu hẹp phạm vi sản phẩm tương ứng** (§39). Không phải bỏ, cũng không phải cứ thế đi tiếp.
 - §24 bổ sung điều kiện dừng cứng: nếu spike không đạt tỷ lệ replay hữu ích trên một lớp bug có ý nghĩa, **khái niệm sản phẩm phải được xem xét lại trước khi xây nền tảng đầy đủ**.
+
+#### Trạng thái gate — 2026-08-14
+
+| | |
+|---|---|
+| **Gate vào Phase 0** | ✅ **ĐÃ MỞ** — `GATE-01 = Go`, người quyết `@TrisJr` |
+| **Gate ra khỏi Phase 0 (§39)** | ⏳ **CHƯA ĐI QUA.** Hai nhánh Có/Không ở trên **vẫn nguyên hiệu lực**, điều kiện dừng cứng của §24 **không** bị gỡ |
+| **Ai đóng gate ra** | `@TrisJr` (Sponsor) — cùng người mở gate vào. Xem cảnh báo về cấu hình một-người ở [Charter §5.1](./Charter-Repro.md) |
+
+#### ✅ CHỐT GATE-02 — 2026-08-14: sequencing Epic/Story
+
+**Quyết định**: **phân rã Epic/Story được HOÃN tới sau khi gate ra khỏi Phase 0 đóng.** Không làm song song với spike.
+
+**Lý do** — không phải để tiết kiệm công, mà vì story viết bây giờ **không kiểm chứng được**:
+
+| Lý do | Neo văn bản |
+|---|---|
+| Acceptance criteria dựa trên *"execution matched"* chưa có tiêu chí pass/fail. `N-05` là chỉ số thành công của V0.1 nhưng §24 **không đặt ngưỡng** cho nó | `C-01-r` tại [Risk-Register §4.1](./Risk-Register.md) |
+| Không định nghĩa được *"sufficiently equivalent"* thì **không đếm được** *"execution matched"* | `C-01-r2` · `U-04` tại [SDD §8.3](../030-Specs/Architecture/SDD-Repro.md) |
+| Ngưỡng `N-05` **phải đến từ dữ liệu đo của spike**, không từ bàn giấy | [NFR §3.1](../020-Requirements/NFR-Repro.md) — *"cần anh chốt **sau** spike §22"* |
+| `U-06` bị `GATE-04` thu hẹp nhưng **cơ chế** auth vẫn `TBD` ⇒ ước lượng story còn hở | `GATE-04-r` tại [Risk-Register §4.2](./Risk-Register.md) |
+
+⇒ **Viết story trước spike không phải tiến độ, là rework có kế hoạch.** Trạng thái thư mục `022-User-Stories/` rỗng là **đúng**, không phải bỏ sót — xem [Stories-MOC](../022-User-Stories/Stories-MOC.md).
+
+**Điều kiện gỡ hoãn**: gate ra khỏi Phase 0 đóng với kết quả **Có**, **và** `N-05` có ngưỡng từ dữ liệu spike.
 
 ---
 

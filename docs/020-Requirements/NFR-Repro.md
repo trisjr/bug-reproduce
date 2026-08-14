@@ -26,11 +26,23 @@ updated: 2026-08-14
 >
 > Và §22–§23 định vị chúng là metric của **technical spike** — thứ chạy **trước** khi xây MVP (§39) — chứ không phải chỉ tiêu nghiệm thu của sản phẩm.
 
+> ✅ **`CHỐT GATE-01 — 2026-08-14`: Phase 0 technical spike = `Go`.** Trước quyết định này, *"spike chạy trước khi xây MVP"* là **khuyến nghị** đọc ra từ §39. Nay đó là **quyết định đã ghi** của anh, và spike được coi là **điều kiện đầu tư** chứ không phải một task. `Sponsor` = **`@TrisJr`** · `Manager` = **`@TrisJr`** · Owner của **18/18 risk** = **`@TrisJr`**. Xem [PRD-Repro](./PRD-Repro.md) mục 8.4 và [Roadmap](../010-Planning/Roadmap.md) Phase 0.
+>
+> ⚠️ **Cảnh báo ở trên KHÔNG bị quyết định này làm nhẹ đi.** `GATE-01` bật **việc chạy spike**; nó **không** đặt ngưỡng nghiệm thu nào, **không** biến `N-01`…`N-04` thành acceptance criteria, và **không** đặt ngưỡng cho `N-05`…`N-09` (mục 3). Bốn con số §24 vẫn là **hypothesis**.
+>
+> ⚠️ **`GATE-01-r`**: `Go` **không tự làm cho spike đo được**. `ACG-01`, `ACG-02`, `ACG-03`, `ACG-07` (mục 7) vẫn hở — không có denominator, không có định nghĩa *"reproduced"*, không có tiêu chí chọn test case, không có *"Supported Execution Class"*. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
+
 **Hệ quả vận hành**:
 
 - **Không** dùng `N-01`…`N-04` làm acceptance criteria của bất kỳ user story, sprint hay release nào.
 - **Không** đưa chúng vào hợp đồng, SLA, hay tài liệu bán hàng.
 - Chúng chỉ dùng đúng một việc: **quyết định có tiếp tục xây sản phẩm hay không** sau technical spike §22. §24 nêu điều kiện dừng: *"If the spike cannot achieve a useful replay rate on a meaningful class of bugs, the product concept should be reconsidered before building the full platform."*
+
+> ✅ **`CHỐT GATE-02 — 2026-08-14`: ràng buộc thứ nhất ở trên nay là GUARDRAIL CHÍNH THỨC.** Anh đã chốt **spike trước, Epic/Story sau** — hoãn phân rã Epic/Story tới **sau khi Phase 0 đóng gate**, vì acceptance criteria dựa trên *"execution matched"* hiện **chưa kiểm chứng được**.
+>
+> ⇒ Khi việc phân rã được mở lại, ràng buộc *"không dùng `N-01`…`N-04` làm acceptance criteria"* **áp bắt buộc** cho mọi user story, không còn là khuyến nghị đọc-ra-từ-§24. Cùng với nó: **không** dùng bốn ngưỡng §24 làm Definition of Done, và **không** viết AC dạng *"execution matched"* trước khi `ACG-01` có định nghĩa (mục 7).
+>
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` là Goals của V0.1 ở [PRD-Repro](./PRD-Repro.md) mục 2.2.
 
 **Bản đồ tài liệu**:
 
@@ -48,6 +60,8 @@ updated: 2026-08-14
 ## 2. Ngưỡng validation cho technical spike
 
 Nguồn: `RQ.md` §24 (*"Proposed Initial Success Threshold"*), đo bằng metric §23, trên test app và 10 scenario của §22.
+
+> **Trạng thái của spike: `Go`** — `✅ CHỐT GATE-01 — 2026-08-14` (mục 1). Bốn ngưỡng dưới đây vì thế **sắp được đo thật**, không còn là bài tập giấy. Nhưng chúng **vẫn là hypothesis**: `GATE-01` bật spike, **không** chốt ngưỡng. Hai chỗ hở của `N-01` (2.1) và các chỗ hở của `N-02`/`N-04` **chưa được quyết định nào lấp** ⇒ đúng nội dung của `GATE-01-r`.
 
 | ID | Ngưỡng §24 | Metric §23 tương ứng | Trạng thái |
 |---|---|---|---|
@@ -153,6 +167,16 @@ Việc này còn chồng lên `ACG-01`: kể cả có ngưỡng, chỉ số vẫ
 
 **Chặn**: `ADR-006` (Execution verification), nghiệm thu spike §22, và — nghiêm trọng nhất — **tiêu chí thành công của V0.1** ở [PRD-Repro](./PRD-Repro.md) mục 8.2.
 
+> ⚠️ **`N-05` VẪN LÀ `TBD` sau ngày 2026-08-14 — đọc kỹ chỗ này.** `✅ CHỐT GATE-01 — 2026-08-14` bật **Phase 0 technical spike**; nó **KHÔNG** đặt ngưỡng cho `N-05`. Ngưỡng của `N-05` vẫn *cần anh chốt **sau** spike §22*, đúng như đã ghi ở trên — vì chỉ sau khi có phân bố thực tế thì một ngưỡng mới không phải là số bịa.
+>
+> | Mục | Trạng thái sau các quyết định 2026-08-14 |
+> |---|---|
+> | Ngưỡng của `N-05` | **`TBD`** — owner **`@TrisJr`**; điều kiện đóng: **có kết quả phân bố từ spike §22** |
+> | `ACG-01` (*sufficiently equivalent*) | **vẫn hở** — không quyết định nào chạm tới |
+> | Việc chạy spike | **`Go`** (`GATE-01`) |
+>
+> ⇒ Đây chính là **`GATE-01-r`**: spike đã được bật trong khi **chưa có tiêu chí pass/fail** cho chỉ số thành công chính của V0.1. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2. **Không ai được đọc `GATE-01 = Go` như đã đóng `N-05`.**
+
 ### 3.2 `N-06`, `N-07`, `N-08` — CPU / Memory / Network overhead
 
 §20.7 nói tường minh instrumentation có thể làm tăng **latency, CPU usage, memory usage, network traffic** — bốn thứ. §23 yêu cầu đo cả bốn. §24 đặt ngưỡng cho **đúng một** (latency, `N-02`).
@@ -208,7 +232,14 @@ Nhóm này **không có số** và không nên bị ép thành số. Chúng là 
 
 Ở mức NFR, chỉ cần biết **bốn thay đổi mặc định** — đây là phần có giá trị nhất của threat model, và cả bốn đều **siết chặt hoặc bổ sung** so với `RQ.md` §16:
 
-> **Trạng thái của thay đổi thứ 4 (mục 5.4)**: phần **authn + authz + audit log thuộc OSS core** đã ✅ **CHỐT 2026-08-14** (M2). Phần **crypto-shredding** đi kèm trong cùng mục **vẫn là đề xuất cần validate**, chưa chốt.
+> **Trạng thái của thay đổi thứ 4 (mục 5.4) — cả hai phần nay đã chốt, bằng hai quyết định khác nhau vào hai thời điểm khác nhau**:
+>
+> | Phần | Trạng thái | Neo |
+> |---|---|---|
+> | **authn + authz + audit log thuộc OSS core** | ✅ **CHỐT 2026-08-14** | **M2** — giữ nguyên nhãn cũ, không đổi |
+> | **crypto-shredding** (`SEC-016`) | `✅ CHỐT GATE-05b — 2026-08-14` — **ÁP DỤNG**, phân loại **`MUST-V0.1`** | `GATE-05b` |
+>
+> ⇒ Câu *"crypto-shredding vẫn là đề xuất cần validate"* ở các bản trước của tài liệu này **không còn đúng**. Xem mục 5.4.
 
 ### 5.1 Mọi thứ fail **closed**
 
@@ -237,9 +268,13 @@ Máy bị ảnh hưởng là máy có SSH key, cloud credential và quyền push
 
 Yêu cầu này **rẻ** nhưng phải chốt **từ V0.1** vì nó ràng buộc **capsule format** (`FR-017`) — không retrofit được sau.
 
-### 5.4 Authn/authz + audit nằm trong **OSS core** — ✅ **ĐÃ CHỐT 2026-08-14** (crypto-shred vẫn là đề xuất)
+### 5.4 Authn/authz + audit nằm trong **OSS core** — ✅ **ĐÃ CHỐT 2026-08-14** · crypto-shredding — `✅ CHỐT GATE-05b — 2026-08-14`
 
 > **M2 đã chốt.** Hai phía dưới đây được **giữ nguyên làm bằng chứng** — `RQ.md` vẫn tự nói ngược ở chính những section này; quyết định chỉ ghi lại ta chọn phía nào, nó không xoá mâu thuẫn trong nguồn.
+
+> **Mục này mang HAI quyết định, đọc rời nhau**: **M2** (authn/authz/audit thuộc OSS core) và **`GATE-05b`** (crypto-shredding = `MUST-V0.1`). `GATE-05b` là quyết định **mới**, ngày 2026-08-14, **không** thuộc M2 — M2 tường minh **không** bao gồm crypto-shred.
+>
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`.**
 
 | Phía "commercial layer" | Phía "MVP core" |
 |---|---|
@@ -259,13 +294,25 @@ Yêu cầu này **rẻ** nhưng phải chốt **từ V0.1** vì nó ràng buộc
 
 **Hệ quả kéo theo — `GAP-04` nặng thêm**: authz/audit nay **chắc chắn phải có trong OSS core**, mà §18 **không có một CLI verb nào** để vận hành chúng — cả 6 verb (`list`, `pull`, `inspect`, `replay`, `diff`, `verify`) đều developer-side. Đây là **nợ giao diện vận hành tường minh**, xem [Analysis-Target-Users](../050-Research/Analysis-Target-Users.md) mục 4.1.
 
-#### ⏳ Crypto-shredding — **vẫn là đề xuất, CHƯA chốt**
+> **Cập nhật sau `✅ CHỐT GATE-04 — 2026-08-14`: sàn đã đóng, verb vận hành VẪN THIẾU.** `GATE-04` chốt **sàn tối thiểu của Capsule Store** = **object/file storage + một index + hook authn/authz/audit**, kèm 3 thao tác tối thiểu theo `SDD §5.4`. ⇒ Nay đã có **chỗ để cắm** authz và audit, tức phần *"cái gì phải có"* không còn `TBD`.
+>
+> Nhưng `GAP-04` **chưa đóng**: §18 vẫn **không có CLI verb nào** cho authz / audit / retention, và **cơ chế** authn/authz cụ thể vẫn `TBD` (owner **`@TrisJr`**; điều kiện đóng: quyết định thiết kế tại [SDD-Repro](../030-Specs/Architecture/SDD-Repro.md) §5.4). Rủi ro **`GATE-04-r`** — *"sàn đóng nhưng không vận hành được"* — tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2. Neo Requirements của `GATE-04`: [PRD-Repro](./PRD-Repro.md) mục 10.5 (`U-06`).
 
-**Khuyến nghị (chưa áp dụng)**: bổ sung **crypto-shredding** — capsule mã hoá bằng key riêng từng capsule giữ phía server, replay lấy key just-in-time ⇒ *xoá = phá key*, và mọi bản copy đã nằm trên laptop/chat/git lập tức thành ciphertext vô nghĩa. Đây là cơ chế **duy nhất** biến việc capsule đã rời khỏi hạ tầng tổ chức từ **bất khả hồi** thành **khả hồi**, và là điều kiện để nói được về GDPR right-to-erasure.
+#### ✅ Crypto-shredding — **ÁP DỤNG, phân loại `MUST-V0.1`** — `✅ CHỐT GATE-05b — 2026-08-14`
 
-**Đánh đổi phải nói thẳng**: crypto-shred **mất khả năng replay offline** và làm self-host phức tạp hơn. Đánh đổi này **chưa được ai cân** ⇒ giữ nhãn **"cần validate"**, **không** viết như đã chốt. Quyết định M2 ngày 2026-08-14 **không** bao gồm crypto-shred.
+**Đây là neo NFR của `GATE-05b`.**
 
-Xem [PRD-Repro](./PRD-Repro.md) mục 10.4.
+**Nội dung đã chốt**: **crypto-shredding** là yêu cầu **`MUST-V0.1`** (`SEC-016`) — capsule mã hoá bằng key riêng từng capsule, **khoá giữ phía server**, replay lấy key just-in-time ⇒ *xoá = phá key*, và **xoá khoá ⇒ capsule không giải được**, kể cả mọi bản copy đã nằm trên laptop / chat / git. Đây là cơ chế **duy nhất** biến việc capsule đã rời khỏi hạ tầng tổ chức từ **bất khả hồi** thành **khả hồi**, và là điều kiện để nói được về GDPR right-to-erasure.
+
+**Hệ quả lên bộ số bảo mật**: `SEC-016` rời `DEFER` sang `MUST-V0.1` ⇒ phân loại đổi từ `32 MUST-V0.1 / 8 SHOULD / 3 DEFER = 43` sang **`33 / 8 / 2 = 43`**. Tổng **vẫn 43**. Neo: [Spec-Security-Repro-Threat-Model](../030-Specs/Security/Spec-Security-Repro-Threat-Model.md) §9.2 và §11.c.
+
+**Đánh đổi phải nói thẳng — `GATE-05b-r`**: câu *"replay không cần kết nối mạng"* **thôi là bất biến**. Khoá giữ phía server ⇒ replay phải lấy được khoá ⇒ **replay không còn hoàn toàn offline**, và capsule **không còn self-contained tuyệt đối** (va thẳng vào [ADR-002](../030-Specs/Architecture/ADR-002-Repro-Capsule-Format-Contract.md) và §33.6 *Safe by default*). Việc self-host cũng phức tạp hơn. **Đây là hệ quả được chấp nhận có ý thức**, không phải phát hiện muộn: PM đã nêu cảnh báo này trước khi anh quyết, và anh vẫn chọn `MUST-V0.1`. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
+
+**Ranh giới cần đọc đúng**: khoá nằm ở **phía server của Capsule Store**, **không** phải ở production. Bất biến *"replay không truy cập production, kể cả production database"* (§5, §7, §11, `FR-033`) **vẫn nguyên**. Thứ mất đi là *"replay hoàn toàn offline"* — xem [UC-02](./Use-Cases/UC-02-Replay-Capsule-Locally.md) `I5`.
+
+**Vẫn `TBD` — và nay là blocker (`GATE-05b-r2`)**: **key custody** (`U-06d`) — khoá được giữ ở đâu, ai cấp, xoay vòng thế nào, xoá bằng thao tác nào. Không có key management thì crypto-shredding **không thực thi được**, nên quyết định `MUST-V0.1` chỉ có giá trị khi có nơi giữ và xoá khoá. Owner: **`@TrisJr`**; điều kiện đóng: quyết định thiết kế key management tại [ADR-009](../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md) `Open items`.
+
+Xem [PRD-Repro](./PRD-Repro.md) mục 10.4 và mục 5.2 (`FR-024` — TTL mặc định **30 ngày**, `✅ CHỐT GATE-05a — 2026-08-14`).
 
 ### 5.5 Một ràng buộc phải nói thẳng, không được làm mềm
 
@@ -306,6 +353,8 @@ Hệ quả phải chấp nhận và nói thật: **replay của một capsule đ
 ## 7. Acceptance criteria gaps
 
 Mười hai phát biểu của `RQ.md` **nghe như acceptance criteria nhưng không đo được**. Mỗi mục có ba phần: *phát biểu không đo được* | *vì sao* | *cần thêm gì*.
+
+> ⚠️ **Không một mục nào của `ACG-01`…`ACG-12` được các quyết định ngày 2026-08-14 đóng lại.** Ghi rõ ở đây vì mục này là nơi **`GATE-01-r`** trỏ tới: `✅ CHỐT GATE-01 — 2026-08-14` bật spike, nhưng **`ACG-01`** (*sufficiently equivalent*), **`ACG-02`** (*meaningful class*), **`ACG-03`** (denominator + định nghĩa *reproduced*), **`ACG-07`** (*Supported Execution Class*) **vẫn hở nguyên** — và bốn mục này chính là thứ làm cho kết quả spike **không kết luận được pass/fail**. Owner: **`@TrisJr`**; điều kiện đóng: định nghĩa được chốt tường minh **trước khi** spike §22 báo cáo kết quả. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
 
 ### `ACG-01` — *"sufficiently equivalent"* (§10) không có định nghĩa
 
@@ -456,7 +505,7 @@ Replay may not be deterministic.
 
 **Vì sao**: hai section cùng tự nhận nói về phạm vi MVP nhưng **không khớp**. Đọc §18 là danh sách đầy đủ ⇒ redaction/encryption/retention/self-hosting **ngoài** MVP, và §20.5 (🔴 Critical) trở thành risk **không có mitigation nào ở MVP**. Đọc §21 là có thẩm quyền ⇒ §18 thiếu 5 nhóm capability. `RQ.md` không có câu nào phân xử.
 
-**Cần thêm gì**: **đã được xử lý bằng một diễn giải tường minh (E2)**, ghi ở [PRD-Repro](./PRD-Repro.md) mục 3.4 — §18 là danh sách của **core replay loop**, §21 cột `MVP?` là **nguồn có thẩm quyền** cho capability phi chức năng; hai danh sách bổ sung nhau. Diễn giải này được chống lưng độc lập bởi threat model (32 requirement MUST-V0.1 phủ đúng redaction/encryption/retention/audit/authn-authz).
+**Cần thêm gì**: **đã được xử lý bằng một diễn giải tường minh (E2)**, ghi ở [PRD-Repro](./PRD-Repro.md) mục 3.4 — §18 là danh sách của **core replay loop**, §21 cột `MVP?` là **nguồn có thẩm quyền** cho capability phi chức năng; hai danh sách bổ sung nhau. Diễn giải này được chống lưng độc lập bởi threat model (**33** requirement MUST-V0.1 phủ đúng redaction/encryption/retention/audit/authn-authz — bộ số đổi từ `32/8/3` sang **`33/8/2 = 43`** sau `✅ CHỐT GATE-05b — 2026-08-14`, xem mục 5.4).
 
 ⚠️ Nhưng phải ghi rõ: **đây là diễn giải, `RQ.md` không nói thẳng.** Nếu anh sửa `RQ.md` sau này, §18 nên được bổ sung cho khớp §21 để gap này đóng lại tại gốc.
 

@@ -9,8 +9,17 @@ updated: 2026-08-14
 
 # ADR-011: Execution Diff as a First-Class Outcome
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
+>
+> ⚠️ **Hai họ định danh khác nhau, đừng đọc lẫn.** Trong file này `D1`…`D6` là **Decision sub-ID nội bộ của chính ADR này** (`### D5 — Ràng buộc an toàn của diff mode`, v.v.) — chúng **không** liên quan gì tới `GATE-0N`, và cũng **không** phải quyết định `D1`/`D2` của run trước. `GATE-03` **không** đổi tên, không đổi số, không đổi nội dung mục nào trong `D1`…`D6`.
+>
+> Phạm vi: file này chỉ chạm **`GATE-03`**. `U-10` (*diff mode có gọi dependency local thật không — RQ.md tự nói ngược*) **VẪN `TBD`**: `Accepted` phê chuẩn hướng *"Execution Diff là outcome hạng nhất"*, nó **không** chọn phía nào giữa `F3` và `F4`, và do đó **không** đóng được rủi ro side-effect mà `D5` chỉ phát biểu ràng buộc chứ không thay thế. Nhãn chốt của `M1` ở §Open items thuộc run trước và **giữ nguyên nguyên trạng**.
 
 ## Context
 

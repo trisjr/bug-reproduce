@@ -4,12 +4,18 @@ type: adr
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # ADR-001: Replay Execution, Not Environment
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
 
 ## Context
 
@@ -67,6 +73,10 @@ Hệ quả trực tiếp, được tách thành ADR riêng: database (ADR-003), 
 - **Guardrail chống phình phạm vi có sẵn**: §20.15 cho một tiêu chí nhị phân để từ chối tính năng.
 - **Tương thích với hạ tầng sẵn có**: §34 định vị Repro nằm giữa Sentry/APM và regression test, không cạnh tranh trực tiếp.
 
+> ✅ **CHỐT GATE-01 — 2026-08-14** — hai mục ngay trên (*artifact portable* và *phạm vi kỹ thuật test được*) đều lấy spike §22/§39 làm phương tiện chứng minh. Spike đó **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3.
+>
+> ⚠️ **`Go` không tự làm cho spike đo được.** `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở, nên bước *"Destroy original environment"* (§22) và mệnh đề *kiểm chứng được bằng một spike* ở trên **chưa có tiêu chí pass/fail**. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+
 ### Negative
 
 - **§20.1 — Insufficient Execution Capture (Critical, RQ.md tự thừa nhận).** Một execution có thể phụ thuộc vào nhiều thứ hơn HTTP/DB/API: environment variables, filesystem state, randomness, system clock, process state, concurrency, network behavior, OS behavior, background jobs. Nếu không capture, replay có thể thất bại. Mitigation của chính §20.1 là *thu hẹp*: giới hạn MVP vào một lớp execution request/response deterministic được định nghĩa rõ, và **không hứa tái tạo mọi production bug**.
@@ -90,6 +100,10 @@ Hệ quả trực tiếp, được tách thành ADR riêng: database (ADR-003), 
 | 1 | **Định nghĩa "Supported Execution Class"** — §20.1 yêu cầu giới hạn vào *"a clearly defined class of deterministic request/response executions"* nhưng RQ.md không định nghĩa lớp đó ở bất kỳ đâu. | Chặn phát biểu phạm vi của V0.1, chặn mẫu số của tỉ lệ reproduce (§23 Replay Success Rate), và chặn việc nói cho user biết bug nào Repro *không* nhận. |
 | 2 | **§38 Q7 — bao nhiêu phần trăm production bug thực tế có thể replay được.** RQ.md để ở dạng câu hỏi chưa trả lời. | Chặn kết luận go/no-go của §39, và chặn mọi cam kết định lượng về giá trị sản phẩm. |
 | 3 | **§38 Q8 — context tối thiểu cần capture để đạt tỉ lệ replay hữu ích.** Cũng là câu hỏi chưa trả lời. | Chặn phạm vi capture của ADR-003/ADR-004, và chặn ngân sách overhead §20.7. |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — spike §22 + §39 **đã được bật**: `GATE-01` = **Go**, coi là **điều kiện đầu tư**, `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3.
+>
+> ⚠️ **Ba mục trên VẪN chưa được giải.** `GATE-01` chỉ chuyển chúng từ *"chưa quyết có chạy spike hay không"* sang *"chờ kết quả spike"* — nó **không** trả lời mục nào, và nhất là **không** đặt được tiêu chí đạt/không-đạt cho spike: mục 1 chính là `ACG-07` (*Supported Execution Class*), và `ACG-01`/`ACG-02`/`ACG-03` cũng vẫn hở ⇒ spike chạy lúc này vẫn **chưa kết luận được pass/fail**. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 Ba mục này chỉ giải được bằng technical spike §22 + §39, không giải được bằng tài liệu. Bốn ngưỡng ở §24 (`≥80%` reproduced, `<5%` latency overhead, `<10MB` capsule, `<30s` replay time) là **giả thuyết validation cho spike** — §24 tự nói *"These numbers should be treated as initial hypotheses, not final product commitments"* — **không** phải acceptance criteria của sản phẩm.
 

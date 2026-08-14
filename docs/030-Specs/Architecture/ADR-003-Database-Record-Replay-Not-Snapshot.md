@@ -4,12 +4,18 @@ type: adr
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # ADR-003: Database Record/Replay, Not Snapshot
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
 
 ## Context
 
@@ -93,6 +99,10 @@ trả về `null`. Repro ghi lại kết quả đó. Lúc replay, đường đi 
 | **`U-11`** | **Unmatched interaction — code local phát ra query không có trong capsule.** RQ.md hoàn toàn không nêu. **Đây không phải trường hợp biên mà là trường hợp thường gặp nhất**, vì use case chính là developer sửa code rồi replay lại (§8 bước 4–5). | `E9` áp dụng: đánh dấu **divergence + incomplete capture**, không crash, **không** fallback gọi DB thật. Còn TBD: **trả về giá trị gì** — kết quả rỗng, lỗi tường minh, hay dừng execution. *cần validate*. | Chặn ngữ nghĩa kết quả của `repro replay` và `repro diff` (§18); chặn phân loại outcome của ADR-006 (unmatched là "diverged" hay là một hạng riêng); chặn exception flow của use case replay. |
 | **`D-24`** | **Toàn văn `D-24` không có trong findings.** Ánh xạ `D-24` ⇄ §20.9 (schema drift) là suy đoán của em. | TBD — cần PM xác nhận. | Chặn khẳng định "ADR-003 đã phủ hết decision được giao". |
 | — | **Write result có được capture ở production không.** §13 nói lúc replay WRITE *"return recorded result"*, nhưng §18 danh sách capture chỉ có *"database query/result"* và *"external HTTP response"* — không nói rõ kết quả của write (id sinh tự động, `RETURNING`, số row bị ảnh hưởng) có được ghi hay không. | TBD — xem [ADR-005](./ADR-005-Default-Deny-Write-Side-Effects.md). | Chặn ngữ nghĩa entry `database/` trong capsule format v1 (ADR-002). |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — spike §22 (kịch bản #1 *Database state causes bug*, #5 *Missing data*) **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3.
+>
+> ⚠️ **`U-02` VẪN `TBD`.** Phương án định danh tổ hợp ở trên vẫn mang nhãn *cần validate* — `GATE-01` chỉ cấp **phương tiện** để cân đo nó bằng dữ liệu thật, nó **không** chốt phương án nào. Và `Go` không tự làm cho spike đo được: `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở ⇒ kịch bản #1/#5 chạy lúc này vẫn **chưa kết luận được pass/fail**. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ## Related Documents
 

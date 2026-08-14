@@ -4,12 +4,18 @@ type: adr
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # ADR-005: Default-Deny Write Side Effects
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
 
 ## Context
 
@@ -105,6 +111,10 @@ và quy định hành vi lúc replay: `READ → return recorded result`; `WRITE 
 | — | **Kết quả của write có được capture ở production không** (§13 vs §18). | TBD — nếu có thì capsule format v1 phải chừa chỗ ngay (ADR-002); nếu không thì §13 phải được đọc lại. | Chặn ngữ nghĩa entry `database/` và `network/` trong capsule format v1; chặn chính quyết định #5 ở trên. |
 | — | **Bằng chứng chấp nhận cho risk Critical này.** §22 có kịch bản #8 *"Side effect"* nhưng §23 không có metric tương ứng và §24 không có ngưỡng. | Thêm một kiểm chứng dạng phủ định vào spike: *không có gì rời process* trong toàn bộ 10 kịch bản, đo bằng L2. *cần validate*. | Chặn kết luận go/no-go của §39 đối với risk Critical §20.4. |
 | — | **Ràng buộc lên diff mode.** §9 hàm ý gọi dependency local thật; §11/§12 nói replay trả recorded result. | ADR này áp cho mọi mode chạy code ứng dụng. Quyết định về diff mode thuộc [ADR-011](./ADR-011-Execution-Diff-First-Class.md). | Chặn tính khép kín của phạm vi thực thi ADR-005; nếu diff mode gọi thật mà không áp default-deny thì đây là lỗ hổng side-effect. |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — spike §22 **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Điều này chạm hai mục ở trên: `U-12` (*cần validate bằng dữ liệu thật ở spike §22 #8*) và mục **bằng chứng chấp nhận** cho risk Critical §20.4 — kịch bản **#8 *Side effect*** của §22 nay đã có nơi để chạy, và kiểm chứng dạng phủ định (*không có gì rời process* trong toàn bộ 10 kịch bản, đo bằng L2) đã có phương tiện để thực hiện.
+>
+> ⚠️ **Cả hai mục VẪN mở.** `GATE-01` **không** đặt metric ở §23 cũng **không** đặt ngưỡng ở §24 cho risk này — hai chỗ thiếu đó vẫn thiếu, nên §22 #8 vẫn **chưa có tiêu chí đạt/không-đạt**; `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` cũng vẫn hở. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ## Related Documents
 

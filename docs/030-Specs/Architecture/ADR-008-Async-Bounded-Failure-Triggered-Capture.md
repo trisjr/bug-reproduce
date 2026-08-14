@@ -4,12 +4,18 @@ type: adr
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # ADR-008: Async, Bounded, Sampled, Failure-Triggered Capture
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm.
 
 ## Context
 
@@ -30,6 +36,10 @@ created: 2026-08-14
 §20.12 (*Capsule Size — High*) bổ sung một trục chi phí thứ hai — dung lượng — với mitigation `compression`, `deduplication`, `content hashing`, `size limits`, `selective capture`, `lazy loading`. Hai risk này gắn với nhau: cùng một cơ chế giới hạn phục vụ cả overhead lẫn kích thước.
 
 §24 đề xuất ngưỡng `< 5% production latency overhead`. **Phải đọc §24 đúng như nó tự khai**: RQ.md viết *"These numbers should be treated as **initial hypotheses**, not final product commitments"*, và toàn bộ §22–§24 nói về một **technical spike**, không phải về sản phẩm. Bốn con số của §24 (`≥ 80%`, `< 5%`, `< 10 MB`, `< 30 seconds`) do đó là **giả thuyết validation**, **không phải acceptance criteria** của V0.1.
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — **technical spike §22 mà đoạn trên nói tới đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3.
+>
+> ⚠️ **Điều này KHÔNG thăng cấp bốn con số §24 thành cam kết.** Cách đọc §24 ở đoạn trên **giữ nguyên không đổi**: `≥ 80%` / `< 5%` / `< 10 MB` / `< 30 seconds` vẫn là **initial hypotheses** cho spike, **không** phải acceptance criteria. `GATE-01` cấp phương tiện để **đo**, nó không biến giả thuyết thành ngưỡng đã duyệt. Và `Go` không tự làm spike đo được — `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 Về trigger, §38 đặt hai câu hỏi để ngỏ: Q5 *"Should V0.1 support only failed executions?"* và Q6 *"Should manual recording also be supported?"*. RQ.md **không tự trả lời**. Quyết định **E5** của run này chốt: V0.1 **chỉ capture failed executions**, **không** có manual recording.
 
@@ -91,6 +101,10 @@ Khi capsule sinh ra thiếu input và điều đó lộ ra lúc replay, hành vi
 - **"Failed" chưa có định nghĩa ⇒ trigger chưa cài được.** Xem `U-09b`. Đồng thời bug **không** kèm exception (kết quả sai nhưng HTTP 200) sẽ **không bao giờ** được capture ở V0.1 — mà đó là một lớp bug rất phổ biến, và ví dụ §7 của chính RQ.md chỉ tình cờ nằm ngoài lớp này vì nó crash.
 - **Không có manual recording (E5) ⇒ không có đường thoát.** Khi trigger tự động bỏ lỡ một execution, developer **không có cách nào** yêu cầu Repro ghi lại. Cửa sổ đó chỉ mở lại nếu B5 được xét lại.
 
+> ✅ **CHỐT GATE-01 — 2026-08-14** — mục *"`< 5%` không dùng được làm cổng nghiệm thu"* ở trên **giữ nguyên hiệu lực**: `GATE-01` = **Go** bật spike §22 (`Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`), nhưng **không** duyệt một ngưỡng overhead nào. Mapping: `GATE-01` = G1 · `GATE-03` = G3.
+>
+> ⚠️ Do đó mệnh đề *"V0.1 bước vào **không có ngưỡng overhead đã được duyệt** — đây là khoảng trống thật"* **vẫn đúng nguyên văn sau `GATE-01` và sau `GATE-03`**. Spike nay có thể **sinh ra** con số; việc **chốt** ngưỡng vẫn là một quyết định chưa được ra. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+
 ## Open items (TBD)
 
 | ID | Unknown | RQ.md nói gì | Nó chặn cái gì |
@@ -100,6 +114,10 @@ Khi capsule sinh ra thiếu input và điều đó lộ ra lúc replay, hành vi
 | `U-09c` | **Giá trị mặc định của các tham số**: sampling rate, trần buffer theo execution, trần toàn cục, số dòng/byte tối đa giữ cho một kết quả query. | §20.7 nói `configurable capture limits`; §20.12 nói `size limits`. **Không con số nào.** §24 chỉ có `< 10 MB average` — là giả thuyết spike, và §23 đòi đo cả P95 mà §24 **không** đặt ngưỡng P95. | Chặn: cấu hình mặc định của SDK; chặn hợp đồng hành vi khi chạm trần. Lens `security-auditor` cũng để ngỏ ngưỡng row/byte cap với cùng lý do: **cần số liệu từ spike §22**, không được bịa. |
 | `U-09d` | **Hành vi khi buffer chạm trần**: drop cả execution, hay giữ một phần và đánh dấu incomplete? | RQ.md nêu `selective capture` (§20.12) nhưng không nói tiêu chí chọn. | Chặn: trường khai báo `incomplete` trong capsule manifest ([ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md)); chặn việc **E9** có phân biệt được "thiếu vì bị cắt" với "thiếu vì code local gọi thứ không có trong capsule" — hai nguyên nhân khác nhau cần hai thông điệp khác nhau. |
 | `U-09e` | **Sampling quyết định ở đâu**: đầu execution (rẻ, nhưng phải quyết khi chưa biết gì) hay có thể nâng cấp giữa chừng khi thấy tín hiệu bất thường? | RQ.md chỉ nêu từ `sampling`. | Chặn: điểm cân bằng giữa hai hệ quả tiêu cực nêu trên; nếu quyết ở đầu thì xung đột sampling ↔ bắt-được-bug-hiếm là **không giảm nhẹ được**. |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Điều này chạm trực tiếp ba mục đầu bảng: `U-09` được ghi là ***"câu hỏi số một của technical spike §22"*** ⇒ nay đã có nơi trả lời; `U-09c` được ghi là ***"cần số liệu từ spike §22, không được bịa"*** ⇒ nay đã có nguồn số liệu được cấp phép.
+>
+> ⚠️ **`U-09`, `U-09b`, `U-09c` (và `U-09d`, `U-09e`) VẪN `TBD`.** `GATE-01` cấp **phương tiện đo**, không cấp **câu trả lời**: chi phí thật của buffer 100% vẫn chưa biết, *"failed"* vẫn **chưa có định nghĩa** ở bất kỳ đâu trong RQ.md, và **không một giá trị mặc định nào** được chốt ở đây — không bịa số. Nghịch lý capture trigger nêu ở §Context (*trạng thái "failed" chỉ biết được **sau khi** execution kết thúc*) **vẫn nguyên**. Thêm nữa `Go` không tự làm spike đo được: thiếu denominator và thiếu tiêu chí chọn test case (`ACG-01`/`ACG-02`/`ACG-03`/`ACG-07`) thì kết quả đo `U-09` vẫn **không quy được về pass/fail**. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ## Related Documents
 

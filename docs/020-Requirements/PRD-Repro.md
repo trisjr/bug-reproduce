@@ -207,7 +207,9 @@ Xem bảng 12 Non-Goal ở mục 2.3. Nhắc lại điểm quan trọng nhất v
 
 **Hệ quả trực tiếp**: `FR-019`…`FR-026` và `FR-054`…`FR-055` ở mục 5 là **in-scope V0.1**, dù không xuất hiện trong danh sách §18.
 
-Điều này còn được chống lưng độc lập bởi threat model: [Spec-Security-Repro-Threat-Model](../030-Specs/Security/Spec-Security-Repro-Threat-Model.md) kết luận **32 requirement là MUST-V0.1**, phủ đúng redaction, encryption, retention, audit và authn/authz.
+Điều này còn được chống lưng độc lập bởi threat model: [Spec-Security-Repro-Threat-Model](../030-Specs/Security/Spec-Security-Repro-Threat-Model.md) kết luận **33 requirement là MUST-V0.1**, phủ đúng redaction, encryption, retention, audit và authn/authz.
+
+> **Bộ số đã đổi — `✅ CHỐT GATE-05b — 2026-08-14`**: phân loại requirement bảo mật đi từ `32 MUST-V0.1 / 8 SHOULD / 3 DEFER = 43` sang **`33 MUST-V0.1 / 8 SHOULD / 2 DEFER = 43`**. Nguyên nhân duy nhất: `SEC-016` (crypto-shredding) rời `DEFER` sang `MUST-V0.1`. **Tổng vẫn là 43.** Xem mục 5.2 (`FR-024`) và [NFR-Repro](./NFR-Repro.md) mục 5.4.
 
 ### 3.5 Redis — ngoài V0.1
 
@@ -288,9 +290,13 @@ Ba nhóm **không** ngang hàng (quyết định E10):
 | FR-021 | Capsule phải hỗ trợ **encryption at rest** | Capsule | §16, §21 (Sensitive data, MVP=Yes) | P0 |
 | FR-022 | Hệ thống phải **automatic redaction** theo cấu hình, tối thiểu ở hai mức: HTTP header (vd. `authorization`, `cookie`) và field (vd. `password`, `access_token`, `credit_card`) | Capsule | §16, §20.5 | P0 |
 | FR-023 | Hệ thống phải hỗ trợ **PII anonymization** (vd. `john@example.com` → `user-1842@example.test`) | Capsule | §16, §20.5 | P0 |
-| FR-024 | Hệ thống phải hỗ trợ **retention policy cấu hình được** và **deletion** | Capsule | §20.5, §20.17, §21 (Compliance, MVP=Yes) | P1 |
+| FR-024 | Hệ thống phải hỗ trợ **retention policy cấu hình được** và **deletion**. **TTL mặc định của capsule = 30 ngày** — `✅ CHỐT GATE-05a — 2026-08-14` | Capsule | §20.5, §20.17, §21 (Compliance, MVP=Yes); giá trị mặc định từ `GATE-05a` | P1 |
 | FR-025 | Hệ thống phải có **strict access control** lên capsule | Capsule | §20.5, §21 (Sensitive data, MVP=Yes) | P0 |
 | FR-026 | Hệ thống phải ghi **audit log** cho truy cập capsule | Capsule | §20.17 | P1 |
+
+> ✅ **`CHỐT GATE-05a — 2026-08-14` — TTL mặc định của capsule = 30 ngày.** `RQ.md` §20.5 chỉ nói *"configurable retention"* và **không** đưa giá trị mặc định nào — trích dẫn đó **giữ nguyên** làm bằng chứng. Quyết định của anh cấp đúng một con số: **30 ngày là mặc định khi không cấu hình**. Retention **vẫn cấu hình được** theo đúng `FR-024` — `GATE-05a` chốt *mặc định*, **không** chốt *giá trị duy nhất*. Neo bảo mật: `SEC-022`. Hệ quả lên capsule đã pull về máy local: xem `✅ CHỐT GATE-05b` ở [NFR-Repro](./NFR-Repro.md) mục 5.4 và [UC-05](./Use-Cases/UC-05-Browse-And-Inspect-Capsules.md) `A2`.
+>
+> ⚠️ **Việc chốt TTL không đi qua pháp chế.** §20.17 xếp retention vào nhóm compliance (GDPR / HIPAA / PCI DSS / SOC 2); `GATE-05a` do **`@TrisJr`** quyết. Đây là **rủi ro được chấp nhận có ý thức**, không phải một con số đã được thẩm định pháp lý.
 
 > ✅ **M2 ĐÃ CHỐT 2026-08-14 — `FR-024`, `FR-025`, `FR-026` thuộc OSS core.** `RQ.md` §28 xếp *Access control* và *Retention policies* vào commercial layer; quyết định của anh **ghi đè** phần đó: **authentication + authorization + audit log nằm trong OSS core**, giữ nguyên là MVP. Chi tiết và hệ quả ở mục 10.4.
 
@@ -512,6 +518,12 @@ Ba yêu cầu UX rút ra:
 
 ⇒ Success của giai đoạn hiện tại **không phải** là "xây xong MVP", mà là **technical spike §22 trả lời được câu hỏi §39**.
 
+> ✅ **`CHỐT GATE-01 — 2026-08-14`: Phase 0 technical spike = `Go`.** Trước quyết định này, spike-trước-MVP là **khuyến nghị đọc ra từ §39**. Nay nó là **quyết định đã ghi** của anh: Phase 0 được bật, và được coi là **điều kiện đầu tư** — không phải một task trong backlog. `Sponsor` = **`@TrisJr`** · `Manager` = **`@TrisJr`** · Owner của **18/18 risk** = **`@TrisJr`**. Trích dẫn §24 và §39 ở trên **giữ nguyên** làm bằng chứng: chúng vẫn là căn cứ văn bản của quyết định, quyết định không thay chữ của nguồn.
+>
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị bảng Goals ở mục 2.2 chiếm.
+>
+> ⚠️ **`GATE-01-r` — `Go` KHÔNG tự làm cho spike đo được.** Bốn khoảng hở vẫn nguyên sau quyết định: `ACG-01` (không có định nghĩa *"sufficiently equivalent"* ⇒ không **tính** được Execution Match Rate), `ACG-02` (không có tiêu chí chọn test case *meaningful*), `ACG-03` (không có denominator cho `≥ 80%`, và không rõ *"reproduced"* là replay success hay execution match), `ACG-07` (không có *"Supported Execution Class"*). Chạy spike ở trạng thái này vẫn **không kết luận được pass/fail**. Chi tiết bốn khoảng hở: [NFR-Repro](./NFR-Repro.md) mục 7. Rủi ro được ghi tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
+
 ---
 
 ## 9. Validation Hypotheses
@@ -523,6 +535,10 @@ Ba yêu cầu UX rút ra:
 > **These numbers should be treated as initial hypotheses, not final product commitments.**
 
 Và §22–§23 định vị chúng là metric của **technical spike** — thứ chạy **trước** khi xây MVP (§39) — chứ không phải chỉ tiêu của sản phẩm.
+
+> ✅ **`CHỐT GATE-01 — 2026-08-14`: spike đã được bật (xem mục 8.4).** Điều này **KHÔNG** thay đổi tư cách của bốn con số dưới đây: chúng **vẫn là hypothesis**, **không** trở thành acceptance criteria chỉ vì spike đã có `Go`. §24 tự nói *"initial hypotheses, not final product commitments"* — quyết định của anh bật **việc chạy spike**, nó **không** đặt ngưỡng nghiệm thu nào.
+>
+> ⚠️ **`GATE-01-r` áp trực tiếp vào mục này**: bốn ngưỡng ở 9.1 vẫn thiếu định nghĩa đo (9.3), và `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở. Spike có thể chạy xong, báo cáo đủ số liệu, mà **không ai kết luận được đạt hay không đạt**. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
 
 ### 9.1 Bốn ngưỡng đề xuất (§24)
 
@@ -613,11 +629,19 @@ Ngoài việc §24 tự nói không nên, mỗi ngưỡng còn thiếu định n
 
 **Giữ nguyên ở commercial layer** theo §28: hosted storage · team management · analytics · AI analysis · cloud integrations.
 
+> **Bổ sung sau `✅ CHỐT GATE-05a — 2026-08-14`**: `FR-024` (retention) nay **có giá trị mặc định cụ thể** — **30 ngày** khi không cấu hình (mục 5.2). Trước `GATE-05a`, `FR-024` chỉ nói *"cấu hình được"* mà không có mặc định nào, nên nó là một MVP requirement **không triển khai được tới cùng**. Phần *Retention policies* của §28 vì thế đã bị hai quyết định chạm tới theo hai trục khác nhau: **M2** quyết nó thuộc **OSS core**, **`GATE-05a`** quyết **giá trị mặc định** của nó.
+
 **Lý do**: authn trả lời *bạn là ai*, authz quyết định *bạn xem được capsule nào*, audit ghi lại *ai đã pull gì*. Thiếu authz thì bản self-host — đúng bản §20.6 khuyến nghị vì lý do bảo mật — vẫn là bản **ai đăng nhập cũng đọc được mọi capsule production**. Thiếu audit thì tổ chức **kiểm soát được nhưng không chứng minh được**, trong khi §20.17 yêu cầu audit log như mitigation cho risk 🟠 High.
 
 **Hệ quả kéo theo — `GAP-04` nặng thêm, không nhẹ đi**: trước đây authz/audit *có thể* không được lấp ở bản OSS nên `GAP-04` còn mơ hồ. Nay chúng **chắc chắn phải có trong OSS core**, mà §18 vẫn **không có một CLI verb nào** để vận hành chúng — cả 6 verb (`list`, `pull`, `inspect`, `replay`, `diff`, `verify`) đều là developer-side. Khoảng trống giao diện vận hành giờ là **nợ tường minh**, không còn là rủi ro giả định. Xem [Analysis-Target-Users](../050-Research/Analysis-Target-Users.md) mục 4.1.
 
-### 10.5 Hai khoảng trống định nghĩa chặn được cả spec lẫn ước lượng
+> ⚠️ **Cập nhật sau `✅ CHỐT GATE-04 — 2026-08-14`: `GAP-04` VẪN NGUYÊN.** `GATE-04` chốt **sàn tối thiểu của Capsule Store** (mục 10.5, `U-06`), tức chốt *cái gì phải có*. Nó **không** cấp verb vận hành nào: §18 vẫn không có lệnh để cấu hình/kiểm tra retention, xoá capsule theo yêu cầu compliance, đọc audit log, hay quản lý quyền truy cập. **Không được đọc `GATE-04` như đã đóng `GAP-04`.**
+>
+> Cụ thể sau `GATE-04`: authn/authz/audit **hook** nay là phần bắt buộc của sàn ⇒ ba capability này chắc chắn tồn tại trong sản phẩm, nhưng **cơ chế** authn/authz vẫn `TBD` và **giao diện vận hành** vẫn `TBD`. Rủi ro này được PM ghi là **`GATE-04-r`** (*"sàn đóng nhưng không vận hành được"*) tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2, cập nhật lên `C-02-r` thay vì tạo mục trùng.
+
+### 10.5 Hai khoảng trống — `ACG-07` còn hở, `U-06` đã chốt phần sàn
+
+> **Trạng thái hai mục trong section này KHÁC nhau kể từ 2026-08-14.** `ACG-07` **vẫn hở nguyên** — không quyết định nào của anh chạm tới nó. `U-06` đã được `✅ CHỐT GATE-04 — 2026-08-14` ở **phần sàn**; phần **cơ chế** authn/authz vẫn `TBD`. Đọc từng mục, **không** suy trạng thái của mục này sang mục kia.
 
 #### `ACG-07` — "Supported Execution Class" chưa hề được định nghĩa
 
@@ -634,13 +658,38 @@ Nhưng **"clearly defined class" đó không tồn tại ở bất kỳ đâu tr
 
 **Không lấp bằng định nghĩa tự bịa.** Đây là mục **cần định nghĩa**, phương án đề xuất và ràng buộc validate ghi ở [NFR-Repro](./NFR-Repro.md) mục 7.
 
-#### `U-06` — Capsule Store chưa được đặc tả, ảnh hưởng ước lượng MVP
+#### `U-06` — Capsule Store: **sàn tối thiểu đã chốt** — `✅ CHỐT GATE-04 — 2026-08-14`
 
-`repro pull` (§8) và `repro list` (§18) **hàm ý tồn tại một store ở xa có API và có auth**; §28 xếp *"Basic Self-hosting"* vào OSS core; §20.6 vẽ *"Private Storage"*. Nhưng `RQ.md` **không có một dòng đặc tả nào**: không API, không auth, không storage backend, không mô hình triển khai.
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` là Goals của V0.1 ở mục 2.2.
+
+**Đây là neo chính của `GATE-04` trong tầng Requirements.**
+
+**Bằng chứng gốc — giữ nguyên 100%.** `repro pull` (§8) và `repro list` (§18) **hàm ý tồn tại một store ở xa có API và có auth**; §28 xếp *"Basic Self-hosting"* vào OSS core; §20.6 vẽ *"Private Storage"*. Nhưng `RQ.md` **không có một dòng đặc tả nào**: không API, không auth, không storage backend, không mô hình triển khai.
 
 Và nó va vào chính guardrail của `RQ.md`: §20.15 liệt kê **"Artifact storage"** như một biểu hiện của scope explosion, còn §20.14 cảnh báo hạ tầng đáng kể sẽ hại adoption — trong khi §8/§18/§28 lại đòi phải có store.
 
 **Vì sao nó thuộc PRD chứ không chỉ SDD**: nếu chấp nhận capsule là **file chuyển tay** cho V0.1 thì MVP **nhỏ hơn đáng kể** so với phương án có store. Đây là quyết định phạm vi, không phải chi tiết kỹ thuật.
+
+> **Phương án "file chuyển tay" ĐÃ BỊ LOẠI vì `D2` (M2, 2026-08-14).** Câu trên **giữ nguyên** làm bằng chứng cho lập luận phạm vi, nhưng kết luận của nó không còn khả dụng: `M2` đặt **authn + authz + audit log vào OSS core** (mục 10.4), và một capsule *chuyển tay qua file* thì **không có chỗ nào** để đặt authz và audit — không có thực thể nào kiểm tra quyền, không có thực thể nào ghi *"ai đã pull gì"*. ⇒ *File chuyển tay* **không còn thoả sàn**, nên nó không còn là phương án tiết giảm phạm vi hợp lệ cho V0.1.
+
+##### Sàn tối thiểu đã chốt
+
+`GATE-04` chốt **sàn tối thiểu** mà Capsule Store của V0.1 bắt buộc phải có:
+
+| # | Thành phần bắt buộc của sàn | Vì sao thuộc sàn |
+|---|---|---|
+| 1 | **Object/file storage** cho capsule | §20.6 *"Private Storage"*; capsule là artifact (§6) phải nằm ở đâu đó |
+| 2 | **Một index** | `repro list` (§18) không thực hiện được nếu không có thứ để liệt kê; `repro pull <id>` (§8) cần tra id → artifact |
+| 3 | **Hook authn/authz/audit** | `FR-025` (access control) + `FR-026` (audit log) là **OSS core** theo `D2`/M2 ⇒ store phải có chỗ cắm chúng |
+
+Kèm **3 thao tác tối thiểu** theo `SDD §5.4` — xem [SDD-Repro](../030-Specs/Architecture/SDD-Repro.md) §5.4 và [ADR-009](../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md) `D3`.
+
+**Phần sàn ĐÓNG.** `U-06` **không còn** là *"khoảng trống ước lượng MVP"*: phạm vi hạ tầng tối thiểu của V0.1 nay xác định được, nên ước lượng MVP có đáy.
+
+##### Cái mà `GATE-04` KHÔNG chốt
+
+- **Cơ chế** authn/authz cụ thể (token? OIDC? mTLS? mô hình quyền theo user/team/role?) — **vẫn `TBD`**. `GATE-04` chốt *cái gì phải có*, **không** chốt *làm bằng cách nào*. Owner: **`@TrisJr`**; điều kiện đóng: quyết định thiết kế ở [SDD-Repro](../030-Specs/Architecture/SDD-Repro.md) §5.4 + [ADR-009](../030-Specs/Architecture/ADR-009-Private-Self-Hosted-Topology.md).
+- **`GAP-04` — giao diện vận hành — vẫn hở nguyên**: §18 không có CLI verb nào cho authz / audit / retention (mục 10.4). Rủi ro **`GATE-04-r`** tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
 
 Chi tiết thiết kế: [SDD-Repro](../030-Specs/Architecture/SDD-Repro.md).
 

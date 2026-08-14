@@ -197,9 +197,14 @@ repro.init()
 
 **Không có** verb nào cho: cấu hình / kiểm tra retention policy, xoá capsule theo yêu cầu compliance, đọc audit log, quản lý quyền truy cập, kiểm tra overhead của recorder, hay xác thực cấu hình redaction trước khi deploy.
 
+> **Danh sách thiếu ở trên VẪN ĐÚNG NGUYÊN VĂN sau các quyết định ngày 2026-08-14.** `✅ CHỐT GATE-04 — 2026-08-14` chốt **sàn của Capsule Store**, `✅ CHỐT GATE-05a — 2026-08-14` chốt **TTL mặc định 30 ngày**, `✅ CHỐT GATE-05b — 2026-08-14` chốt **crypto-shredding `MUST-V0.1`** — cả ba đều cấp **nội dung** cho những thứ persona này phải vận hành, **không** cấp **verb** nào để vận hành chúng. Nghịch lý còn nặng thêm: nay vai này có **thêm** một thao tác phải thực hiện được — **phá khoá** của một capsule để thực thi retention — mà cũng **không có verb nào**.
+>
+> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`.**
+
 **Vì sao đây là gap thật, không phải chuyện thiếu tiện ích**:
 
 - §20.17 yêu cầu *"data retention policies"*, *"deletion"* và *"audit logs"* như **mitigation cho risk 🟠 High**; §21 đánh dòng *Compliance* là `MVP? = Yes`. Một mitigation **không có giao diện để vận hành** thì không phải mitigation.
+  - **Cập nhật sau ✅ CHỐT GATE-05a — 2026-08-14 và ✅ CHỐT GATE-05b — 2026-08-14**: hai trong ba mitigation này nay có **nội dung cụ thể** — *retention policy* có **giá trị mặc định 30 ngày** (`FR-024`, [PRD-Repro](../020-Requirements/PRD-Repro.md) mục 5.2), và *deletion* có **cơ chế thực thi tới cả bản đã pull** là crypto-shredding (`SEC-016` = `MUST-V0.1`). ⇒ Lập luận *"không phải mitigation"* **thu hẹp lại**: vấn đề không còn là *"không biết phải làm gì"* mà là *"biết phải làm gì nhưng không có lệnh để làm"*. Câu kết ở trên **vẫn đúng**.
 - §16 nói *"Organizations should be able to run Repro entirely inside their own infrastructure"* — self-hosting nghĩa là **chính tổ chức** phải vận hành nó, tức phải có công cụ vận hành.
 - `FR-024`, `FR-025`, `FR-026` ([PRD-Repro](../020-Requirements/PRD-Repro.md) mục 5.2) là **MVP requirement** nhưng **không FR CLI nào** (`FR-047`…`FR-053`) phục vụ chúng.
 
@@ -215,7 +220,22 @@ Trước đây `GAP-04` còn mơ hồ ở một điểm: access control / audit 
 
 Cả 6 verb §18 (`list`, `pull`, `inspect`, `replay`, `diff`, `verify`) đều developer-side, **không verb nào** cấu hình quyền, đọc audit log, hay vận hành retention. Nay ba capability đó là **yêu cầu MVP chắc chắn** (`FR-024`, `FR-025`, `FR-026`), khoảng trống giao diện vận hành **không còn là giả định** — nó là **nợ đã biết, phải trả trước khi V0.1 dùng được ở tổ chức thật**. Xem [PRD-Repro](../020-Requirements/PRD-Repro.md) mục 10.4 và [UC-05](../020-Requirements/Use-Cases/UC-05-Browse-And-Inspect-Capsules.md) `A1`.
 
-**Trạng thái**: `TBD` — cần bổ sung verb vận hành cho authz / audit / retention. Nhánh thoát *"chốt tường minh rằng V0.1 không phục vụ vai này"* **đã hẹp lại đáng kể** sau M2: capability thì bắt buộc có, nên nếu CLI không phục vụ thì phải chỉ ra **giao diện nào** phục vụ. **Không tự quyết.**
+**Trạng thái**: **`TBD` (đã thu hẹp)** — cần bổ sung verb vận hành cho authz / audit / retention. Nhánh thoát *"chốt tường minh rằng V0.1 không phục vụ vai này"* **đã hẹp lại đáng kể** sau M2: capability thì bắt buộc có, nên nếu CLI không phục vụ thì phải chỉ ra **giao diện nào** phục vụ. **Không tự quyết.**
+
+> **Vì sao là `TBD (đã thu hẹp)` chứ không phải `đã đóng`** — `✅ CHỐT GATE-04 — 2026-08-14`:
+>
+> | Trục của `GAP-04` | Trạng thái sau 2026-08-14 |
+> |---|---|
+> | **Cái gì phải có** (nơi để cắm authz / audit / retention) | ✅ **ĐÃ CHỐT** — sàn Capsule Store = **object/file storage + một index + hook authn/authz/audit**, 3 thao tác tối thiểu theo `SDD §5.4` (`GATE-04`) |
+> | **Retention làm với giá trị nào** | ✅ **ĐÃ CHỐT** — TTL mặc định **30 ngày**, cấu hình được (`GATE-05a`, `SEC-022`) |
+> | **Deletion chạm được tới bản đã pull không** | ✅ **ĐÃ CHỐT** — có, qua crypto-shredding `MUST-V0.1` (`GATE-05b`, `SEC-016`) |
+> | **Cơ chế authn/authz cụ thể** | ❌ **`TBD`** — owner **`@TrisJr`**; điều kiện đóng: quyết định thiết kế tại [SDD-Repro](../030-Specs/Architecture/SDD-Repro.md) §5.4 |
+> | **Verb vận hành cho authz / audit / retention** | ❌ **`TBD` — chính là `GAP-04`, CHƯA ĐÓNG**; owner **`@TrisJr`**; điều kiện đóng: bổ sung verb vận hành, hoặc chỉ ra giao diện khác phục vụ vai này |
+> | **Key custody** (ai giữ và ai được phá khoá) | ❌ **`TBD`, nay là blocker** — `U-06d`, `GATE-05b-r2` |
+>
+> ⇒ **`GAP-04` KHÔNG ĐÓNG.** Bản chất của gap này là **giao diện vận hành**, và không quyết định nào ngày 2026-08-14 cấp một verb nào. Cái đổi là gap **hẹp hơn và cụ thể hơn**: trước đây thiếu cả *nội dung* lẫn *giao diện*; nay chỉ còn thiếu **giao diện** — và vì nội dung đã chốt, phần thiếu này trở thành **nợ đến hạn**, không còn là nợ hoãn được.
+>
+> Rủi ro **`GATE-04-r`** (*"sàn đóng nhưng không vận hành được"*) tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2, cập nhật lên `C-02-r` thay vì tạo mục trùng. Neo Requirements: [PRD-Repro](../020-Requirements/PRD-Repro.md) mục 10.5 (`U-06`) và mục 10.4.
 
 ---
 
@@ -282,7 +302,7 @@ Với 6 verb của §18, việc duy nhất một QA Engineer làm được là *
 |---|---|
 | Bao lâu một lần developer gặp bug không reproduce được? | ❌ Không biết |
 | Họ **thật sự** mất bao lâu để reproduce hiện nay? | ❌ Không biết — `Hours / Days` của §32 là **hypothesis không có nguồn**, xem [BRD-001-Problem-Statement](../020-Requirements/BRD/BRD-001-Problem-Statement.md) mục 4 |
-| Bao nhiêu phần trăm bug production thuộc loại replay được? | ❌ Không biết — chính là §38 **Q7**, bị chặn bởi technical spike §22 và bởi `ACG-07` |
+| Bao nhiêu phần trăm bug production thuộc loại replay được? | ❌ **Vẫn không biết** — chính là §38 **Q7**. Spike §22 **đã được bật** (`✅ CHỐT GATE-01 — 2026-08-14`, `Sponsor`/`Manager` = **`@TrisJr`**) ⇒ chuyển từ *"chưa quyết chạy spike"* sang *"đang chờ kết quả spike"*. Nhưng `ACG-07` (*Supported Execution Class* — mẫu số của tỷ lệ này) **vẫn hở**, nên `GATE-01` **không** tự làm cho Q7 trả lời được — đúng nội dung `GATE-01-r`. Xem [BRD-001-Problem-Statement](../020-Requirements/BRD/BRD-001-Problem-Statement.md) mục 7 |
 | Công cụ nào họ đang dùng thay thế, và vì sao chưa đủ? | ❌ Không biết ngoài phát biểu định tính của §3 |
 | Mức nỗ lực tích hợp tối đa họ chấp nhận? | ❌ Không biết — chính là §38 **Q13** |
 | Developer có cài SDK vào production được không, hay phải qua SRE? | ❌ Không biết — quyết định ranh giới Persona A / Persona B |

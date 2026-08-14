@@ -4,12 +4,20 @@ type: adr
 status: draft
 project: repro
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # ADR-010: Bounded Determinism Scope
 
-**Decision status**: Proposed
+**Decision status**: Accepted — ✅ CHỐT GATE-03 — 2026-08-14
+**Người duyệt**: `@TrisJr` · **Ngày duyệt**: 2026-08-14 · **Căn cứ**: `GATE-03`
 **Related to**: [SDD-Repro](./SDD-Repro.md)
+
+> ⚠️ **`Accepted` xác nhận *hướng quyết định*, KHÔNG đóng mục `Open items`.** Các unknown `TBD`/`SPIKE` bên dưới vẫn chưa được trả lời — xem `GATE-03-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+>
+> Mapping tên gọi: `GATE-01` = G1 · `GATE-03` = G3. **Trong tài liệu chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị [PRD-Repro](../../020-Requirements/PRD-Repro.md) §Goals chiếm. ⚠️ Trong file này, `D1`…`D4` là **Decision sub-ID nội bộ của ADR** — **không** phải họ `GATE-0N`, và **không** phải quyết định `D1`/`D2` của run trước.
+>
+> ⚠️ Định danh ở §Open items — `U-13`, `U-20`, `ACG-06` ([NFR-Repro](../../020-Requirements/NFR-Repro.md) §7), `U-24`, `U-25` — **giữ nguyên như đang có**. `GATE-03` **không** tái định nghĩa mục nào trong số đó, và **không** đưa `U-21`/`U-22`/`U-23` trở lại file này: ba ID đó có nghĩa riêng ở TBD Register (`SDD §8.3`) và việc dùng lại chúng ở đây từng là một lỗi đã được sửa.
 
 ## Context
 
@@ -44,6 +52,10 @@ Ba văn bản khác chốt cùng đường ranh này:
 §33.5 đặt nguyên tắc chi phối cách phát biểu phạm vi này: **"Determinism over magic — The system should explain exactly what was captured and replayed."** Nguyên tắc đó có một hệ quả ít ai để ý: **ranh giới phải được công bố, không được để người dùng tự phát hiện qua thất bại.**
 
 Một điểm phân biệt mà RQ.md để lẫn lộn và ADR này phải tách bạch: §22 liệt kê mười kịch bản cho technical spike, trong đó **`9. Async behavior` và `10. Race condition` là hai mục riêng biệt**. Đây là bằng chứng văn bản cho thấy RQ.md **có** phân biệt hai thứ này — nhưng §20.2 và §20.13 lại gộp chung dưới từ `Concurrency`. Với V0.1 chạy trên Node.js (§18) — một runtime mà **mọi** I/O đều bất đồng bộ — sự nhập nhằng này không chấp nhận được: nếu "concurrency ngoài phạm vi" bị đọc theo nghĩa rộng thì Repro không replay được **bất kỳ** ứng dụng Node.js nào. Xem `U-20`.
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — mười kịch bản §22 nói trên nay thuộc một spike **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Nghĩa là hai kịch bản `9. Async behavior` và `10. Race condition` sẽ **thực sự được chạy**, chứ không còn là danh sách trên giấy.
+>
+> ⚠️ **Nhưng chính chỗ nhập nhằng ở trên làm hai kịch bản đó chưa chấm điểm được.** `U-20` vẫn `TBD`: chưa có tiêu chí máy kiểm được để phân loại một divergence là *async nội bộ* (phải tái hiện được) hay *race giữa các execution* (ngoài phạm vi) ⇒ không phân biệt được thì **không biết spike đã pass hay fail**. `GATE-01` không giải `U-20`. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ## Decision
 
@@ -100,6 +112,10 @@ Repro **phải** nói ra được nó đã capture và replay chính xác nhữn
 - **Đúng tinh thần §33.5.** Ranh giới được công bố trước, không để người dùng phát hiện qua thất bại — và làm nền cho việc quy trách nhiệm divergence ở [ADR-011](./ADR-011-Execution-Diff-First-Class.md).
 - **Chi phí V0.1 bị chặn.** Không cần can thiệp scheduler, không cần distributed tracing (§26 V0.3), không cần runtime tuỳ biến (§20.15).
 
+> ✅ **CHỐT GATE-01 — 2026-08-14** — mục *"Bảo vệ được §33.7 Narrow before broad và §39"* ở trên nay đứng trên một quyết định thật, không còn là khuyến nghị: `GATE-01` = **Go** bật Phase 0 technical spike như **điều kiện đầu tư** (`Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`). Mapping: `GATE-01` = G1 · `GATE-03` = G3. Mục tiêu §39 — chứng minh replay được *"a meaningful class of production bugs"* — nay có ngân sách và người chịu trách nhiệm để đi kiểm chứng.
+>
+> ⚠️ **`Go` không tự làm cho mệnh đề đó kiểm chứng được.** Đúng chỗ này còn một vòng lặp chưa đóng: *"một lớp có ý nghĩa"* cần `ACG-07` (*Supported Execution Class*) để định nghĩa, và mẫu số của `≥ 80%` (§24) do chính D1/D2 quyết định — cả hai đều **vẫn hở**, cùng với `ACG-01`/`ACG-02`/`ACG-03`. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
+
 ### Negative
 
 - **Một lớp bug quan trọng nằm ngoài tầm với, và RQ.md tự thừa nhận.** §20.2: *"A production bug may only happen under a specific timing or random value."* §20.13: *"A simple request replay will not reproduce them reliably."* Đây **không** phải hạn chế tạm thời của bản V0.1 mà là hệ quả cấu trúc của việc capsule ghi **một** execution. §26 đẩy `Race-condition replay` xuống mục **Future** — sau cả V0.3.
@@ -118,6 +134,10 @@ Repro **phải** nói ra được nó đã capture và replay chính xác nhữn
 | `ACG-06` ([NFR-Repro](../../020-Requirements/NFR-Repro.md) §7) | **`"UUID capture where practical"` — practical nghĩa là gì?** Nguồn nào được chặn (thư viện uuid? `crypto.randomUUID`? `Math.random`? nguồn entropy của OS?), và làm sao khớp giá trị đã ghi với lời gọi tương ứng khi code local đã đổi? | §20.2 nguyên văn `UUID capture where practical`. **Không có tiêu chí nào.** | Chặn: **acceptance criteria** cho hạng mục determinism (đây là khoảng trống được nêu ở §Consequences → Negative); chặn phạm vi của kịch bản `7. Randomness` (§22); chặn việc mẫu số của §24 `≥ 80%` có tính các test case ngẫu nhiên hay không. |
 | `U-24` | **Cơ chế phát hiện "execution này nằm ngoài phạm vi determinism".** Repro làm sao *biết* để nói ra (D4)? Có tín hiệu quan sát được nào không, hay chỉ suy đoán từ triệu chứng (replay cho kết quả khác nhau giữa các lần chạy)? | §33.5 đặt nghĩa vụ *"explain exactly what was captured and replayed"*. **Không có cơ chế nào được nêu.** | Chặn: D4 không cài đặt được; chặn việc phân biệt *false blame* nêu ở §Consequences → Negative; chặn ngôn ngữ kết quả mà §20.16 yêu cầu phải chính xác. |
 | `U-25` | **Replay hai lần có cho cùng kết quả không?** Nếu chính `repro replay` không tất định giữa các lần chạy thì mọi kết luận về equivalence đều không đứng vững. | RQ.md **hoàn toàn không đặt câu hỏi này.** §23 đo *Execution Match Rate* giữa production và local, chưa bao giờ đo giữa local và local. | Chặn: độ tin cậy của [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md) và [ADR-011](./ADR-011-Execution-Diff-First-Class.md); nên là một kiểm tra bắt buộc của spike §22 — replay lặp lại N lần trên cùng capsule, cùng code, và **phải** ra cùng kết quả. |
+
+> ✅ **CHỐT GATE-01 — 2026-08-14** — `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Hai mục trong bảng trên trỏ thẳng vào spike và nay có nơi để chạy: `U-20` (kịch bản `9`/`10` của §22) và `U-25` (*"nên là một kiểm tra bắt buộc của spike §22"* — replay lặp N lần trên cùng capsule).
+>
+> ⚠️ **Không mục nào trong bảng được đóng.** `U-13`, `U-20`, `ACG-06`, `U-24`, `U-25` **vẫn `TBD`** sau `GATE-01` và sau `GATE-03`: ngữ nghĩa clock (freeze hay virtual) vẫn chưa được định nghĩa ở bất kỳ đâu trong RQ.md, *"where practical"* vẫn không đo được, và cơ chế phát hiện *"ngoài phạm vi determinism"* vẫn chưa có. Với `U-20` và `ACG-06`, `Go` còn **chưa đủ để chấm điểm** kịch bản `7. Randomness`, `9`, `10` — đây đúng là khoảng hở `GATE-01-r` mô tả. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.
 
 ## Related Documents
 

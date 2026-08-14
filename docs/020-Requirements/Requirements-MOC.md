@@ -3,53 +3,66 @@ id: MOC-020
 type: moc
 status: live
 created: 2026-02-04
-updated: 2026-02-04
+updated: 2026-08-14
 author: TNMCORE-OS (BA Role)
 ---
 
 # 📂 020-Requirements Map of Content
 
-Chào mừng đến với trung tâm quản lý Yêu cầu (Requirements) của dự án. Thư mục này chứa toàn bộ tài liệu định nghĩa "Sản phẩm cần làm gì" (What) và "Tại sao cần làm" (Why).
+Trung tâm quản lý Yêu cầu. Thư mục này chứa toàn bộ tài liệu định nghĩa "Sản phẩm cần làm gì" (What) và "Tại sao cần làm" (Why). Xem thêm [Documentation Master Index](../000-Index.md).
 
 ## 📍 Định Hướng (Navigation)
 
-### 🏢 020.10 - Business Requirements (BRD)
+### 🏢 020.10 — Business Requirements (BRD)
 
-_Yêu cầu nghiệp vụ cấp cao từ Stakeholders, định nghĩa Business Goals và Scope._
+_Yêu cầu nghiệp vụ cấp cao, định nghĩa vấn đề và phạm vi._
 
+- [BRD-001 — Problem Statement](./BRD/BRD-001-Problem-Statement.md) 👈 **Đọc trước khi đọc PRD** — vấn đề "cannot reproduce", vì sao observability không đủ, vì sao clone production không khả thi, và **phạm vi vấn đề KHÔNG bao gồm những gì**
 - [BRD Folder](./BRD/)
-- _(Thêm link tới các file BRD cụ thể tại đây)_
 
-### 📦 020.20 - Product Requirements (PRD)
+### 📦 020.20 — Product Requirements (PRD)
 
 _Yêu cầu sản phẩm chi tiết, tính năng và logic vận hành._
 
-- [PRD-TNMCORE-OS](./PRD-TNMCORE-OS.md) 👈 _Core Product Spec_
+- [PRD-Repro](./PRD-Repro.md) 👈 _Core Product Spec_ — Scope/MVP, `FR-001`…`FR-082`, Success Metrics, Validation Hypotheses, Open Questions
 
-### 👤 020.30 - Use Cases & User Models
+### 👤 020.30 — Use Cases & User Models
 
 _Mô tả tương tác người dùng, Actors, và kịch bản sử dụng._
 
-- [Use-Cases Folder](./Use-Cases/)
+| UC | Tài liệu | Actor chính |
+|---|---|---|
+| UC-01 | [Capture Failed Production Execution](./Use-Cases/UC-01-Capture-Failed-Production-Execution.md) | SRE/DevOps hoặc Engineer sở hữu service |
+| UC-02 | [Replay Capsule Locally](./Use-Cases/UC-02-Replay-Capsule-Locally.md) | Software Engineer |
+| UC-03 | [Read Execution Diff](./Use-Cases/UC-03-Read-Execution-Diff.md) | Software Engineer |
+| UC-04 | [Verify Fix](./Use-Cases/UC-04-Verify-Fix.md) | Software Engineer |
+| UC-05 | [Browse And Inspect Capsules](./Use-Cases/UC-05-Browse-And-Inspect-Capsules.md) | Software Engineer + QA Engineer |
 
-### 🛡️ 020.40 - Non-Functional Requirements (NFR)
+- [Use-Cases Folder](./Use-Cases/)
+- Persona của các actor trên: [Analysis-Target-Users](../050-Research/Analysis-Target-Users.md)
+
+### 🛡️ 020.40 — Non-Functional Requirements (NFR)
 
 _Yêu cầu phi chức năng: Hiệu năng, Bảo mật, Độ tin cậy._
 
-- _(Chưa khởi tạo)_
+- [NFR-Repro](./NFR-Repro.md) — `N-01`…`N-19`, acceptance criteria gaps (`ACG-01`…`ACG-12`), và **mục 6: những con số trong `RQ.md` KHÔNG phải NFR**
 
 ---
 
+## ⚠️ Cách đọc bộ requirement này
+
+1. **Bốn ngưỡng của `RQ.md §24`** (`≥80%`, `<5%`, `<10MB`, `<30s`) **không** nằm trong Acceptance Criteria — chúng ở [PRD §9 Validation Hypotheses](./PRD-Repro.md), vì §24 tự khai chúng là *"initial hypotheses, not final product commitments"*.
+2. **Hai mâu thuẫn nội tại của `RQ.md` đang chờ quyết định** — **M1** (regression test V0.1 hay V0.2) và **M2** (access control ở OSS core hay commercial). Cả hai được ghi cả hai phía tại [PRD §10](./PRD-Repro.md) và [Risk-Register §4](../010-Planning/Risk-Register.md). **Chưa chốt.**
+3. **Hai gap chưa được lấp có chủ ý**: `ACG-01` (*"sufficiently equivalent"* của §10 không có định nghĩa) và `ACG-07` (*"Supported Execution Class"* chưa từng được định nghĩa). Chúng chặn việc spec một số exception flow — xem [NFR §7](./NFR-Repro.md).
+
 ## 📝 Quy Trình Làm Việc (BA Workflow)
 
-Mọi tài liệu trong thư mục này cần tuân thủ quy trình kiểm soát chất lượng của BA:
+1. **Elicitation:** Thu thập yêu cầu thô → lưu vào `Meeting-Notes` hoặc draft.
+2. **Analysis:** Phân tích và cấu trúc hoá → tạo PRD/BRD.
+3. **Validation:** Review với stakeholder → cập nhật trạng thái `approved`.
+4. **Specification:** Chuyển đổi thành User Stories (tại [022-User-Stories](../022-User-Stories/Stories-MOC.md)).
 
-1.  **Elicitation:** Thu thập yêu cầu thô (Raw reqs) -> Lưu vào `Meeting-Notes` hoặc draft.
-2.  **Analysis:** Phân tích và cấu trúc hóa -> Tạo PRD/BRD.
-3.  **Validation:** Review với Stakeholders -> Cập nhật trạng thái `approved`.
-4.  **Specification:** Chuyển đổi thành User Stories (tại `022-User-Stories`).
-
-> **Lưu ý:** Luôn đảm bảo tính **Nhất quán (Consistency)** và **Khả thi (Feasibility)** với đội ngũ Technical.
+> **Trạng thái hiện tại**: toàn bộ tài liệu trong thư mục này ở `status: draft`. Bước 3 (Validation) **chưa chạy** — chưa có người duyệt được chỉ định. Bước 4 (Specification) chưa bắt đầu; PRD đã để sẵn điểm nối.
 
 ---
 

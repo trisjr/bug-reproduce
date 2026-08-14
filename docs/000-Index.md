@@ -3,6 +3,7 @@ id: INDEX-000
 type: index
 status: draft
 created: 2026-08-14
+updated: 2026-08-14
 ---
 
 # 📚 Documentation Master Index
@@ -27,11 +28,13 @@ Trang chủ của kho tài liệu. Mọi tài liệu đều nằm dưới `docs/
 | 4 | [SDD-Repro](./030-Specs/Architecture/SDD-Repro.md) | Thiết kế kỹ thuật và những gì còn chưa biết | ~60 phút |
 
 > [!IMPORTANT]
-> **Hai mâu thuẫn nội tại của `RQ.md` đang chờ quyết định** — chúng ảnh hưởng tới cách đọc gần như mọi tài liệu bên dưới:
-> - **M1** — regression test generation ở V0.1 hay V0.2, kéo theo **North Star Metric của V0.1 có đo được bằng V0.1 hay không**.
-> - **M2** — access control thuộc OSS core hay commercial layer, kéo theo **bản self-host có control bảo mật hay không**.
+> **Hai mâu thuẫn nội tại của `RQ.md` đã ✅ CHỐT 2026-08-14** — chúng ảnh hưởng tới cách đọc gần như mọi tài liệu bên dưới:
+> - **M1** (`D1`) — regression test generation **giữ ở V0.2**. Chỉ số thành công của V0.1 là **số bug đạt trạng thái *"Execution matched"*** (`RQ.md §10`); North Star `§31` giữ làm metric dài hạn, **kích hoạt từ V0.2**.
+> - **M2** (`D2`) — **authentication + authorization + audit log thuộc OSS core**, ghi đè `§28`. Hosted storage, team management, analytics, AI analysis, cloud integrations vẫn ở commercial layer.
 >
-> Cả hai được ghi trung thực cả hai phía tại [Risk-Register §4](./010-Planning/Risk-Register.md) và [PRD §10](./020-Requirements/PRD-Repro.md).
+> **Quyết định không xoá mâu thuẫn — `RQ.md` vẫn nguyên văn nói ngược ở chính những chỗ đó.** Bằng chứng hai phía kèm section number được giữ nguyên tại [Risk-Register §4](./010-Planning/Risk-Register.md) và [PRD §10](./020-Requirements/PRD-Repro.md).
+>
+> **Bốn rủi ro mới do chính hai quyết định sinh ra** (`C-01-r`, `C-01-r2`, `C-02-r`, `C-02-r2`) được ghi tại [Risk-Register §4.1](./010-Planning/Risk-Register.md) — đọc trước khi lập kế hoạch V0.1.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: MOC-020
 type: moc
-status: live
+status: draft
 created: 2026-02-04
 updated: 2026-08-14
 author: TNMCORE-OS (BA Role)
@@ -52,7 +52,7 @@ _Yêu cầu phi chức năng: Hiệu năng, Bảo mật, Độ tin cậy._
 ## ⚠️ Cách đọc bộ requirement này
 
 1. **Bốn ngưỡng của `RQ.md §24`** (`≥80%`, `<5%`, `<10MB`, `<30s`) **không** nằm trong Acceptance Criteria — chúng ở [PRD §9 Validation Hypotheses](./PRD-Repro.md), vì §24 tự khai chúng là *"initial hypotheses, not final product commitments"*.
-2. **Hai mâu thuẫn nội tại của `RQ.md` đang chờ quyết định** — **M1** (regression test V0.1 hay V0.2) và **M2** (access control ở OSS core hay commercial). Cả hai được ghi cả hai phía tại [PRD §10](./PRD-Repro.md) và [Risk-Register §4](../010-Planning/Risk-Register.md). **Chưa chốt.**
+2. **Hai mâu thuẫn nội tại của `RQ.md` đã ✅ CHỐT 2026-08-14** — **M1** (`D1`: regression test giữ ở **V0.2**; chỉ số thành công V0.1 là *số bug đạt "Execution matched"*) và **M2** (`D2`: **authn + authz + audit log thuộc OSS core**). Bằng chứng hai phía **được giữ nguyên** tại [PRD §10](./PRD-Repro.md) và [Risk-Register §4](../010-Planning/Risk-Register.md) vì `RQ.md` vẫn nguyên văn nói ngược. Hệ quả nặng nhất: `N-05` trở thành thước đo chính của V0.1 mà **vẫn không có ngưỡng** — xem [NFR §3](./NFR-Repro.md).
 3. **Hai gap chưa được lấp có chủ ý**: `ACG-01` (*"sufficiently equivalent"* của §10 không có định nghĩa) và `ACG-07` (*"Supported Execution Class"* chưa từng được định nghĩa). Chúng chặn việc spec một số exception flow — xem [NFR §7](./NFR-Repro.md).
 
 ## 📝 Quy Trình Làm Việc (BA Workflow)

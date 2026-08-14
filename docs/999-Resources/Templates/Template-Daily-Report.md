@@ -1,3 +1,11 @@
+---
+id: TEMP-DAILY-REPORT
+type: template
+status: draft
+created: 2026-03-03
+updated: 2026-08-14
+---
+
 📢 **ANNOUNCEMENT: CẬP NHẬT QUY TRÌNH DAILY REPORT**
 
 Chào cả nhà, để tăng cường tính **Minh bạch (Transparency)** và giúp mình nắm bắt kỹ hơn các **Blocks** cũng như tiến độ sát với **Roadmap**, Team mình sẽ thống nhất sử dụng mẫu Daily Report mới trên channel này nhé.

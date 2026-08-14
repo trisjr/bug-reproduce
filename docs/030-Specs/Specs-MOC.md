@@ -51,7 +51,7 @@ updated: 2026-08-14
 ## ⚠️ Ba điều cần biết trước khi dùng bộ spec này
 
 1. **Hai unknown lõi chưa được giải và cố ý không được giả vờ là đã giải**: `U-04` (định nghĩa *"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, nó chặn `ADR-006`) và `U-02` (query matching identity — rủi ro hiện thực cao nhất, nó chặn `ADR-003`). Cả hai ở dạng `TBD` kèm phương án gắn nhãn *"cần validate"*.
-2. **Mâu thuẫn M2 chưa chốt** — `RQ.md §28` xếp access control vào commercial layer trong khi §20.5/§21 coi là MVP. Ảnh hưởng trực tiếp tới [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) và [threat model §10](./Security/Spec-Security-Repro-Threat-Model.md).
+2. **Mâu thuẫn M2 đã ✅ CHỐT 2026-08-14** — `RQ.md §28` xếp access control vào commercial layer trong khi §20.5/§21 coi là MVP. Quyết định `D2`: **authentication + authorization + audit log thuộc OSS core**, ghi đè §28. `RQ.md` **vẫn nguyên văn nói ngược** — bằng chứng hai phía được giữ nguyên tại [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) và [threat model §10](./Security/Spec-Security-Repro-Threat-Model.md). Hai điểm **không** bị chốt theo: `SEC-016` (crypto-shredding) giữ `DEFER`, và `GAP-04` (chưa có CLI verb nào để vận hành authz/audit) **nặng thêm** sau quyết định này.
 3. **Khi trích dẫn ở tài liệu hạ nguồn, hãy trỏ section cụ thể** (ví dụ `SDD §3.7`) thay vì trỏ cả file — `SDD-Repro.md` và threat model đều dài trên 1200 dòng.
 
 ## 📁 Thư mục con theo RULE-001 — chưa tạo

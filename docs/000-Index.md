@@ -3,7 +3,7 @@ id: INDEX-000
 type: index
 status: draft
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-15
 ---
 
 # 📚 Documentation Master Index
@@ -62,8 +62,8 @@ Trang chủ của kho tài liệu. Mọi tài liệu đều nằm dưới `docs/
 |---|---|---|
 | [Charter-Repro](./010-Planning/Charter-Repro.md) | Project Charter | Business case, objectives, stakeholders, recommended next step |
 | [Roadmap](./010-Planning/Roadmap.md) | Roadmap | Phase 0 (technical spike — **✅ `Go` từ 2026-08-14**) → V0.1 → V0.2 → V0.3 → Future + Non-Goals |
-| [Timeline-Repro](./010-Planning/Estimates/Timeline-Repro.md) | Timeline & WBS | **Lớp execution đặt trên Roadmap** — 9 khối `P0-A`→`P5` (spike → V0.1 → phát hành → design partner → thương mại hoá), 10 vai, WBS task-level cho Phase 0, critical path hai nhánh, **6 blocker**. Trục thời gian **tương đối** (`T0+W`), capacity **solo** |
-| [Risk-Register](./010-Planning/Risk-Register.md) | Risk Register | 18 risk của `RQ.md §21` + 11 threat chưa có mitigation + 5 mâu thuẫn nội tại + **5 rủi ro sinh từ năm quyết định gate** (§4.2) |
+| [Timeline-Repro](./010-Planning/Estimates/Timeline-Repro.md) | Timeline & WBS | ✅ **`approved` 2026-08-15**. **Lớp execution đặt trên Roadmap** — 9 khối `P0-A`→`P5` (spike → V0.1 → phát hành → design partner → thương mại hoá), 10 vai, WBS task-level cho Phase 0, critical path hai nhánh, **6 blocker**. `T0` đã chốt (`W1` = 2026-08-17), Phase 0 = **9 tuần** ⇒ **`GATE-06` = 2026-10-16**. Capacity **solo** |
+| [Risk-Register](./010-Planning/Risk-Register.md) | Risk Register | 18 risk của `RQ.md §21` + 11 threat chưa có mitigation + 5 mâu thuẫn nội tại + **5 rủi ro sinh từ năm quyết định gate** (§4.2) + **6 rủi ro và 2 blocker sinh từ Timeline** (§4.4, họ `TL-*`) |
 | [PRD-Repro](./020-Requirements/PRD-Repro.md) | PRD | Scope/MVP, `FR-001`…`FR-082`, Success Metrics, Validation Hypotheses, Open Questions |
 | [NFR-Repro](./020-Requirements/NFR-Repro.md) | NFR | `N-01`…`N-19`, acceptance criteria gaps, và **những con số KHÔNG phải NFR** |
 | [SDD-Repro](./030-Specs/Architecture/SDD-Repro.md) | SDD | Thiết kế hệ thống, capsule format, TBD register |

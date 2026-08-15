@@ -4,17 +4,18 @@ type: risk-register
 status: draft
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-15
 ---
 
 # ⚠️ Risk Register: Repro
 
 > **Nguồn sự thật**: [RQ.md](../999-Resources/RQ.md) §20 (17 mục risk có mitigation) và §21 (Risk Matrix, bảng 18 dòng). Mục 3 lấy từ [Spec-Security-Repro-Threat-Model](../030-Specs/Security/Spec-Security-Repro-Threat-Model.md). Mục 4 là các mâu thuẫn nội tại của chính `RQ.md`.
 
-> **Ba họ định danh rủi ro trong tài liệu này — đừng trộn:**
+> **Bốn họ định danh rủi ro trong tài liệu này — đừng trộn:**
 > - **`R-01`…`R-18`** (§2) — 18 risk **nguyên bản** của `RQ.md §21`.
 > - **`C-01`…`C-05`** và **`C-0N-r`** (§4, §4.1) — rủi ro sinh từ **mâu thuẫn nội tại** của `RQ.md`, và rủi ro phát sinh từ quyết định `D1`/`D2` giải các mâu thuẫn đó.
 > - **`GATE-0N-r`** (§4.2) — rủi ro sinh từ **năm quyết định gate** `GATE-01`…`GATE-05` ngày 2026-08-14.
+> - **`TL-r1`…`TL-r6`** và **`TL-b1`/`TL-b2`** (§4.4) — rủi ro của **chính kế hoạch thực thi**, và hai blocker lộ ra khi lập [Timeline-Repro](./Estimates/Timeline-Repro.md) ngày 2026-08-15. **Đây là họ duy nhất KHÔNG nói về sản phẩm** — nó nói về *khả năng làm ra sản phẩm đó*.
 
 > [!IMPORTANT]
 > **Cột `Owner` đã được cấp — `✅ CHỐT GATE-01 — 2026-08-14`.** Toàn bộ **18/18 risk** thuộc **`@TrisJr`**.
@@ -148,7 +149,7 @@ Ba threat có **giao** với risk của §21 nhưng **không trùng**, cần đ�
 |---|---|---|---|---|---|
 | **C-01 (M1)** | **Regression test generation ở V0.1 hay V0.2?** | §26 xếp vào **V0.2** | §25.6 Killer Demo in `✓ Regression case generated`; §30 journey kết ở `Regression test`; §31 North Star đếm *"converted into regression tests"* | **North Star Metric của V0.1 không đo được bằng chính V0.1.** Lỗi ở tầng *"làm sao biết sản phẩm thành công"* | ✅ **ĐÃ CHỐT 2026-08-14** — xem §4.1 |
 | **C-02 (M2)** | **Access control ở OSS core hay commercial layer?** | §28 xếp Access control / Retention policies / Team management / Enterprise security vào **commercial layer**; OSS core chỉ có "Basic Self-hosting" | §20.5 liệt kê *strict access control* trong mitigation; §21 ghi **MVP = Yes** cho Sensitive data / Security exposure / Compliance | **Bản self-host — đúng bản mà §20.6 khuyến nghị dùng vì lý do bảo mật — lại là bản không có control bảo mật.** | ✅ **ĐÃ CHỐT 2026-08-14** — xem §4.1 |
-| **C-03** | **Redis có trong MVP capture không?** | §5 (execution chain có "Cache Reads", "Redis → Result B"), §13 ("Cache read" ở nhóm READ), §17 (Recorder box liệt kê Redis), §22 (test app có Redis) | §18 (MVP capture list **không có** Redis), §26 (đặt Redis ở **V0.3**) | Nếu đọc theo phía A thì MVP phình thêm một loại dependency chưa được đặt tên trong scope | **PM đã chốt**: Redis **ngoài V0.1**. Phát biểu phạm vi tường minh (§18, §26) thắng sơ đồ minh hoạ (§5, §17). *Ghi chú: sơ đồ §17 của `RQ.md` cần sửa cho khớp.* Xem [Roadmap](./Roadmap.md) |
+| **C-03** | **Redis có trong MVP capture không?** | §5 (execution chain có "Cache Reads", "Redis → Result B"), §13 ("Cache read" ở nhóm READ), §17 (Recorder box liệt kê Redis), §22 (test app có Redis) | §18 (MVP capture list **không có** Redis), §26 (đặt Redis ở **V0.3**) | Nếu đọc theo phía A thì MVP phình thêm một loại dependency chưa được đặt tên trong scope | **PM đã chốt**: Redis **ngoài V0.1**. Phát biểu phạm vi tường minh (§18, §26) thắng sơ đồ minh hoạ (§5, §17). *Ghi chú: sơ đồ §17 của `RQ.md` cần sửa cho khớp.* Xem [Roadmap](./Roadmap.md).<br>⚠️ **HỆ QUẢ CHƯA ĐƯỢC GHI KHI CHỐT `C-03` — phát hiện 2026-08-15 (`GAP-Redis`)**: §22 **vẫn** bắt spike test app chạm Redis ở mọi `POST /checkout`, **và** bắt destroy environment trước khi replay ⇒ sau destroy **không còn Redis để đọc**, nên **cả 10 scenario spike replay với một input không được ghi lại**. Redis **không** nằm trong 9 hidden input §20.1 nên không cơ chế nào của Phase 0 tự bắt được. **Phải quyết tường minh tại `A2`** (3 phương án ở [Timeline §3](./Estimates/Timeline-Repro.md)) **trước khi spike chạy** — nếu không, `C3` sẽ quy scenario fail về *"non-determinism"* trong khi nguyên nhân thật là **thiếu capture đã biết trước**, và `GATE-06` bị trả lời sai bằng dữ liệu sai |
 | **C-04** | **P95 capsule size có ngưỡng không?** | §23 yêu cầu đo **cả** Average **và** P95 | §24 chỉ đặt ngưỡng `< 10 MB average`, không nói gì về P95 | Không có ngưỡng thì chỉ số P95 đo xong không dùng để ra quyết định được | **PM đã chốt**: ghi cả hai vào NFR — `N-03` có ngưỡng (average), `N-09` ngưỡng **`TBD`** (P95). **Không bịa một con số P95.** Xem [NFR-Repro §3](../020-Requirements/NFR-Repro.md) |
 | **C-05** | **Capsule tự chứa hay tham chiếu ra ngoài?** | §6 (*"only the information necessary"*) + §40 (*"portable"*) ⇒ **tự chứa** | §20.12 liệt kê **"lazy loading"** trong mitigation cho capsule size ⇒ hàm ý tham chiếu ra ngoài | Nếu capsule tham chiếu production lúc replay thì bước *"Destroy original environment"* của §22 mất ý nghĩa, và tính portable của §40 sụp | **PM đã chốt**: capsule **self-contained là bất biến V0.1**; "lazy loading" hiểu là lazy khi **đọc** capsule (không nạp hết vào memory), **không** phải lazy fetch từ production. Cách đọc này giữ được cả §6/§40 và §20.12. Ghi ở [ADR-002](../030-Specs/Architecture/ADR-002-Repro-Capsule-Format-Contract.md) |
 
@@ -203,7 +204,7 @@ Ba threat có **giao** với risk của §21 nhưng **không trùng**, cần đ�
 
 > **Cùng nguyên tắc với §4.1**: quyết định nào cũng có mặt trái, và bộ tài liệu này ghi thẳng mặt trái thay vì chỉ ghi phần tích cực. Năm rủi ro dưới đây **không tồn tại trước ngày 2026-08-14** — chúng do chính năm quyết định `GATE-01`…`GATE-05` sinh ra.
 >
-> **Định danh** dùng họ `GATE-0N-r`, cố ý **khác** họ `C-0N-r` ở §4.1 (rủi ro sinh từ *mâu thuẫn nội tại* của `RQ.md`) và khác họ `R-01`…`R-18` ở §2 (18 risk nguyên bản của `RQ.md §21`). Ba họ, ba nguồn gốc khác nhau — đừng trộn.
+> **Định danh** dùng họ `GATE-0N-r`, cố ý **khác** họ `C-0N-r` ở §4.1 (rủi ro sinh từ *mâu thuẫn nội tại* của `RQ.md`) và khác họ `R-01`…`R-18` ở §2 (18 risk nguyên bản của `RQ.md §21`). Ba họ, ba nguồn gốc khác nhau — đừng trộn. *(Họ thứ tư — `TL-*` — sinh sau, ngày 2026-08-15; xem [§4.4](#44-rủi-ro-sinh-từ-timeline--wbs-2026-08-15).)*
 >
 > Bản ghi quyết định gốc: [pm-runs/2026-08-14-gates-g1-g5/escalations.md](./pm-runs/2026-08-14-gates-g1-g5/escalations.md) **E-01** và **E-02**.
 
@@ -219,11 +220,16 @@ Ba threat có **giao** với risk của §21 nhưng **không trùng**, cần đ�
 
 Ghi tường minh để không ai đọc lệch — năm gate **không** chạm tới ba mục dưới đây, và chúng vẫn là chỗ hở nghiêm trọng nhất của bộ tài liệu:
 
-| Mục | Trạng thái sau 2026-08-14 | Vì sao gate không đóng được nó |
-|---|---|---|
-| **`N-05`** — ngưỡng Execution Match Rate | ⏳ vẫn `TBD` | `C-01-r` gọi đây là *"chỗ hở nghiêm trọng nhất của cả tài liệu"*. Ngưỡng phải đến từ **dữ liệu đo của spike**, không từ bàn giấy — [NFR §3.1](../020-Requirements/NFR-Repro.md) ghi rõ *"cần anh chốt **sau** spike §22"*. `GATE-01` chỉ **bật** spike |
-| **`U-04` / `ACG-01`** — *"sufficiently equivalent"* | ⏳ vẫn `TBD` | Không định nghĩa được equivalence thì **không ĐẾM được** *"Execution matched"* — tức là không đếm được chính chỉ số thành công của V0.1 (`C-01-r2`). Không gate nào trong năm gate chạm tới nó |
-| **`ACG-07`** — *"Supported Execution Class"* | ⏳ vẫn `TBD` | §20.1 lấy chính nó làm mitigation cho risk 🔴 Critical `R-01`, nhưng khái niệm **không tồn tại ở đâu trong `RQ.md`**. Không có nó thì denominator của ngưỡng `≥80%` (§24) không xác định được |
+| Mục | Trạng thái sau 2026-08-14 | Vì sao gate không đóng được nó | Nay được lên lịch ở đâu *(2026-08-15)* |
+|---|---|---|---|
+| **`N-05`** — ngưỡng Execution Match Rate | ⏳ vẫn `TBD` | `C-01-r` gọi đây là *"chỗ hở nghiêm trọng nhất của cả tài liệu"*. Ngưỡng phải đến từ **dữ liệu đo của spike**, không từ bàn giấy — [NFR §3.1](../020-Requirements/NFR-Repro.md) ghi rõ *"cần anh chốt **sau** spike §22"*. `GATE-01` chỉ **bật** spike | **`D1`** (`W10`, sau `GATE-06`) — 🎩 PM + 👤 `@TrisJr`. **Cũng là điều kiện gỡ `GATE-02`** |
+| **`U-04` / `ACG-01`** — *"sufficiently equivalent"* | ⏳ vẫn `TBD` | Không định nghĩa được equivalence thì **không ĐẾM được** *"Execution matched"* — tức là không đếm được chính chỉ số thành công của V0.1 (`C-01-r2`). Không gate nào trong năm gate chạm tới nó | **`A3`** (`W1–W2`, hypothesis + rubric) → **`D2`** (định nghĩa sản phẩm) — 🏗️ Architect. `A3` nằm **trên critical path** |
+| **`ACG-07`** — *"Supported Execution Class"* | ⏳ vẫn `TBD` | §20.1 lấy chính nó làm mitigation cho risk 🔴 Critical `R-01`, nhưng khái niệm **không tồn tại ở đâu trong `RQ.md`**. Không có nó thì denominator của ngưỡng `≥80%` (§24) không xác định được | **`A2`** (`W1–W2`, hypothesis) → **`D2`** — 🏗️ Architect |
+
+> [!IMPORTANT]
+> **Cột thứ tư KHÔNG đóng ba mục này** — nó chỉ trả lời câu *"bao giờ và ai"*. [Timeline-Repro](./Estimates/Timeline-Repro.md) nói thẳng điều đó: timeline **không** đóng blocker, nó *cấp cho mỗi mục một task, một chủ và một thời điểm*. Cả ba vẫn `TBD` cho tới khi task tương ứng thoả `Exit criteria`.
+>
+> **Mục thứ tư cùng loại — `U-06d` (key custody)** — nằm ở [§4.2](#42-năm-rủi-ro-mới-sinh-từ-năm-quyết-định-gate-2026-08-14) dưới định danh `GATE-05b-r2` chứ không ở bảng này, vì nó **do gate sinh ra** chứ không phải mục gate bỏ sót. Nay được lên lịch ở **`D4`** — **chạy song song được** với `D1`–`D3`, và **phải đóng trước `D5`** (đóng băng capsule format v1).
 
 ### 4.3 Vì sao C-01 và C-02 được đối xử khác C-03/C-04/C-05
 
@@ -232,6 +238,37 @@ C-03, C-04, C-05 có **neo văn bản đủ mạnh để PM tự phân xử**: m
 C-01 và C-02 thì không. C-01 đổi **định nghĩa thành công** của sản phẩm; C-02 đổi **mô hình kinh doanh** và có hệ quả bảo mật trực tiếp. Cả hai đều được **hai lens phân tích độc lập tìm ra** — mức bằng chứng cao nhất run tài liệu này có. Vì vậy chúng được ghi trung thực cả hai phía kèm đề xuất và **đẩy lên cho anh quyết**, thay vì để một writer im lặng chọn một phía. Anh đã chốt cả hai ngày **2026-08-14** — xem §4.1.
 
 > **Ba mâu thuẫn còn lại (C-03, C-04, C-05) giữ nguyên cách xử lý cũ** — chúng do PM phân xử ở tầng 2 và không nằm trong quyết định ngày 2026-08-14.
+
+### 4.4 Rủi ro sinh từ Timeline & WBS (2026-08-15)
+
+> **Vì sao họ này tách riêng — và vì sao nó khác hẳn ba họ trên.** `R-*`, `C-*` và `GATE-0N-r` đều nói về **sản phẩm**: nó có capture đủ không, nó có lộ dữ liệu không, quyết định gate có mặt trái gì. Họ `TL-*` nói về một thứ khác hẳn: **khả năng thực thi kế hoạch làm ra sản phẩm đó**. Một dự án có thể đúng về mặt kỹ thuật ở mọi risk trên mà vẫn chết vì họ này.
+>
+> Nguồn: [Timeline-Repro §12](./Estimates/Timeline-Repro.md). **Từ 2026-08-15, tài liệu này là nguồn có thẩm quyền** cho `TL-*`; bảng ở §12 của Timeline là bản tóm tắt cho người đọc timeline — lệch nhau thì Risk-Register thắng.
+>
+> **Owner**: **`@TrisJr`** cho toàn bộ họ, theo đúng logic dự án-một-người của `GATE-01`. Ghi thẳng cái nghịch lý ở đây: `TL-r2` nói *một người giữ mọi vai thì không có phản biện độc lập*, và người giữ rủi ro đó cũng chính là người đó. **Không có cách nào tự giải quyết bằng tài liệu** — chỉ giải được bằng một người thứ hai.
+
+#### 4.4.1 Sáu rủi ro của chính kế hoạch
+
+| ID | Rủi ro | Severity | Vì sao — và nó chạm vào cái gì | Giảm nhẹ / đóng ở đâu |
+|---|---|:---:|---|---|
+| **`TL-r1`** | **Ước lượng MD không có dữ liệu lịch sử đứng sau** | 🟠 High | Repo **chưa có một dòng code sản phẩm**, không có velocity, không có baseline. Toàn bộ **41.5 MD** của Phase 0 và **~229.5 MD** phần `CONDITIONAL` là **phán đoán chuyên môn**, không phải ước lượng có cơ sở thống kê | ⚠️ **Giảm nhẹ một phần 2026-08-15**: `@TrisJr` chọn **giãn Phase 0 thành 9 tuần** ⇒ capacity 104% → **92%**, đệm là tuần **`W7`** có quy tắc tiêu tường minh.<br>**Đệm chỉ mua được MỘT lần trượt** — rủi ro **không** bị đóng. **Hiệu chỉnh toàn bộ ước lượng sau `P0-B` vẫn là BẮT BUỘC**; trước đó mọi con số MD phải đọc là *bậc độ lớn*, không phải cam kết |
+| **`TL-r2`** | **Solo capacity ⇒ không có phản biện độc lập tại gate** | 🔴 Critical | Kế thừa trực tiếp [Charter §5.1](./Charter-Repro.md). `TL-A2` cho thấy mọi cột `Driver`/`Collaborators` của Timeline là **vai**, không phải người khác nhau. ⇒ tại `GA`, `GATE-06`, `D10`, `P4-8`, người trình bày bằng chứng và người phán quyết là **một người**. Agent role giảm nhẹ nhưng **không thay thế được một người có quyền nói *không*** | **Không đóng được bằng tài liệu.** Giảm nhẹ hiện có: quy trình `pm-runs` bắt buộc PM ghi **phản biện** vào `escalations.md` **trước** khi `@TrisJr` quyết. Đóng thật chỉ khi có người thứ hai — khi đó Charter §5.1 phải chia lại vai **trước tiên** |
+| **`TL-r3`** | **Phạm vi V0.1 vượt capacity ~76%** | 🟠 High | `P2` cần **~158 MD** nhưng cửa sổ `W15–W32` chỉ chứa **~90 MD** (18 tuần × 5 MD). Theo `TL-A2`, V0.1 ở phạm vi hiện tại cần **~32 tuần thuần**, không phải 18. Đây là **bằng chứng định lượng cho `R-08`**: quyết định `D2` đưa authn/authz/audit vào OSS core làm tăng phạm vi V0.1 — đúng điều §4.1 đã cảnh báo | **Phải quyết tại `D10`**, không được để trôi vào sprint rồi mới phát hiện. Ba lựa chọn đã nêu ở [Timeline §7](./Estimates/Timeline-Repro.md): kéo dài tới `~W46` · thu hẹp phạm vi (va vào `C-02`) · tăng capacity (va vào `TL-r2`).<br>⚠️ **Tuần đệm `W7` của Phase 0 KHÔNG chạm tới rủi ro này** — nó bảo vệ `GATE-06`, không bảo vệ `P2` |
+| **`TL-r4`** | **Code spike bị tái dùng thầm lặng cho V0.1** | 🟠 High | `RQ.md §39` nói **không** bắt đầu bằng việc xây nền tảng đầy đủ; `§22` nói spike **không phải** để xây sản phẩm. Toàn bộ code `P0-B` là `throwaway`. Rủi ro là nó **âm thầm** tiến hoá thành V0.1 vì *"đằng nào cũng chạy được rồi"* — mang theo mọi shortcut được phép ở spike vào code chạy **in-process trong production của người khác** | Kiểm soát: branch bắt buộc mang tiền tố **`spike/`**; mọi lần tái dùng phải là **quyết định tường minh tại `P1`**, không phải mặc định |
+| **`TL-r5`** | **`LG3` có lead time bên ngoài, không rút ngắn được bằng effort** | 🟠 High | Chờ luật sư **2–6 tuần** — loại trễ mà **làm việc chăm hơn không rút ngắn được**. `LG3` không nằm trên đường kỹ thuật nên **trông như việc phụ**, nhưng nó **chặn `P4`**. Bắt đầu muộn ⇒ `P4` trượt dù toàn bộ phần kỹ thuật đúng hạn | PM theo dõi track `LG` bằng **ngày trên lịch**, **không** bằng MD. `LG3` khởi động ngay khi `D4` xong, không đợi `P2`.<br>**Phân biệt với `TL-b2`**: `TL-b2` là *chưa có ý kiến pháp lý* (trạng thái), `TL-r5` là *thời gian lấy ý kiến đó không kiểm soát được* (lịch). Đóng `TL-b2` cần `TL-r5` được quản đúng, nhưng chúng **không trùng nhau** |
+| **`TL-r6`** | **`P4` phụ thuộc lịch của tổ chức khác** | 🟠 High | 12 tuần của `P4` chỉ chứa **21.5 MD** — phần còn lại là **chờ**: design partner chạy production theo lịch của họ. Phase này **không lấp đầy được bằng cách làm nhanh hơn**. Nếu partner rút lui, Timeline **không có phương án thay thế**. Đây là mặt vận hành của `R-08` (Developer adoption, 🔴 Critical) | **Tuyển dư**: nhắm **5** để có **3** (`P4-1`). Ngoài ra `P4-5` (competitive analysis) không phụ thuộc partner nên vẫn chạy được khi `P4` bị nghẽn |
+
+#### 4.4.2 Hai blocker mới do Timeline phát hiện
+
+> **Vì sao chúng chưa từng xuất hiện trong tài liệu nào trước 2026-08-15**: mọi tài liệu trước đó dừng phạm vi ở *phần mềm tồn tại*. Hai mục này chỉ lộ ra khi phạm vi được kéo dài tới **phát hành ra công chúng** và **cài vào production của tổ chức khác** — hai việc mà `RQ.md` không mô tả quy trình.
+
+| ID | Blocker | Severity | Chặn cái gì | Không được nhầm với | Đóng ở |
+|---|---|:---:|---|---|---|
+| **`TL-b1`** | **Chưa chọn license OSS** | 🟠 High | Chặn `R5` (OSS launch) — không phát hành khi chưa có `LICENSE`. Và là **quyết định một chiều**: đổi license sau khi đã có contributor bên ngoài cần **sự đồng ý của mọi người đã đóng góp**. License chọn trước sẽ **giới hạn** mô hình thương mại §28 về sau | **`R-17`** (OSS business model, 🟡 Medium/Later) nói *"định nghĩa mô hình thương mại **sau** khi validate adoption"*. `TL-b1` là chuyện khác và **sớm hơn**: license phải chọn **trước khi phát hành dòng code đầu tiên**, tức trước `R-17` rất lâu. Chọn sai ở `TL-b1` sẽ **đóng cửa** một phần không gian quyết định của `R-17` | **`LG1`** — 🎩 PM + 👤 `@TrisJr`. Đứng **đầu** track `LG`, phải quyết **trước `LG2`** |
+| **`TL-b2`** | **Pháp chế chưa rà TTL 30 ngày + GDPR right-to-erasure** | 🟠 High | Chặn `P4` — **không** đưa `@repro/node` vào production của tổ chức có nghĩa vụ GDPR khi TTL mặc định chưa qua pháp chế. Đóng cảnh báo #2 của [Charter §5.1](./Charter-Repro.md): *"trước khi Repro xử lý dữ liệu production của tổ chức có nghĩa vụ GDPR, con số này **phải** được pháp chế rà lại"* | **`GATE-05a`** đã chốt **30 ngày** và chặn được nhánh xấu *"TTL vô hạn"* — nhưng đó là quyết định **kỹ thuật**, **không phải kết luận tuân thủ**. Cũng không nhầm với **`THREAT-016`**: threat đó hỏi *capsule có xoá được không*, `TL-b2` hỏi *xoá kiểu đó có thoả right-to-erasure về mặt pháp lý không* — crypto-shredding có thể đúng kỹ thuật mà vẫn không đủ pháp lý | **`LG3`** — 🛡️ Security + 👤 `@TrisJr` + **luật sư bên ngoài**. Phụ thuộc `D4` (cần biết crypto-shredding thực thi thế nào) |
+
+> [!WARNING]
+> **`TL-b1` và `TL-b2` đều KHÔNG đóng được bằng effort của `@TrisJr`.** `TL-b1` là quyết định một chiều cần cân nhắc hệ quả thương mại dài hạn; `TL-b2` cần **một vai chưa tồn tại trong dự án** — [Charter §5.1](./Charter-Repro.md) ghi pháp chế là **❌ KHÔNG CÓ**. Đây là **vai đầu tiên timeline yêu cầu bổ sung từ bên ngoài**, và cũng là lý do track `LG` phải khởi động song song `P1` thay vì đợi tới lúc phát hành.
 
 ---
 
@@ -243,6 +280,7 @@ C-01 và C-02 thì không. C-01 đổi **định nghĩa thành công** của s�
 | [Spec-Security-Repro-Threat-Model](../030-Specs/Security/Spec-Security-Repro-Threat-Model.md) | Chi tiết 19 threat, residual risk, và 11 threat chưa có mitigation |
 | [Charter-Repro](./Charter-Repro.md) | Bối cảnh và điều kiện dừng đầu tư |
 | [Roadmap](./Roadmap.md) | Phân phase và Non-Goals |
+| [Estimates/Timeline-Repro](./Estimates/Timeline-Repro.md) | **Nguồn của §4.4** — WBS, critical path, capacity. Cũng là nơi **lên lịch** cho ba mục §4.2.1 (`A2`/`A3` → `D2`, `D1`) và `U-06d` (`D4`) |
 | [PRD-Repro](../020-Requirements/PRD-Repro.md) | Open Questions, Success Metrics, Validation Hypotheses |
 | [NFR-Repro](../020-Requirements/NFR-Repro.md) | Acceptance criteria gaps (`ACG-01`…`ACG-12`) |
 | [SDD-Repro](../030-Specs/Architecture/SDD-Repro.md) | TBD register (`U-01`…`U-25`) và traceability risk → component |

@@ -3,7 +3,7 @@ id: INDEX-000
 type: index
 status: draft
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-15
 ---
 
 # 📚 Documentation Master Index
@@ -26,6 +26,7 @@ Trang chủ của kho tài liệu. Mọi tài liệu đều nằm dưới `docs/
 | 2 | [BRD-001 — Problem Statement](./020-Requirements/BRD/BRD-001-Problem-Statement.md) | Vấn đề trước khi nghe giải pháp | ~10 phút |
 | 3 | [PRD-Repro](./020-Requirements/PRD-Repro.md) | Sản phẩm làm gì, phạm vi MVP, đo thành công thế nào | ~30 phút |
 | 4 | [SDD-Repro](./030-Specs/Architecture/SDD-Repro.md) | Thiết kế kỹ thuật và những gì còn chưa biết | ~60 phút |
+| 5 | [Timeline-Repro](./010-Planning/Estimates/Timeline-Repro.md) | **Nếu anh vào vai PM**: ai làm gì, theo thứ tự nào, xong thì căn cứ vào đâu | ~15 phút |
 
 > [!IMPORTANT]
 > **Hai mâu thuẫn nội tại của `RQ.md` đã ✅ CHỐT 2026-08-14** — chúng ảnh hưởng tới cách đọc gần như mọi tài liệu bên dưới:
@@ -61,7 +62,8 @@ Trang chủ của kho tài liệu. Mọi tài liệu đều nằm dưới `docs/
 |---|---|---|
 | [Charter-Repro](./010-Planning/Charter-Repro.md) | Project Charter | Business case, objectives, stakeholders, recommended next step |
 | [Roadmap](./010-Planning/Roadmap.md) | Roadmap | Phase 0 (technical spike — **✅ `Go` từ 2026-08-14**) → V0.1 → V0.2 → V0.3 → Future + Non-Goals |
-| [Risk-Register](./010-Planning/Risk-Register.md) | Risk Register | 18 risk của `RQ.md §21` + 11 threat chưa có mitigation + 5 mâu thuẫn nội tại + **5 rủi ro sinh từ năm quyết định gate** (§4.2) |
+| [Timeline-Repro](./010-Planning/Estimates/Timeline-Repro.md) | Timeline & WBS | ✅ **`approved` 2026-08-15**. **Lớp execution đặt trên Roadmap** — 9 khối `P0-A`→`P5` (spike → V0.1 → phát hành → design partner → thương mại hoá), 10 vai, WBS task-level cho Phase 0, critical path hai nhánh, **6 blocker**. `T0` đã chốt (`W1` = 2026-08-17), Phase 0 = **9 tuần** ⇒ **`GATE-06` = 2026-10-16**. Capacity **solo** |
+| [Risk-Register](./010-Planning/Risk-Register.md) | Risk Register | 18 risk của `RQ.md §21` + 11 threat chưa có mitigation + 5 mâu thuẫn nội tại + **5 rủi ro sinh từ năm quyết định gate** (§4.2) + **6 rủi ro và 2 blocker sinh từ Timeline** (§4.4, họ `TL-*`) |
 | [PRD-Repro](./020-Requirements/PRD-Repro.md) | PRD | Scope/MVP, `FR-001`…`FR-082`, Success Metrics, Validation Hypotheses, Open Questions |
 | [NFR-Repro](./020-Requirements/NFR-Repro.md) | NFR | `N-01`…`N-19`, acceptance criteria gaps, và **những con số KHÔNG phải NFR** |
 | [SDD-Repro](./030-Specs/Architecture/SDD-Repro.md) | SDD | Thiết kế hệ thống, capsule format, TBD register |
@@ -74,7 +76,7 @@ Trang chủ của kho tài liệu. Mọi tài liệu đều nằm dưới `docs/
 
 | Thư mục | MOC | Nội dung |
 |---|---|---|
-| `010-Planning/` | [Planning-MOC](./010-Planning/Planning-MOC.md) | Chiến lược, roadmap, risk, run-state của PM |
+| `010-Planning/` | [Planning-MOC](./010-Planning/Planning-MOC.md) | Chiến lược, roadmap, **timeline & WBS** (`Estimates/`), risk, run-state của PM |
 | `020-Requirements/` | [Requirements-MOC](./020-Requirements/Requirements-MOC.md) | PRD, BRD, NFR, Use Cases |
 | `022-User-Stories/` | [Stories-MOC](./022-User-Stories/Stories-MOC.md) | Epic và User Story — *rỗng theo **`GATE-02`**: hoãn phân rã tới sau khi gate Phase 0 đóng. Là **quyết định**, không phải trạng thái chờ* |
 | `030-Specs/` | [Specs-MOC](./030-Specs/Specs-MOC.md) | SDD, ADR, Security Spec |

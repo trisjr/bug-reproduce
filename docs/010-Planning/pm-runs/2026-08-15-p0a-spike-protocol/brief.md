@@ -32,7 +32,24 @@
 
 **Điểm**: 4/4 → **Tier**: **T3**
 
+**Lane**: `doc` — run này sinh ra **tài liệu**, không sinh source code. Code của Phase 0 bắt đầu ở `P0-B`, sau `Gate A`.
+
+**Shape**: **A — Authoring**. Tạo mới 3 tài liệu, không phải sweep chuẩn hoá kho docs. *(Có một hạng mục sửa file đã tồn tại — `A8` cập nhật MOC/Index — nhưng đó là close-step bắt buộc của mọi run, không làm đổi shape.)*
+
 **Chọn tier thấp do phân vân**: Không. 4/4 là tuyệt đối, không có vùng xám.
+
+**Đích tài liệu — tra từ Document Type Mapping của RULE-001** (không tự chế đường dẫn):
+
+| Tài liệu | Loại (RULE-001) | Thư mục đích | Naming convention | Khớp? |
+|---|---|---|---|---|
+| `Spec-Spike-Protocol.md` | Technical Spec | `docs/030-Specs/` | `Spec-{Feature}.md` | ✅ |
+| `MTP-Spike-Phase-0.md` | Test Plan | `docs/035-QA/Test-Plans/` | `MTP-{Name}.md` | ✅ |
+| `Template-Spike-Report.md` | Template | `docs/999-Resources/Templates/` | `Template-{Type}.md` | ✅ |
+
+Cả ba đường dẫn Timeline đã ghi **đều khớp** RULE-001 — không phải sửa đích.
+
+> [!NOTE]
+> **Độ lệch contract đã phát hiện, xử theo RULE-001.** Lệnh `/pm-doc` yêu cầu wiki-link `[[Document-Name]]`; [RULE-001](../../../../knowledge-base/99-Templates/Documents-Template.md) mục *Các quy tắc nghiêm ngặt* #5 **cấm tường minh** wiki-link và bắt dùng standard markdown link với relative path. RULE-001 đang `status: approved` và là contract của lane ⇒ **mọi link trong run này dùng `[text](./path.md)`**. Ghi lại để `context-auditor` không báo là vi phạm lệnh.
 
 ## Assumptions
 

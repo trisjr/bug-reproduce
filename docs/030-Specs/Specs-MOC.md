@@ -3,7 +3,7 @@ id: MOC-SPECS
 type: moc
 status: draft
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-15
 ---
 
 # 📂 030-Specs Map of Content (MOC)
@@ -12,6 +12,26 @@ updated: 2026-08-14
 
 > [!IMPORTANT]
 > **Toàn bộ tài liệu trong thư mục này là thiết kế TRƯỚC KHI hiện thực.** `src/` và `test/` của repo còn rỗng. Không tài liệu nào ở đây mô tả code đang tồn tại.
+
+---
+
+## 🔬 Technical Spec
+
+- [Spec-Spike-Protocol](./Spec-Spike-Protocol.md) — **Spike Protocol cho Phase 0** *(2026-08-15)*. Tài liệu làm cho technical spike **cho ra được pass/fail**. Đóng **bốn `ACG`** ở dạng **hypothesis có nhãn**:
+  - **§2 `ACG-07`** — *Supported Execution Class*, khái niệm mà §20.1 lấy làm mitigation cho risk 🔴 `R-01` nhưng **không tồn tại ở đâu trong `RQ.md`**. Loại trừ trên **hai trục**: 9 hidden input §20.1 **và** dependency ngoài 8 nhóm capture §18.
+  - **§3 `ACG-01`** — định nghĩa **vận hành** của *execution path* + rubric `matched`/`diverged`. Đây là `U-04`, *"unknown lớn nhất của cả tài liệu"*. Kèm **`U-13`** (ngữ nghĩa clock) và **`U-16`** (drift warn hay fatal) — hai open item của ADR nay đã có hypothesis.
+  - **§4 `ACG-02` + `ACG-03`** — tiêu chí *"meaningful"*, **denominator = 7**, ngưỡng hiệu dụng **`≥6/7`**.
+  - **§5 Shortcut ledger** — control cho `TL-r4`, ghi mỗi `SEC-*` bị cố ý bỏ qua trong code spike.
+
+> [!WARNING]
+> **Toàn bộ nội dung `Spec-Spike-Protocol.md` mang nhãn `HYPOTHESIS`, KHÔNG phải định nghĩa sản phẩm.** Việc nâng lên định nghĩa là task `D2`, thuộc `P1`, **sau `GATE-06`**. Tài liệu hạ nguồn **cấm** trích dẫn mục của nó như định nghĩa đã chốt.
+>
+> **Ba điểm yếu đã công bố, không phải phát hiện muộn:**
+> - **`W1`** — rubric §3 có **recall = 0** với rẽ nhánh thuần logic: hai nhánh khác nhau, không chạm dependency nào, cùng kết cục ⇒ rubric kết luận `matched` **trong khi execution thực sự đã khác**. Phát biểu trung thực nhất rubric hỗ trợ được là *"không quan sát được phân kỳ nào tại boundary đã instrument và tại kết cục"* — **không phải** *"execution giống nhau"*.
+> - **Bốn nhóm hidden input không có cơ chế phát hiện nào**: environment variables · filesystem state · **process state** · OS behavior. Class loại trừ chúng **bằng lời khai, không bằng phép kiểm**.
+> - Rubric thừa hưởng toàn bộ độ giòn của **`U-02`** — thứ [SDD §8.3](./Architecture/SDD-Repro.md) gọi là *"rủi ro hiện thực cao nhất"*.
+
+**Đo bằng gì**: [MTP-Spike-Phase-0](../035-QA/Test-Plans/MTP-Spike-Phase-0.md) · **Báo cáo bằng khuôn nào**: [Template-Spike-Report](../999-Resources/Templates/Template-Spike-Report.md)
 
 ---
 
@@ -59,7 +79,10 @@ updated: 2026-08-14
 
 ## ⚠️ Ba điều cần biết trước khi dùng bộ spec này
 
-1. **Hai unknown lõi chưa được giải và cố ý không được giả vờ là đã giải**: `U-04` (định nghĩa *"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, nó chặn `ADR-006`) và `U-02` (query matching identity — rủi ro hiện thực cao nhất, nó chặn `ADR-003`). Cả hai ở dạng `TBD` kèm phương án gắn nhãn *"cần validate"*.
+1. **Hai unknown lõi — trạng thái đã đổi ngày 2026-08-15, nhưng KHÔNG phải "đã giải":**
+   - **`U-04`** (*"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, chặn `ADR-006`) nay **có một rubric vận hành ở dạng `HYPOTHESIS`** tại [Spec-Spike-Protocol §3](./Spec-Spike-Protocol.md). Rubric **chạy tay được** và cho **kết luận nhị phân**. Nhưng nó **chưa phải định nghĩa sản phẩm** — việc nâng cấp là `D2`, sau `GATE-06`, và nó mang sẵn ba điểm yếu đã công bố (`W1` recall = 0 với rẽ nhánh thuần logic; bốn nhóm hidden input không có cơ chế phát hiện; phụ thuộc `U-02`).
+   - **`U-02`** (query matching identity — rủi ro hiện thực cao nhất, chặn `ADR-003`) **vẫn `TBD` nguyên vẹn**. Rubric §3 **thừa hưởng toàn bộ độ giòn của nó**: định danh query theo thứ tự thì thêm/bớt một query làm lệch toàn bộ mapping ⇒ rubric báo `diverged` **sai**.
+   - Hai mục khác đã có hypothesis cùng dịp: **`U-13`** (ngữ nghĩa clock) và **`U-16`** (drift là warning hay fatal) — xem [§3](./Spec-Spike-Protocol.md). `U-13` **buộc phải** đóng vì `B3`/`B5` không xây được nếu thiếu; không đóng ở đây thì Engineer sẽ quyết **ngầm** lúc hiện thực.
 2. **Mâu thuẫn M2 đã ✅ CHỐT 2026-08-14** — `RQ.md §28` xếp access control vào commercial layer trong khi §20.5/§21 coi là MVP. Quyết định `D2`: **authentication + authorization + audit log thuộc OSS core**, ghi đè §28. `RQ.md` **vẫn nguyên văn nói ngược** — bằng chứng hai phía được giữ nguyên tại [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) và [threat model §10](./Security/Spec-Security-Repro-Threat-Model.md).
    - **Hai điểm `D2` không chốt theo, nay đã được quyết riêng ngày 2026-08-14:**
      - `SEC-016` (crypto-shredding) — **✅ CHỐT GATE-05b**: rời `DEFER`, nay là **`MUST-V0.1`**. ⚠ Hệ quả: bất biến *"replay không cần kết nối mạng"* **bị phá** (`GATE-05b-r`), và `U-06d` (key custody) **thành blocker** (`GATE-05b-r2`). Xem [Risk-Register §4.2](../010-Planning/Risk-Register.md).

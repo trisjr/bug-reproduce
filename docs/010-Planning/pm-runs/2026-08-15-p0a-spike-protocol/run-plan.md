@@ -53,6 +53,57 @@
 4. **Không viết một dòng code nào trong run này.** Code bắt đầu ở `P0-B`, sau `Gate A`.
 5. **Escalate thay vì đoán**: vai nào gặp mục chặn không tự quyết được ⇒ ghi `escalations.md` ⇒ PM tổng hợp **kèm phản biện** ⇒ `@TrisJr` quyết.
 
+## Kết quả Bước 2 — analysis fan-out (4/4 lens, read-only)
+
+Chi tiết ở `findings/`. Bốn kết luận đổi plan:
+
+### K1 — `GAP-Redis`: PM đã trình bày SAI ở lượt trước, hai lần
+
+| Sai | Đúng (PM tự verify trong `RQ.md`) |
+|---|---|
+| *"§22 bắt test app chạm Redis ở mọi request, `B1` **chép đúng**"* | §22 chỉ **liệt kê dependency của test app**. Ràng buộc *"chạm cả 5 trong một request"* đến từ **exit criteria `B1` của Timeline** — artifact dự án, sửa được. `B1` **siết chặt hơn nguồn** (**F1**) |
+| *"ba phương án (a)/(b)/(c) ngang nhau"* | **(a) đơn độc ⇒ denominator = 0**, tự huỷ. Và (a)+(c) **không phải hai lựa chọn** mà là **hai mặt của một quyết định**: (a) là phần định nghĩa (`ACG-07` ii-b), (c) là phần hiện thực (`B1`) |
+
+Cộng **F2**: **không scenario nào trong 10** lấy Redis làm tác nhân gây lỗi ⇒ (c) **không xoá scenario nào** khỏi danh sách của `RQ.md`.
+
+⇒ Lo ngại *"(c) làm spike dễ hơn thực tế"* mà PM viết ở Timeline §3 là **quá nặng so với sự thật**. Chi phí thật của (c) = sửa một dòng exit criteria `B1`.
+
+### K2 — Mâu thuẫn BA ↔ Architect về denominator, PM đã phân xử
+
+BA nói **7** = {1,2,3,4,5,6,8}; Architect nói **5** = {1,2,3,5,8}, còn 4 và 6 bị chặn bởi `U-13` (ngữ nghĩa clock) và `ACG-10`/`U-16` (drift warn hay fatal).
+
+**Phân xử**: cả hai đúng về hai thứ khác nhau. BA hỏi *"input nhân quả có được capture không"* → có. Architect hỏi *"verdict có xác định được không"* → chưa. Hai lens gặp nhau tại **`M-5` của BA** (*khai verdict kỳ vọng trước khi chạy*): **không thể khai verdict kỳ vọng cho scenario 4 khi `U-13` chưa giải**.
+
+⇒ **Denominator là hàm của phạm vi `A3`**: đóng thêm `U-13` + `U-16` ⇒ **7**; không đóng ⇒ **5**. Đây là quyết định phạm vi có chi phí MD ⇒ **đưa lên gate**.
+
+### K3 — Ba ràng buộc phải vào protocol TRƯỚC `P0-B`, nếu không tiêu 32 MD mà không kết luận được
+
+| # | Ràng buộc | Không có thì hỏng gì |
+|:--:|---|---|
+| 1 | **Canary sink** tại địa chỉ môi trường đã destroy | Sau destroy, WRITE **rò rỉ** nhận `ECONNREFUSED` — **trông giống hệt** WRITE **bị chặn**. Mọi bằng chứng an toàn của `C1` vô nghĩa |
+| 2 | **Capture không-cap + thí nghiệm cắt offline** | `11.b` đòi **hai vế**; vế 2 (*tỉ lệ replay theo từng mức cắt*) bị bỏ quên. Cắt tại lúc record ⇒ môi trường đã destroy, **đuôi phân bố mất vĩnh viễn**, `SEC-008` không bao giờ chốt |
+| 3 | **L2 phải tồn tại và protocol ghi rõ ở tầng nào** | Exit criteria `B5` hiện **thoả được bằng L1 đơn thuần** ⇒ `THREAT-018` tái diễn nguyên vẹn |
+
+### K4 — Bốn hội tụ độc lập giữa các lens (mức bằng chứng cao nhất run này có)
+
+| Điểm | Lens hội tụ |
+|---|---|
+| **Fail-closed khi thiếu bằng chứng** — tính là KHÔNG đạt, không loại khỏi mẫu số | QA (`U-25`) · BA (scenario không replay được) · Security (`MISSING_RECORDING`) |
+| **`U-25` là điều kiện tiên quyết**, không phải nice-to-have | QA (tách non-determinism) · Architect (`out-of-scope-determinism` không có tín hiệu nào khác) · BA (`K` lần đều `matched`) |
+| **Quan sát viên phải ĐỘC LẬP với thứ đang được đo** | QA (verdict `B6` ≠ log replay) · Security (canary log ≠ log replay runtime) |
+| **WRITE bị chặn + recorded result trả về ⇒ phân loại `matched`** | Security · Architect (đề xuất độc lập, cùng nội dung) |
+
+### Hạng mục MỚI so với plan gốc — chờ gate duyệt
+
+| Hạng mục | Rơi vào | Ghi chú |
+|---|---|---|
+| `escaped_side_effects` = **metric thứ 6**, target `0` | `A5` + `A6` | `ADR-005` ghi risk 🔴 §20.4 hiện **không có bằng chứng chấp nhận nào được định nghĩa`**. Con số `0` suy ra từ §13, không phải ngưỡng bịa |
+| Ma trận 12 test `T1`–`T12` cho `THREAT-018` | `A5` | `T8` (`child_process`) **sẽ FAIL nếu L2 ở tầng runtime** — ghi nhận là khoảng hở đã đo được, **không** làm nhẹ test |
+| **Shortcut ledger** — bảng ghi mỗi `SEC-xxx` bị cố ý bỏ qua | `A1` | Kiểm soát `TL-r4`; prefix nhánh `spike/` là **quy ước, không phải control** |
+| Probe **`S11`** — một execution cố tình phụ thuộc Redis, ngoài denominator | `A4` khai, `B8` dựng | Kiểm chính **thủ tục quy trách nhiệm**: `S11` phải ra `incomplete-capture`, không phải `out-of-scope-determinism` |
+| **Known-Missing-Input Manifest**, niêm phong trước `C1` | `A2` + `A5` | — |
+| Ripple sang `P0-B`/`P0-C` | ghi vào `outline.md` §Ripple | `B1` (bất biến hạ dòng + exit criteria mới) · `B3` (log row/byte + không-cap) · `B5` (L2 + 12 test) · `B7` (A/B xen kẽ, traffic đa số thành công) · `B9` (quyết định → xác minh) · `C1` (`U-25`, canary) |
+
 ## Gate
 
 - **Trình ngày**: cuối `W2` — dự kiến 2026-08-28

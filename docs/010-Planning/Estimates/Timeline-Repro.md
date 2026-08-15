@@ -19,7 +19,7 @@ updated: 2026-08-15
 >
 > | ID | Giả định | Nội dung |
 > |---|---|---|
-> | **`TL-A1`** | **Trục thời gian tương đối** | Mọi mốc ghi dạng `W1`, `W2`… tính từ **`T0`** = tuần khởi động Phase 0. ✅ **`T0` ĐÃ CHỐT 2026-08-15**: **`W1` = 2026-08-17 → 2026-08-21** (tuần làm việc đầu tiên sau ngày duyệt). ⇒ `W9` = **2026-10-12 → 2026-10-16**, và **`GATE-06` rơi vào 2026-10-16**. Các bảng bên dưới **vẫn giữ ký hiệu `W`**, không nhúng ngày — quy đổi là cơ học và tránh phải sửa ~40 ô mỗi lần lịch trượt. |
+> | **`TL-A1`** | **Trục thời gian tương đối** | Mọi mốc ghi dạng `W1`, `W2`… tính từ **`T0`** = tuần khởi động Phase 0. ✅ **`T0` ĐÃ CHỐT 2026-08-15**: **`W1` = 2026-08-17 → 2026-08-21** (tuần làm việc đầu tiên sau ngày duyệt). ⇒ `W10` = **2026-10-19 → 2026-10-23**, và **`GATE-06` rơi vào 2026-10-23**. Các bảng bên dưới **vẫn giữ ký hiệu `W`**, không nhúng ngày — quy đổi là cơ học và tránh phải sửa ~40 ô mỗi lần lịch trượt. |
 > | **`TL-A2`** | **Capacity = solo** | **Một người thực thi (`@TrisJr`)**, được hỗ trợ bởi các **agent role**. Effort ghi bằng **MD (man-day)** của một người. Đúng với thực tế đã ghi ở [Charter §5.1](../Charter-Repro.md) — *dự án một người*. |
 >
 > **Hệ quả của `TL-A2` phải nói thẳng**: mọi cột `Driver` / `Collaborators` bên dưới là **vai trò**, không phải người khác nhau. Một người giữ mọi vai ⇒ **không có phản biện độc lập thật sự**, kể cả ở các gate. Đây là rủi ro quản trị đã được ghi ở Charter §5.1, timeline này không xoá nó.
@@ -101,22 +101,22 @@ Mười vai dưới đây bao phủ toàn bộ công việc trong timeline. Tên
 
 ```mermaid
 graph TD
-    A["P0-A · W1–W2<br/>Spike Protocol<br/>(đóng GATE-01-r)"] --> GA{{"Gate A<br/>@TrisJr duyệt protocol"}}
-    GA -->|Đạt| B["P0-B · W3–W6 (+W7 đệm)<br/>Spike Build<br/>(code throwaway)"]
+    A["P0-A · W1–W3<br/>Spike Protocol<br/>(đóng GATE-01-r)"] --> GA{{"Gate A<br/>@TrisJr duyệt protocol"}}
+    GA -->|Đạt| B["P0-B · W4–W7<br/>Spike Build<br/>(code throwaway)"]
     GA -->|Chưa đạt| A
-    B --> C["P0-C · W8–W9<br/>Spike Run + Report"]
+    B --> C["P0-C · W8–W10<br/>Spike Run + Report"]
     C --> G39{{"GATE-06 §39<br/>Replay được lớp bug<br/>có ý nghĩa không?"}}
-    G39 -->|"KHÔNG"| NO["P0-D · W10–W12<br/>Thu hẹp phạm vi<br/>hoặc dừng (§24)"]
+    G39 -->|"KHÔNG"| NO["P0-D · W11–W13<br/>Thu hẹp phạm vi<br/>hoặc dừng (§24)"]
     NO --> G39b{{"Quyết định lại<br/>@TrisJr"}}
     G39b -->|Re-scope| B
     G39b -->|Dừng| STOP["Xem xét lại<br/>khái niệm sản phẩm"]
-    G39 -->|"CÓ"| D["P1 · W10–W14 CONDITIONAL<br/>Gỡ khoá sau gate<br/>(N-05, ACG, U-*, GATE-02)"]
-    G39 -->|"CÓ"| LG["LG · W10–W21 CONDITIONAL<br/>Legal &amp; Compliance track<br/>(license, GDPR, CVE)"]
+    G39 -->|"CÓ"| D["P1 · W11–W15 CONDITIONAL<br/>Gỡ khoá sau gate<br/>(N-05, ACG, U-*, GATE-02)"]
+    G39 -->|"CÓ"| LG["LG · W11–W22 CONDITIONAL<br/>Legal &amp; Compliance track<br/>(license, GDPR, CVE)"]
     D --> GF{{"D10 · Gate cấp vốn V0.1<br/>@TrisJr"}}
-    GF -->|Cấp vốn| E["P2 · W15–W32 CONDITIONAL<br/>Build V0.1<br/>9 workstream"]
-    E --> F["P3 · W33–W36 CONDITIONAL<br/>Release + OSS launch"]
+    GF -->|Cấp vốn| E["P2 · W16–W33 CONDITIONAL<br/>Build V0.1<br/>9 workstream"]
+    E --> F["P3 · W34–W37 CONDITIONAL<br/>Release + OSS launch"]
     LG --> F
-    F --> P4["P4 · W37–W48 CONDITIONAL<br/>Design Partner<br/>&amp; Market Validation"]
+    F --> P4["P4 · W38–W49 CONDITIONAL<br/>Design Partner<br/>&amp; Market Validation"]
     P4 --> GPM{{"P4-8 · Gate<br/>Product-Market Signal"}}
     GPM -->|Có tín hiệu| V2["V0.2 — xem Roadmap<br/>North Star bắt đầu đo được"]
     GPM -->|Không| PIVOT["Điều chỉnh sản phẩm<br/>hoặc positioning"]
@@ -125,48 +125,48 @@ graph TD
 
 | Phase | Tuần | Trạng thái vốn | Mục tiêu — đúng một câu | Gate ra |
 |---|---|---|---|---|
-| **P0-A** — Spike Protocol | `W1–W2` | ✅ **Đã cấp vốn** | Làm cho spike **có thể cho ra pass/fail** | **Gate A** |
-| **P0-B** — Spike Build | `W3–W6` **+ `W7` đệm** | ✅ **Đã cấp vốn** | Dựng đủ công cụ throwaway để chạy 10 scenario | — |
-| **P0-C** — Spike Run & Report | `W8–W9` | ✅ **Đã cấp vốn** | Trả lời câu hỏi §39 bằng **dữ liệu đo**, không bằng ý kiến | **`GATE-06` (§39)** |
-| **P0-D** — Nhánh KHÔNG | `W10–W12` | ⚠️ dự phòng | Xác định lớp bug nào **không** replay được và thu hẹp phạm vi | quyết định lại |
-| **P1** — Gỡ khoá sau gate | `W10–W14` | 🔶 `CONDITIONAL` | Biến hypothesis của spike thành **định nghĩa chốt**, gỡ 4 blocker | **`D10` cấp vốn V0.1** |
-| **LG** — Legal & Compliance | `W10–W21` *(song song)* | 🔶 `CONDITIONAL` | Làm cho việc **phát hành** và **cài vào production người khác** hợp pháp | `LG3` đóng trước `P4` |
-| **P2** — Build V0.1 | `W15–W32` | 🔶 `CONDITIONAL` | Hiện thực core replay loop + nghĩa vụ phi chức năng | Execution Match Rate ≥ `N-05` |
-| **P3** — Release V0.1 | `W33–W36` | 🔶 `CONDITIONAL` | Phát hành OSS an toàn và cài được trong vài phút | Release v0.1.0 |
-| **P4** — Design Partner & Market Validation | `W37–W48` | 🔶 `CONDITIONAL` | Chứng minh **người thật** cài vào **production thật** và thu được giá trị | **Gate Product-Market Signal** |
+| **P0-A** — Spike Protocol | `W1–W3` | ✅ **Đã cấp vốn** | Làm cho spike **có thể cho ra pass/fail** | **Gate A** |
+| **P0-B** — Spike Build | `W4–W7` | ✅ **Đã cấp vốn** | Dựng đủ công cụ throwaway để chạy 10 scenario | — |
+| **P0-C** — Spike Run & Report | `W8–W10` | ✅ **Đã cấp vốn** | Trả lời câu hỏi §39 bằng **dữ liệu đo**, không bằng ý kiến | **`GATE-06` (§39)** |
+| **P0-D** — Nhánh KHÔNG | `W11–W13` | ⚠️ dự phòng | Xác định lớp bug nào **không** replay được và thu hẹp phạm vi | quyết định lại |
+| **P1** — Gỡ khoá sau gate | `W11–W15` | 🔶 `CONDITIONAL` | Biến hypothesis của spike thành **định nghĩa chốt**, gỡ 4 blocker | **`D10` cấp vốn V0.1** |
+| **LG** — Legal & Compliance | `W11–W22` *(song song)* | 🔶 `CONDITIONAL` | Làm cho việc **phát hành** và **cài vào production người khác** hợp pháp | `LG3` đóng trước `P4` |
+| **P2** — Build V0.1 | `W16–W33` | 🔶 `CONDITIONAL` | Hiện thực core replay loop + nghĩa vụ phi chức năng | Execution Match Rate ≥ `N-05` |
+| **P3** — Release V0.1 | `W34–W37` | 🔶 `CONDITIONAL` | Phát hành OSS an toàn và cài được trong vài phút | Release v0.1.0 |
+| **P4** — Design Partner & Market Validation | `W38–W49` | 🔶 `CONDITIONAL` | Chứng minh **người thật** cài vào **production thật** và thu được giá trị | **Gate Product-Market Signal** |
 | **P5** — GTM & Commercial | `TBD` *(sau V0.2)* | 🔶 `CONDITIONAL` | Thương mại hoá — **chỉ sau khi North Star đo được** | quyết định commercial launch |
 
-**Tổng effort đã cấp vốn (`P0-A` → `P0-C`): 41.5 MD trên 9 tuần.**
+**Tổng effort đã cấp vốn (`P0-A` → `P0-C`): ~46 MD trên 10 tuần.**
 
 > [!NOTE]
-> ✅ **CHỐT 2026-08-15 — `@TrisJr` chọn phương án giãn 1 tuần đệm.** Phase 0 từ 8 tuần thành **9 tuần**; `GATE-06` dời từ `W8` sang **`W9`**. Cơ sở tính thống nhất toàn tài liệu: `TL-A2` (solo) ⇒ **5 MD/tuần**.
+> ✅ **CHỐT 2026-08-15 — hai lần điều chỉnh trong cùng ngày, ghi cả hai để thấy vì sao.**
 >
-> | | Trước | Sau |
-> |---|:--:|:--:|
-> | Phase 0 | 8 tuần | **9 tuần** |
-> | Capacity tổng | 41.5/40 = **104%** | 41.5/45 = **92%** |
-> | `GATE-06` | `W8` | **`W9`** |
+> | | Bản gốc | Lần 1 — giãn đệm | **Lần 2 — sau analysis fan-out** |
+> |---|:--:|:--:|:--:|
+> | Phase 0 | 8 tuần | 9 tuần | **10 tuần** |
+> | Effort | 41.5 MD | 41.5 MD | **~46 MD** |
+> | Capacity | 41.5/40 = **104%** | 41.5/45 = 92% | **46/50 = 92%** |
+> | `GATE-06` | `W8` | `W9` | **`W10` = 2026-10-23** |
 >
-> **Tuần đệm là `W7`, và nó có tên riêng — đây là điểm mấu chốt.** Đệm ẩn trong một sub-phase kéo dài sẽ **bị tiêu âm thầm**: phạm vi tự nở ra cho vừa thời gian có sẵn. Vì vậy `W7` được ghi thành một tuần **có thể tiêu hoặc không**, với quy tắc rõ ràng:
+> **Lần 1** — `TL-r1` nói mọi con số MD ở đây không có dữ liệu lịch sử đứng sau. Lịch 104% + ước lượng không baseline ⇒ trượt đẩy thẳng vào `GATE-06`, đúng cái gate duy nhất đã cấp vốn.
 >
-> | Kịch bản | `W7` đi đâu | Capacity từng sub-phase |
-> |---|---|---|
-> | `P0-B` xong đúng hạn `W6` | `W7` **chuyển sang `P0-C`** ⇒ `P0-C` = `W7–W9` | `P0-A` 95% · `P0-B` 107% · **`P0-C` 70%** |
-> | `P0-B` trượt | `W7` **thuộc `P0-B`** ⇒ `P0-B` = `W3–W7`, `P0-C` = `W8–W9` | `P0-A` 95% · **`P0-B` 86%** · `P0-C` 105% |
+> **Lần 2** — analysis fan-out của run [`2026-08-15-p0a-spike-protocol`](../pm-runs/2026-08-15-p0a-spike-protocol/run-plan.md) tìm ra **~4.5 MD phạm vi thật chưa được đếm** trong `P0-A`: ba ràng buộc chặn (canary sink · capture không-cap · L2 bắt buộc), đóng thêm `U-13`/`U-16`, metric thứ 6, probe `SC-11`, shortcut ledger. `P0-A` từ 9.5 lên **~14 MD**.
 >
-> **`W7` KHÔNG được dùng để mở rộng phạm vi spike.** Nó chỉ có hai đích đến: hấp thụ trượt của `P0-B`, hoặc nới thở cho `P0-C` — phase phải sản xuất ra câu trả lời cho `GATE-06`. Tiêu nó vào việc thêm scenario, thêm metric, hay "làm cho recorder đẹp hơn" là **vi phạm §39 và `TL-r4`**.
+> **Phân bổ mới:** `P0-A` = `W1–W3` (14/15 = **93%**) · `P0-B` = `W4–W7` (21.5/20 = **107%**) · `P0-C` = `W8–W10` (10.5/15 = **70%**).
 >
-> **Lý do chọn phương án này** — ghi lại để lần review sau không phải đoán: `TL-r1` nói mọi con số MD ở đây **không có dữ liệu lịch sử đứng sau** (repo chưa có một dòng code sản phẩm, không có velocity). Lịch 104% + ước lượng không baseline ⇒ trượt sẽ đẩy thẳng vào `GATE-06` — đúng cái gate duy nhất đã được cấp vốn. Một tuần đệm là giá rẻ để bảo vệ nó.
+> **Đệm nay nằm ở `P0-C`, và đó là chỗ đúng.** [`findings/quality-assurance.md`](../pm-runs/2026-08-15-p0a-spike-protocol/findings/quality-assurance.md) chỉ ra `C1` **có thể phải chạy lại toàn bộ** nếu phân bố `SEC-008` bị kiểm duyệt. Slack 30% của `P0-C` là chỗ hấp thụ đúng rủi ro đó — không phải đệm chung chung.
 >
-> ⚠️ **Đệm này KHÔNG làm `TL-r1` biến mất.** Nó chỉ mua một lần trượt. Việc hiệu chỉnh lại toàn bộ ước lượng **sau `P0-B`** — nơi đầu tiên có số liệu thật về tốc độ — vẫn là **bắt buộc**, không phải tuỳ chọn.
+> ⚠️ **Đệm KHÔNG làm `TL-r1` biến mất.** Lần 2 này chính là bằng chứng: đệm `W7` mua ở lần 1 **đã bị tiêu hết** bởi phạm vi thật tìm ra chỉ vài giờ sau. Hiệu chỉnh lại toàn bộ ước lượng **sau `P0-B`** vẫn là **bắt buộc**.
+>
+> **Bài học ghi lại**: ~4.5 MD này **không phải scope creep** — nó là phạm vi vốn đã tồn tại nhưng chưa ai đếm, và nó chỉ lộ ra khi bốn lens đọc kỹ nguồn. Trả bằng một tuần đã biết rẻ hơn phát hiện ở `C1`.
 
 **Phần `CONDITIONAL`: ~229.5 MD + `P5` chưa ước lượng được**
 
 | Khối | MD | Ghi chú |
 |---|:--:|---|
 | `P1` Gỡ khoá | 24.5 | |
-| `LG` Legal & Compliance | 10.0 | **cộng lead time bên ngoài 2–6 tuần** — xem [§6.1](#61-legal--compliance-track--w9w20--song-song-p1--conditional) |
-| `P2` Build V0.1 | 158.0 | vượt capacity — xem [§7](#7-phase-p2--build-v01--w14w31--conditional) |
+| `LG` Legal & Compliance | 10.0 | **cộng lead time bên ngoài 2–6 tuần** — xem [§6.1](#61-legal--compliance-track--w11w22--song-song-p1--conditional) |
+| `P2` Build V0.1 | 158.0 | vượt capacity — xem [§7](#7-phase-p2--build-v01--w16w33--conditional) |
 | `P3` Release | 15.5 | |
 | `P4` Design Partner | 21.5 | trải 12 tuần vì có **thời gian chờ** phía đối tác |
 | `P5` GTM & Commercial | **`TBD`** | Không ước lượng được — phụ thuộc V0.2, mà V0.2 **chưa được lập lịch**. Ghi `TBD` thay vì bịa |
@@ -177,18 +177,18 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 | Mốc | Tuần | Nghĩa là gì |
 |---|:--:|---|
-| **Trả lời được câu hỏi kỹ thuật** | `W9` *(= 2026-10-16)* | `GATE-06` — biết Repro có khả thi hay không. **Đây là mốc duy nhất đã được cấp vốn** |
-| **OSS public launch** | `W36` | Phần mềm **tồn tại** và cài được. **Chưa** chứng minh có ai dùng |
-| **Có tín hiệu thị trường** | `W48` | `P4-8` — có tổ chức thật chạy Repro trên production thật. **Sớm nhất ~48 tuần từ `T0`** |
+| **Trả lời được câu hỏi kỹ thuật** | `W10` *(= 2026-10-23)* | `GATE-06` — biết Repro có khả thi hay không. **Đây là mốc duy nhất đã được cấp vốn** |
+| **OSS public launch** | `W37` | Phần mềm **tồn tại** và cài được. **Chưa** chứng minh có ai dùng |
+| **Có tín hiệu thị trường** | `W49` | `P4-8` — có tổ chức thật chạy Repro trên production thật. **Sớm nhất ~49 tuần từ `T0`** |
 
 > [!IMPORTANT]
-> **`W48` vẫn CHƯA phải "hoàn tất project".** Sau mốc đó còn **V0.2** (nơi North Star §31 mới bắt đầu đo được — quyết định `M1`), rồi mới tới **`P5`** thương mại hoá, rồi V0.3 và Future. Ba khối đó **cố ý không được lập lịch** vì phạm vi của chúng phụ thuộc kết quả các phase trước — xem [§10](#10-v02-trở-đi--milestone-và-phase-thương-mại-hoá) và [§13](#13-những-gì-timeline-này-không-chứa).
+> **`W49` vẫn CHƯA phải "hoàn tất project".** Sau mốc đó còn **V0.2** (nơi North Star §31 mới bắt đầu đo được — quyết định `M1`), rồi mới tới **`P5`** thương mại hoá, rồi V0.3 và Future. Ba khối đó **cố ý không được lập lịch** vì phạm vi của chúng phụ thuộc kết quả các phase trước — xem [§10](#10-v02-trở-đi--milestone-và-phase-thương-mại-hoá) và [§13](#13-những-gì-timeline-này-không-chứa).
 >
 > Nói gọn: **timeline này đưa dự án từ ý tưởng tới *có bằng chứng thị trường*, không tới *hoàn tất sản phẩm*.** Ranh giới đó là có chủ ý, không phải thiếu sót.
 
 ---
 
-## 3. Phase P0-A — Spike Protocol · `W1–W2` · ✅ đã cấp vốn
+## 3. Phase P0-A — Spike Protocol · `W1–W3` · ✅ đã cấp vốn
 
 > **Vì sao phase này tồn tại**: `GATE-01 = Go` đã bật spike, nhưng **không** làm spike đo được. Bốn khoảng hở `ACG-01`, `ACG-02`, `ACG-03`, `ACG-07` vẫn nguyên ⇒ **chạy spike ngay lúc này vẫn không cho ra pass/fail** (`GATE-01-r`, [Risk-Register §4.2](../Risk-Register.md)). Phase này đóng đúng rủi ro đó.
 >
@@ -206,37 +206,79 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 | **A8** | Cập nhật MOC + index cho tài liệu mới; ghi `TL-A1`/`TL-A2` vào Risk-Register nếu phát sinh rủi ro mới | `Specs-MOC.md`, `QA-MOC.md`, `000-Index.md` | 🔍 Context Auditor | 🎩 PM | A7 | 0.5 | Không dead link; MOC phản ánh đúng file mới | RULE-001 |
 | **GA** | **Gate A** — duyệt Spike Protocol | quyết định ghi tại `pm-runs/{run}/verdict.md` | 👤 **`@TrisJr`** | 🎩 PM | A8 | 0.5 | Trả lời được: *"chạy spike xong, tôi dùng cái gì để nói đạt hay không đạt?"* | `GATE-01-r` |
 
-**Cộng: 9.5 MD.**
+**Cộng: ~14 MD** *(9.5 MD bản gốc + ~4.5 MD phạm vi tìm ra ở analysis fan-out — xem bảng dưới).*
 
-> [!WARNING]
-> **`GAP-Redis` — lỗ hổng `A2` và `A4` BẮT BUỘC phải xử, phát hiện 2026-08-15.**
+### 3.1 Phạm vi bổ sung sau analysis fan-out — ✅ chốt `G3`/`G4`, 2026-08-15
+
+> Bốn lens read-only ([run `2026-08-15-p0a-spike-protocol`](../pm-runs/2026-08-15-p0a-spike-protocol/run-plan.md)) tìm ra phạm vi **vốn đã tồn tại nhưng chưa ai đếm**. Không phải scope creep — bỏ qua thì `P0-B` + `P0-C` tiêu ~32 MD mà **không kết luận được**.
+
+| Bổ sung | Vào task | ~MD | Không có thì hỏng gì |
+|---|---|:--:|---|
+| **Canary sink** — listener tại địa chỉ môi trường đã destroy, ghi mọi kết nối đến | `A5` | 0.5 | Sau destroy, WRITE **rò rỉ** nhận `ECONNREFUSED` — **trông giống hệt** WRITE **bị chặn**. Mọi bằng chứng an toàn của `C1` **vô nghĩa** |
+| **Capture không-cap + thí nghiệm cắt offline** | `A5` | 0.5 | `SEC-008` §11.b đòi **hai vế**; vế 2 *(tỉ lệ replay theo từng mức cắt)* bị bỏ quên. Cắt tại lúc record ⇒ môi trường đã destroy, **đuôi phân bố mất vĩnh viễn** |
+| **`L2` bắt buộc + ma trận 12 test `THREAT-018`** | `A5` | 0.5 | Exit criteria `B5` hiện **thoả được bằng L1 đơn thuần** ⇒ `THREAT-018` tái diễn nguyên vẹn |
+| **`escaped_side_effects` = metric thứ 6**, target `0` | `A5` + `A6` | 0.5 | `ADR-005` ghi risk 🔴 §20.4 hiện **không có bằng chứng chấp nhận nào được định nghĩa** ⇒ `GATE-06` không nói được gì về nó |
+| **`U-13` + `U-16`** đóng ở dạng hypothesis *(quyết định `G3`)* | `A3` | 1.5 | `U-13` (clock freeze hay virtual) **phải** đóng dù sao — `B3`/`B5` không xây được nếu thiếu; không đóng ở `A3` thì Engineer quyết **ngầm** trong `B5`. `U-16` là đầu vào bước 3 của thủ tục quy trách nhiệm mà `C3` phụ thuộc. Đóng cả hai ⇒ **denominator = 7** |
+| **Known-Missing-Input Manifest**, niêm phong trước `C1` | `A2` + `A5` | 0.5 | Không có thì `C3` quy scenario fail về *"non-determinism"* trong khi nguyên nhân thật là thiếu capture **đã biết trước** |
+| **Shortcut ledger** *(control `TL-r4`)* | `A1` | 0.25 | Prefix nhánh `spike/` là **quy ước, không phải control**. Không có ledger, review tái dùng ở `P1` dựa vào **trí nhớ** |
+| **Probe `SC-11`** — khai ở `A4`, dựng ở `B8` | `A4` | 0.25 | Không kiểm được chính thủ tục quy trách nhiệm trước khi `C3` chạy |
+
+**Ràng buộc thứ tự cứng sinh ra từ đây:** `C1` **không được khởi động** trước khi (i) quyết định `G1` đã thành văn bản trong `Spec-Spike-Protocol.md` §2, và (ii) Known-Missing-Input Manifest đã **niêm phong**.
+
+> [!NOTE]
+> **`GAP-Redis` — phát hiện 2026-08-15, ✅ ĐÃ CHỐT cùng ngày (`G1`).**
 >
-> Ba mệnh đề dưới đây đều đúng và đều có nguồn, nhưng đặt cạnh nhau thì mâu thuẫn:
+> **Vấn đề.** Ba mệnh đề đều có nguồn nhưng đặt cạnh nhau thì mâu thuẫn:
 >
-> 1. `RQ.md §22` bắt test app `POST /checkout` chạm **Redis** ở mọi request (`B1` chép đúng: *"chạm **cả 5** dependency trong một request"*).
+> 1. `RQ.md §22` liệt kê **Redis** trong 5 dependency của spike test app.
 > 2. `RQ.md §18` liệt kê **8 nhóm capture** — **không có Redis**. Quyết định `C-03` đã chốt: **Redis ngoài V0.1**.
 > 3. `§22` bắt buộc bước **Destroy original environment** trước khi replay.
 >
-> ⇒ Sau khi destroy, **không còn Redis nào để đọc**, mà cache state lại là input thật của execution. **Cả 10 scenario đều replay với ít nhất một input không được ghi lại.**
+> ⇒ Nếu execution phụ thuộc cache state, sau destroy **không còn Redis để đọc** ⇒ replay với một input không được ghi lại.
 >
-> **Vì sao `A2` không tự bắt được lỗi này**: Redis **không nằm trong 9 hidden input của §20.1** — nó là một dependency được đặt tên tường minh mà §18 chủ động không capture. Exit criteria cũ (*"đối chiếu 9 nhóm §20.1"*) sẽ **không bao giờ** ép ra quyết định này. Đó là lý do exit criteria của `A2` đã được sửa ở trên.
+> **Vì sao `A2` không tự bắt được**: Redis **không nằm trong 9 hidden input của §20.1** — nó nằm ở **trục khác**: một dependency được đặt tên tường minh mà §18 **chủ động** không capture. Exit criteria cũ (*"đối chiếu 9 nhóm §20.1"*) **không bao giờ** ép ra quyết định này. Đó là lý do exit criteria `A2`/`A4` đã được sửa ở bảng trên.
 >
-> **`A2` phải chọn tường minh một trong ba**, và ghi lý do:
+> ---
 >
-> | Phương án | Hệ quả |
+> ⚠️ **Hai đính chính đối với bản viết đầu tiên của mục này** — cả hai do analysis fan-out tìm ra và PM đã tự verify lại nguyên văn `RQ.md`:
+>
+> | Bản đầu viết | Sự thật |
 > |---|---|
-> | **(a)** Supported Execution Class **loại trừ** execution phụ thuộc Redis state | Sạch nhất về mặt định nghĩa, nhưng `A4` phải kiểm: còn scenario nào sống sót không, và denominator `ACG-03` còn lại bao nhiêu |
-> | **(b)** Spike **capture Redis như throwaway** | Trả lời được câu hỏi §39 rộng hơn, nhưng **tăng phạm vi `B3`** và tạo áp lực `TL-r4` (code spike bị tái dùng) |
-> | **(c)** Test app dùng Redis theo cách **không ảnh hưởng kết quả** execution | Rẻ nhất, nhưng làm spike **dễ hơn thực tế** ⇒ kết quả `GATE-06` lạc quan giả |
+> | *"§22 **bắt** test app chạm Redis ở mọi request (`B1` **chép đúng**)"* | **Sai.** §22 chỉ **liệt kê dependency của test app**; nó **không** có câu nào bắt mỗi request phải chạm cả 5. Ràng buộc *"chạm cả 5 dependency trong một request"* đến từ **exit criteria `B1` của chính tài liệu này** — artifact dự án, **sửa được**. `B1` **siết chặt hơn nguồn** (`F1`) |
+> | *"**cả 10 scenario** đều replay với input không được ghi"* | Đúng **nếu** giữ nguyên `B1`. Nhưng **không scenario nào trong 10 lấy Redis làm tác nhân gây lỗi** — tác nhân là DB, external API, feature flag, clock, dữ liệu thiếu, phiên bản, randomness, write, async, race (`F2`) |
 >
-> **Không được để mặc.** Bỏ qua ⇒ `C3` sẽ quy mọi scenario fail về *"non-determinism"* trong khi nguyên nhân thật là **thiếu capture đã biết trước** — và `GATE-06` bị trả lời sai bằng dữ liệu sai.
+> ⇒ Hệ quả: **phương án (c) không xoá scenario nào khỏi danh sách của `RQ.md`**, và chi phí thật của nó là **sửa một dòng exit criteria `B1`** — không phải *"làm spike dễ hơn thực tế"* như bản đầu viết. Cách xử lý này thống nhất với chính quy tắc dự án đã dùng để phân xử `C-03`: **phát biểu phạm vi tường minh thắng sơ đồ/minh hoạ**.
+>
+> ---
+>
+> ### ✅ Quyết định `G1` — `@TrisJr`, 2026-08-15
+>
+> **Chọn (c) + phần định nghĩa của (a) — một quyết định, hai mặt:**
+>
+> | Mặt | Nội dung | Áp vào đâu |
+> |---|---|---|
+> | **Hiện thực** — (c) | Test app **vẫn đủ 5 dependency** như §22 liệt kê, nhưng **Redis không ảnh hưởng kết cục** của `POST /checkout` | Exit criteria `B1` |
+> | **Định nghĩa** — (a) | *"Execution mà kết cục phụ thuộc cache state nằm **ngoài** Supported Execution Class"* — nhãn `HYPOTHESIS` | `ACG-07` mục (ii-b) |
+>
+> **Lý do quyết định — tính chuyển giao của bằng chứng.** `GATE-06` là cổng quyết định có xây **V0.1** hay không, mà V0.1 có **8 nhóm capture**. Phương án **(b)** *(capture Redis throwaway)* sẽ đo một hệ thống **9 nhóm** rồi dùng con số đó phán quyết một sản phẩm **8 nhóm** ⇒ `GATE-06` pass mà **bằng chứng không chuyển giao được sang thứ đang được gate**. Tệ hơn (c) ở chỗ khuyết điểm đó **vô hình** trong báo cáo; khuyết điểm của (c) thì **nêu tên được** — nó thành một điều khoản loại trừ **công bố trước** trong `ACG-07`, đúng thứ §20.1 yêu cầu.
+>
+> **Phương án (a) đơn độc đã bị loại**: với `B1` giữ nguyên, loại trừ Redis khỏi class sẽ quét sạch **cả 10 scenario** ⇒ **denominator = 0**, spike không trả lời được §39. Đây là lý do (a) phải đi kèm (c).
+>
+> **Hai ràng buộc kỹ thuật bắt buộc kèm theo (c):**
+>
+> - **`R1`** — Redis không nằm trong 8 nhóm instrument ⇒ interaction Redis **vô hình với rubric ở cả hai phía**. **Cấm** thêm hook Redis ở **một** phía; làm vậy tạo interaction lệch ⇒ cả 10 scenario `diverged` với nguyên nhân `incomplete-capture` **giả**.
+> - **`R2`** — cách dùng Redis ở `B1` phải **chịu được việc bị `B5` chặn hoặc vắng mặt** (fire-and-forget, hoặc read có fallback mà giá trị không đi vào business logic). Không có `R2`, (c) chết vì đúng cơ chế an toàn của chính spike.
+>
+> **Probe `SC-11` kèm theo** *(ngoài denominator)*: chạy **một** execution **cố tình phụ thuộc Redis state**. Nó (i) định lượng cái giá của việc loại cache khỏi class, và (ii) quan trọng hơn — **kiểm chính thủ tục quy trách nhiệm**: `SC-11` **phải** ra `diverged` với nguyên nhân **`incomplete-capture`**, **không** phải `out-of-scope-determinism`. Ra sai nhãn ⇒ rubric có lỗi, phải sửa **trước** khi `C3` chạy.
+>
+> **`GAP-Redis` không phải ca cá biệt.** `ACG-07` cho thấy **process state** (module-level cache, memoization, độ ấm của pool) là **cùng lớp vấn đề**, chỉ khác là nằm **trong** process. Phát biểu loại trừ ở (ii-b) được viết để phủ cả lớp, không chỉ phủ Redis.
 
 > [!WARNING]
 > **Gate A không được bỏ qua để "tiết kiệm thời gian".** Bỏ qua nó ⇒ `P0-B` và `P0-C` chạy hết ~30 MD rồi cho ra một kết quả **không kết luận được** — đúng kịch bản mà `GATE-01-r` mô tả. Đây là 9.5 MD mua lấy khả năng kết luận của 30 MD phía sau.
 
 ---
 
-## 4. Phase P0-B — Spike Build · `W3–W6` *(+ `W7` đệm — xem §2)* · ✅ đã cấp vốn
+## 4. Phase P0-B — Spike Build · `W4–W7` · ✅ đã cấp vốn
 
 > **Ràng buộc bất khả nhượng của phase này**: `RQ.md §39` nói **không** bắt đầu bằng việc xây nền tảng Repro đầy đủ, và `§22` nói mục tiêu spike **không phải** xây sản phẩm.
 >
@@ -244,15 +286,15 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 | ID | Task | Deliverable | Driver | Collaborators | Depends | MD | Exit criteria | Neo |
 |---|---|---|---|---|---|:--:|---|---|
-| **B1** | Test app Node.js `POST /checkout` với đủ 5 dependency: PostgreSQL, Redis, external HTTP API, feature flag, system clock | `src/spike/app/` | 🧑‍💻 Engineer | ⚙️ DevOps | GA | 2.0 | App chạy được, `POST /checkout` chạm **cả 5** dependency trong một request | §22 |
-| **B2** | Môi trường production-like + **script destroy environment** (bước then chốt của quy trình 7 bước) | `src/spike/infra/`, `docs/070-Deployment/Deploy-Spike.md` | ⚙️ DevOps | 🧑‍💻 Engineer | GA | 2.0 | Chạy destroy xong, **không** còn service nào của môi trường gốc sống; có bằng chứng kiểm tra | §22, §40 |
-| **B3** | Recorder tối thiểu — capture 8 nhóm của §18: HTTP request, stack trace, DB query/result, external HTTP response, feature flag state, clock/timestamp, Git commit, runtime metadata | `src/spike/recorder/` | 🧑‍💻 Engineer | 🏗️ Architect | B1 | 4.0 | Một execution thật sinh ra artifact chứa **đủ 8 nhóm**; overhead được đo (không cần đạt ngưỡng) | §18, `ADR-007` |
+| **B1** | Test app Node.js `POST /checkout` với đủ 5 dependency: PostgreSQL, Redis, external HTTP API, feature flag, system clock. **External HTTP API phải là stub tự chạy** (`G2`), **dữ liệu seed là synthetic** | `src/spike/app/` | 🧑‍💻 Engineer | ⚙️ DevOps, 🛡️ Security | GA | 2.0 | App chạy được, `POST /checkout` chạm **cả 5** dependency trong một request, **trong đó Redis KHÔNG ảnh hưởng kết cục** (`G1`). Có test chứng minh **bất biến hạ dòng**: cache-hit lúc capture và cache-miss/lỗi lúc replay cho **cùng** chuỗi DB/HTTP và **cùng** response (`R2`) | §22, `G1`, `G2` |
+| **B2** | Môi trường production-like + **script destroy environment** + **canary sink**. *"Production-like"* = giống production về **cấu hình/topology/độ phức tạp**, **KHÔNG** phải có dữ liệu production (`G2`) | `src/spike/infra/`, `docs/070-Deployment/Deploy-Spike.md` | ⚙️ DevOps | 🧑‍💻 Engineer, 🛡️ Security | GA | 2.0 | Chạy destroy xong, **không** còn service nào của môi trường gốc sống.<br>**Bằng chứng phải do một công cụ ĐỘC LẬP sinh ra** (không phải chính script destroy): liệt kê toàn bộ resource còn lại trong scope, máy đọc được, **mỗi lần chạy** (`C1` destroy 10 lần ⇒ 10 bằng chứng). Cách ly ở **tầng IAM** — credential destroy không có quyền chạm ngoài scope. Destroy **theo nhãn**, **idempotent**, có **revoke/rotate credential**.<br>**Canary sink**: sau destroy, trỏ host cũ về listener ghi mọi kết nối đến | §22, §40, `THREAT-018` |
+| **B3** | Recorder tối thiểu — capture 8 nhóm của §18: HTTP request, stack trace, DB query/result, external HTTP response, feature flag state, clock/timestamp, Git commit, runtime metadata. **Cấm thêm hook Redis** (`R1`) | `src/spike/recorder/` | 🧑‍💻 Engineer | 🏗️ Architect | B1 | 4.0 | Một execution thật sinh ra artifact chứa **đủ 8 nhóm**; overhead được đo (không cần đạt ngưỡng).<br>**Bổ sung sau `A5`**: (i) log `row_count` · `byte_size` · `consumed_by_replay` cho **MỌI** DB query result; (ii) chạy ở chế độ **KHÔNG CAP** — cap bật ⇒ phân bố `SEC-008` bị kiểm duyệt và **không khôi phục được** | §18, `ADR-007`, `SEC-008` |
 | **B4** | Capsule writer tối thiểu — **KHÔNG** phải capsule format v1 | `src/spike/capsule/` | 🧑‍💻 Engineer | 🏗️ Architect | B3 | 1.5 | Artifact **tự chứa**, mở được sau khi môi trường gốc bị destroy | §6, §40, `ADR-002` |
-| **B5** | Replay runtime tối thiểu + **default-deny write** theo hướng fail-closed (mọi interaction không chứng minh được là READ ⇒ xử như WRITE) | `src/spike/replay/` | 🧑‍💻 Engineer | 🛡️ Security, 🏗️ Architect | B4 | 4.0 | Replay chạy từ capsule; **có test chứng minh** một WRITE bị chặn; nhật ký ghi lại mọi interaction bị chặn | §13, §20.4, `ACG-09`, `THREAT-018` |
+| **B5** | Replay runtime tối thiểu + **default-deny write** fail-closed **hai lớp**: `L1` phân loại tại sink, `L2` cách ly ở tầng thấp hơn. Protocol (`A5`) chốt `L2` ở tầng nào | `src/spike/replay/` | 🧑‍💻 Engineer | 🛡️ Security, 🏗️ Architect | B4, A5 | 4.0 | ⚠️ **Exit criteria đã siết sau `A7`** — bản cũ (*"có test chứng minh một WRITE bị chặn"*) **thoả được bằng `L1` đơn thuần**, không đủ.<br>Bản mới: **12/12 test `T1`–`T12` chạy**, `escaped_side_effects = 0` đo bằng **canary log** (không phải log của chính replay runtime — xác minh vòng tròn). `T8` (`child_process` gọi `curl`) FAIL nếu `L2` ở tầng runtime ⇒ ghi nhận là **khoảng hở đã đo được**, **cấm** làm nhẹ test | §13, §20.4, `ACG-09`, `THREAT-018`, `ADR-005` |
 | **B6** | Verification + diff tối thiểu, hiện thực **đúng rubric `A3`** | `src/spike/verify/` | 🧑‍💻 Engineer | 🏗️ Architect, 🧪 QA | B5, A3 | 3.0 | Cho ra kết luận nhị phân `matched` / `diverged` + chỉ ra điểm phân kỳ đầu tiên | §10, §9, `ADR-006`, `ADR-011` |
-| **B7** | Harness đo metric theo `A5` + baseline overhead khi **tắt** recorder | `src/spike/bench/`, `test/spike/` | ⚙️ DevOps | 🧪 QA | B3, A5 | 2.0 | Chạy một lệnh ra được đủ 5 metric ở dạng máy đọc được (JSON/CSV) | §23 |
+| **B7** | Harness đo metric theo `A5` + baseline overhead khi **tắt** recorder. Chạy cặp A/B **xen kẽ** (OFF/ON/OFF/ON), **không** chạy baseline một lần rồi dùng lại | `src/spike/bench/`, `test/spike/` | ⚙️ DevOps | 🧪 QA | B3, A5 | 2.0 | Chạy một lệnh ra được đủ **6** metric ở dạng máy đọc được (JSON/CSV) — 5 metric §23 + `escaped_side_effects`.<br>**Load run đo overhead phải dùng traffic đa số THÀNH CÔNG** (giống production), và **tỷ lệ lỗi là điều kiện đo bắt buộc** ghi kèm mọi con số. Lý do: 10 scenario §22 đều là execution **lỗi** ⇒ chỉ chạy đường persist, trong khi ngân sách `<5%` áp cho đường **buffer-rồi-huỷ** của 100% traffic. Sampling `FR-015` **TẮT** | §23, `ACG-04` |
 | **B8** | Dựng fixture cho 10 scenario §22 (mỗi scenario một cách gây lỗi có chủ đích) | `test/spike/scenarios/` | 🧑‍💻 Engineer | 🧪 QA | B1 | 2.0 | 10 fixture **tái tạo được lỗi** trên môi trường production-like, chạy lại vẫn lỗi | §22 |
-| **B9** | Security review code spike: dữ liệu dùng trong spike có phải dữ liệu thật không, redaction có cần bật không, capsule spike lưu ở đâu | `docs/010-Planning/pm-runs/{run}/findings/security-auditor.md` | 🛡️ Security | ⚙️ DevOps | B4 | 1.0 | Có phán quyết rõ ràng: spike dùng dữ liệu **giả lập** hay **thật**; nếu thật thì control nào bắt buộc | §20.5, `THREAT-005` |
+| **B9** | Security review code spike. ⚠️ **Vai đã đổi sau `G2`**: từ *quyết định* thành **xác minh** — `OQ-2` đã được đóng tại `A7` ngày 2026-08-15 | `docs/010-Planning/pm-runs/{run}/findings/security-auditor.md` | 🛡️ Security | ⚙️ DevOps | B4 | 1.0 | Xác minh: (i) `B1`/`B2` **đúng là synthetic** — không dump/export nào của hệ thống thật lọt vào `src/spike/`; (ii) external HTTP API **đúng là stub tự chạy**, không API key thật; (iii) **shortcut ledger** §5 của Spike Protocol đã được điền **đúng thực tế** code hiện có | §20.5, `THREAT-005`, `G2` |
 
 **Cộng: 21.5 MD.**
 
@@ -261,11 +303,13 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 ---
 
-## 5. Phase P0-C — Spike Run & Report · `W8–W9` *(hoặc `W7–W9` nếu đệm không bị tiêu)* · ✅ đã cấp vốn
+## 5. Phase P0-C — Spike Run & Report · `W8–W10` · ✅ đã cấp vốn
+
+> **Slack 30% của phase này là đệm có chủ đích**, không phải ước lượng lỏng. [`findings/quality-assurance.md`](../pm-runs/2026-08-15-p0a-spike-protocol/findings/quality-assurance.md) chỉ ra `C1` **có thể phải chạy lại toàn bộ** nếu phân bố `SEC-008` bị kiểm duyệt. Đây là chỗ hấp thụ đúng rủi ro đó.
 
 | ID | Task | Deliverable | Driver | Collaborators | Depends | MD | Exit criteria | Neo |
 |---|---|---|---|---|---|:--:|---|---|
-| **C1** | Chạy đủ **10 scenario × 7 bước**, bước *Destroy original environment* **bắt buộc giữ nguyên** | `docs/035-QA/Performance/Perf-Spike-Phase-0.md` (dữ liệu thô) | 🧪 QA | 🧑‍💻 Engineer, ⚙️ DevOps | B1–B9 | 3.0 | 10/10 scenario chạy hết 7 bước; mỗi lần chạy có log destroy environment kèm bằng chứng | §22 |
+| **C1** | Chạy đủ **10 scenario × 7 bước** + probe `SC-11`, bước *Destroy original environment* **bắt buộc giữ nguyên**. **Mỗi capsule replay `K` lần** (`U-25`, `K` chốt ở `A5`) | `docs/035-QA/Performance/Perf-Spike-Phase-0.md` (dữ liệu thô) | 🧪 QA | 🧑‍💻 Engineer, ⚙️ DevOps | B1–B9 | 3.0 | 10/10 scenario chạy hết 7 bước; mỗi lần chạy có bằng chứng destroy **do công cụ độc lập sinh**; canary log thu **sau mỗi** scenario.<br>⛔ **ĐIỀU KIỆN TIÊN QUYẾT — `C1` không được khởi động trước khi**: (i) quyết định `G1` đã thành văn bản trong `Spec-Spike-Protocol.md` §2, **và** (ii) **Known-Missing-Input Manifest đã niêm phong**. Chạy trước ⇒ mất khả năng quy trách nhiệm | §22, `U-25` |
 | **C2** | Tổng hợp 5 metric §23 — Replay Success Rate, **Execution Match Rate**, Capture Overhead, Capsule Size (**avg và P95**), Replay Time | bảng số trong `Perf-Spike-Phase-0.md` | 🧪 QA | ⚙️ DevOps | C1 | 1.0 | Đủ 5 metric, capsule size có **cả** avg lẫn P95; mọi số ghi kèm điều kiện đo | §23, `C-04` |
 | **C3** | Phân loại scenario thất bại → **lớp bug nào không replay được**, và vì sao (thiếu capture? non-determinism? ngoài Supported Execution Class?) | mục phân tích trong Spike Report | 🏗️ Architect | 🧪 QA, 🕵️ BA | C2 | 1.5 | Mỗi scenario fail được quy về **một** nguyên nhân gốc, đối chiếu 9 hidden input §20.1 | §39, `R-01`, `R-02` |
 | **C4** | **Spike Report** — đối chiếu số đo với 4 ngưỡng §24 (ghi rõ chúng là *initial hypotheses*), và đối chiếu với rubric `A3` | `docs/035-QA/Reports/Report-Spike-Phase-0.md` | 🧪 QA | 🎩 PM, 🏗️ Architect | C3 | 2.0 | Báo cáo trả lời **thẳng** câu hỏi §39, kèm mức độ tin cậy và giới hạn của kết luận | §39, §24 |
@@ -275,7 +319,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 **Cộng: 10.5 MD.**
 
-### 5.1 Nhánh **KHÔNG** — `P0-D` · `W10–W12` · ⚠️ dự phòng
+### 5.1 Nhánh **KHÔNG** — `P0-D` · `W11–W13` · ⚠️ dự phòng
 
 > **`RQ.md §39` không cho phép hai lựa chọn "bỏ" hay "cứ thế đi tiếp".** Trả lời **Không** ⇒ **xác định lớp bug nào không replay được và thu hẹp phạm vi sản phẩm tương ứng**. `§24` bổ sung điều kiện dừng cứng: không đạt tỷ lệ replay hữu ích trên một lớp bug có ý nghĩa ⇒ **khái niệm sản phẩm phải được xem xét lại trước khi xây nền tảng đầy đủ**.
 
@@ -290,7 +334,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 ---
 
-## 6. Phase P1 — Gỡ khoá sau gate · `W10–W14` · 🔶 `CONDITIONAL`
+## 6. Phase P1 — Gỡ khoá sau gate · `W11–W15` · 🔶 `CONDITIONAL`
 
 > **Chỉ chạy khi `GATE-06 = Có`.** Phase này biến kết quả spike thành nền tảng chốt được cho V0.1, và đóng **bốn blocker** đang treo. Không có phase này thì V0.1 sẽ được xây trên các định nghĩa vẫn còn `TBD`.
 
@@ -312,11 +356,11 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 > [!WARNING]
 > **`D7` là chỗ dễ vi phạm nhất của toàn timeline.** Áp lực "làm story sớm cho kịp" luôn xuất hiện ở đây. Nhưng [Roadmap `GATE-02`](../Roadmap.md) đã ghi thẳng: **viết story trước khi có `N-05` không phải tiến độ, là rework có kế hoạch** — vì acceptance criteria dựa trên *"execution matched"* chưa có tiêu chí pass/fail. Điều kiện gỡ hoãn là **hai vế**, không phải một.
 
-### 6.1 Legal & Compliance track · `W10–W21` · song song `P1` · 🔶 `CONDITIONAL`
+### 6.1 Legal & Compliance track · `W11–W22` · song song `P1` · 🔶 `CONDITIONAL`
 
 > **Vì sao track này chạy SỚM và SONG SONG, không đợi tới lúc phát hành**: hai lý do, cả hai đều là ràng buộc thật chứ không phải thủ tục.
 >
-> 1. **Lead time bên ngoài.** `LG3` cần **luật sư bên ngoài** — thời gian chờ **2–6 tuần** không phụ thuộc capacity của mình. Bắt đầu ở `W33` cùng lúc với phát hành là muộn.
+> 1. **Lead time bên ngoài.** `LG3` cần **luật sư bên ngoài** — thời gian chờ **2–6 tuần** không phụ thuộc capacity của mình. Bắt đầu ở `W34` cùng lúc với phát hành là muộn.
 > 2. **`LG3` chặn `P4`.** Không được để design partner cài SDK vào **production có nghĩa vụ GDPR** khi TTL mặc định chưa qua pháp chế. [Charter §5.1](../Charter-Repro.md) cảnh báo #2 ghi nguyên văn: *"trước khi Repro xử lý dữ liệu production của tổ chức có nghĩa vụ GDPR, con số này **phải** được pháp chế rà lại"*.
 >
 > **Quan hệ với quy tắc #2 của [§0](#0-cách-pm-dùng-tài-liệu-này)**: track này **được mở khoá bởi `GATE-06`** như mọi phase `CONDITIONAL` khác — "song song" nghĩa là song song với `P1`, **không** phải chạy trước gate. **Ngoại lệ duy nhất là `LG6`** (rà trademark): nó không có `Depends` vì không phụ thuộc kết quả kỹ thuật nào và **bắt đầu được ngay hôm nay** — nếu tên "Repro" đã bị chiếm thì biết càng sớm càng rẻ.
@@ -338,7 +382,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 ---
 
-## 7. Phase P2 — Build V0.1 · `W15–W32` · 🔶 `CONDITIONAL`
+## 7. Phase P2 — Build V0.1 · `W16–W33` · 🔶 `CONDITIONAL`
 
 > **Chỉ chạy sau `D10`.** Phase này ghi ở mức **workstream**, không ở mức task — vì phạm vi chi tiết phụ thuộc kết quả spike và Story do `D7` sinh ra. Task-level sẽ nằm trong `docs/010-Planning/Sprints/Sprint-{NNN}.md`, không nằm ở đây.
 >
@@ -346,22 +390,22 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 | WS | Workstream | Nội dung | Driver | Collaborators | Depends | Tuần | MD | Exit criteria |
 |---|---|---|---|---|---|---|:--:|---|
-| **WS-1** | **SDK & Capture** | `@repro/node` in-process; capture 8 nhóm §18; async + bounded, failure-triggered | 🧑‍💻 Engineer | 🏗️ Architect | D5 | `W15–W20` | 20 | Overhead đo được trong ngân sách `ACG-04` đã chốt; `npm install @repro/node` là **toàn bộ** bước cài |
-| **WS-2** | **Capsule & Store** | Writer/reader format v1; Capsule Store sàn `GATE-04`; authn/authz/audit theo `D6`; TTL 30 ngày; crypto-shredding | 🧑‍💻 Engineer | 🏗️ Architect, 🛡️ Security | D5, D6 | `W15–W22` | 24 | Capsule **self-contained**; xoá khoá ⇒ capsule không giải được; audit ghi được *ai pull cái gì* |
-| **WS-3** | **Replay Runtime** | Replay HTTP/DB/clock/external API; **default-deny write fail-closed**; drift detector | 🧑‍💻 Engineer | 🛡️ Security | WS-2 | `W19–W26` | 24 | Không có đường nào để replay chạm production; mọi interaction lạ bị chặn và ghi log |
-| **WS-4** | **Verification & Diff** | Execution verification theo định nghĩa `D2`; execution diff first-class; phân biệt *diverged vì code* / *vì môi trường* / *vì redaction* | 🧑‍💻 Engineer | 🏗️ Architect, 🧪 QA | D2, WS-3 | `W21–W28` | 22 | Đo được **Execution Match Rate**; kết quả so được với ngưỡng `N-05` |
-| **WS-5** | **CLI 6 verb** | `list` · `pull` · `inspect` · `replay` · `diff` · `verify` + verb vận hành từ `D6`; **ngôn từ kết quả là hợp đồng** (`✓ Captured execution no longer reproduces` — §20.16, §33.2) | 🧑‍💻 Engineer | 🕵️ BA | WS-3, WS-4 | `W25–W30` | 14 | Không câu chữ nào của CLI hứa *"production bug is fixed"* |
-| **WS-6** | **Security MUST-V0.1** | 33 requirement `SEC-*` bắt buộc: redaction, encryption, integrity **verify trước khi parse** (`SEC-027`), retention, audit | 🛡️ Security | 🧑‍💻 Engineer | D9 | `W17–W30` | 18 | 33/33 có bằng chứng test; `THREAT-009` và `THREAT-013` có mitigation chạy được |
-| **WS-7** | **DevOps & CI** | Self-host topology, CI cho chính Repro, tích hợp CI của người dùng, hardening chuỗi cung ứng `@repro/node` | ⚙️ DevOps | 🛡️ Security | D6 | `W17–W30` | 16 | Package có provenance/signing; self-host dựng được từ tài liệu, không cần hỏi tác giả |
-| **WS-8** | **Documentation** | Deployment guide, runbook, SLA/incident process, user guide, ADR cập nhật — lấp `070-`/`080-`/`060-` đang rỗng | 🎩 PM | ⚙️ DevOps, 🕵️ BA | WS-1…WS-7 | `W23–W32` | 12 | Người ngoài dự án cài + replay được **chỉ bằng tài liệu** |
-| **WS-9** | **Adoption & DX** | Killer demo 60–90s (§25), quickstart, thông điệp chống hai câu giết sản phẩm của §20.14 | 🎩 PM | 🧑‍💻 Engineer | WS-5 | `W29–W32` | 8 | Demo chạy thật trong 60–90 giây, không cắt ghép |
+| **WS-1** | **SDK & Capture** | `@repro/node` in-process; capture 8 nhóm §18; async + bounded, failure-triggered | 🧑‍💻 Engineer | 🏗️ Architect | D5 | `W16–W21` | 20 | Overhead đo được trong ngân sách `ACG-04` đã chốt; `npm install @repro/node` là **toàn bộ** bước cài |
+| **WS-2** | **Capsule & Store** | Writer/reader format v1; Capsule Store sàn `GATE-04`; authn/authz/audit theo `D6`; TTL 30 ngày; crypto-shredding | 🧑‍💻 Engineer | 🏗️ Architect, 🛡️ Security | D5, D6 | `W16–W23` | 24 | Capsule **self-contained**; xoá khoá ⇒ capsule không giải được; audit ghi được *ai pull cái gì* |
+| **WS-3** | **Replay Runtime** | Replay HTTP/DB/clock/external API; **default-deny write fail-closed**; drift detector | 🧑‍💻 Engineer | 🛡️ Security | WS-2 | `W20–W27` | 24 | Không có đường nào để replay chạm production; mọi interaction lạ bị chặn và ghi log |
+| **WS-4** | **Verification & Diff** | Execution verification theo định nghĩa `D2`; execution diff first-class; phân biệt *diverged vì code* / *vì môi trường* / *vì redaction* | 🧑‍💻 Engineer | 🏗️ Architect, 🧪 QA | D2, WS-3 | `W22–W29` | 22 | Đo được **Execution Match Rate**; kết quả so được với ngưỡng `N-05` |
+| **WS-5** | **CLI 6 verb** | `list` · `pull` · `inspect` · `replay` · `diff` · `verify` + verb vận hành từ `D6`; **ngôn từ kết quả là hợp đồng** (`✓ Captured execution no longer reproduces` — §20.16, §33.2) | 🧑‍💻 Engineer | 🕵️ BA | WS-3, WS-4 | `W26–W31` | 14 | Không câu chữ nào của CLI hứa *"production bug is fixed"* |
+| **WS-6** | **Security MUST-V0.1** | 33 requirement `SEC-*` bắt buộc: redaction, encryption, integrity **verify trước khi parse** (`SEC-027`), retention, audit | 🛡️ Security | 🧑‍💻 Engineer | D9 | `W18–W31` | 18 | 33/33 có bằng chứng test; `THREAT-009` và `THREAT-013` có mitigation chạy được |
+| **WS-7** | **DevOps & CI** | Self-host topology, CI cho chính Repro, tích hợp CI của người dùng, hardening chuỗi cung ứng `@repro/node` | ⚙️ DevOps | 🛡️ Security | D6 | `W18–W31` | 16 | Package có provenance/signing; self-host dựng được từ tài liệu, không cần hỏi tác giả |
+| **WS-8** | **Documentation** | Deployment guide, runbook, SLA/incident process, user guide, ADR cập nhật — lấp `070-`/`080-`/`060-` đang rỗng | 🎩 PM | ⚙️ DevOps, 🕵️ BA | WS-1…WS-7 | `W24–W33` | 12 | Người ngoài dự án cài + replay được **chỉ bằng tài liệu** |
+| **WS-9** | **Adoption & DX** | Killer demo 60–90s (§25), quickstart, thông điệp chống hai câu giết sản phẩm của §20.14 | 🎩 PM | 🧑‍💻 Engineer | WS-5 | `W30–W33` | 8 | Demo chạy thật trong 60–90 giây, không cắt ghép |
 
 **Cộng: ~158 MD** — vượt xa capacity solo trong 18 tuần (18 tuần × 5 ngày ≈ 90 MD).
 
 > [!WARNING]
 > **Đây là mâu thuẫn số học có chủ ý được phơi ra, không phải lỗi ước lượng.** Với `TL-A2` (solo), V0.1 theo phạm vi hiện tại cần **~32 tuần thuần**, không phải 18. Ba lựa chọn — và chúng là **quyết định của `@TrisJr` tại `D10`**, timeline không tự chọn hộ:
 >
-> 1. **Kéo dài** V0.1 tới `~W46` và giữ nguyên phạm vi.
+> 1. **Kéo dài** V0.1 tới `~W47` và giữ nguyên phạm vi.
 > 2. **Thu hẹp** phạm vi V0.1 (ứng viên rõ nhất: `WS-2` phần Store — nhưng va vào `D2`/`C-02` đã chốt authn/authz/audit thuộc OSS core).
 > 3. **Tăng capacity** — tuyển người, và khi đó Charter §5.1 (*một người giữ mọi vai*) phải được chia lại **trước tiên**.
 >
@@ -369,7 +413,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 ---
 
-## 8. Phase P3 — Release V0.1 · `W33–W36` · 🔶 `CONDITIONAL`
+## 8. Phase P3 — Release V0.1 · `W34–W37` · 🔶 `CONDITIONAL`
 
 | ID | Task | Deliverable | Driver | Collaborators | MD | Exit criteria |
 |---|---|---|---|---|:--:|---|
@@ -385,7 +429,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 ---
 
-## 9. Phase P4 — Design Partner & Market Validation · `W37–W48` · 🔶 `CONDITIONAL`
+## 9. Phase P4 — Design Partner & Market Validation · `W38–W49` · 🔶 `CONDITIONAL`
 
 > **Vì sao phase này tồn tại — và vì sao nó KHÔNG thể bỏ qua**: phát hành OSS chứng minh phần mềm **tồn tại**, không chứng minh có ai **dùng**. Rào cản thật của Repro là thuyết phục một tổ chức khác cài **in-process SDK vào production của họ** — đúng nội dung risk `R-08` (Developer adoption, 🔴 Critical), với hai câu giết sản phẩm mà §20.14 nêu đích danh: *"Another observability SDK"* và *"This looks complicated to install"*.
 >
@@ -522,7 +566,7 @@ Ghi tường minh để không ai đọc lệch:
 | **Ngày dương lịch trong các bảng task** | `T0` **đã chốt** 2026-08-15 (`W1` = 2026-08-17) nên quy đổi `W → ngày` nay là **cơ học**. Nhưng các bảng vẫn giữ ký hiệu `W`: nhúng ngày vào ~40 ô sẽ biến mỗi lần trượt lịch thành một lần sửa toàn tài liệu. Chỉ **`GATE-06`** được ghi kèm ngày (§2.1) vì đó là mốc duy nhất đã cấp vốn |
 | **Ngân sách bằng tiền** | `RQ.md` không có dữ kiện chi phí nào; đơn giá lao động chưa được cung cấp. Timeline chỉ ghi MD |
 | **Task-level cho `P2`** | Task V0.1 sinh ra từ Story ở `D7`, mà `D7` bị chặn tới sau `GATE-06` + `D1` (`GATE-02`). Viết task V0.1 bây giờ là đúng thứ `GATE-02` đã cấm |
-| **Cam kết ngày phát hành V0.1** | V0.1 **chưa được cấp vốn**. `W33–W36` là ước lượng để lập ngân sách, không phải cam kết |
+| **Cam kết ngày phát hành V0.1** | V0.1 **chưa được cấp vốn**. `W34–W37` là ước lượng để lập ngân sách, không phải cam kết |
 | **Kế hoạch chi tiết V0.2+** | Phụ thuộc kết quả V0.1 và `P4`. Giữ ở mức milestone (§10) |
 | **Ước lượng cho `P5`** | Phạm vi `P5` phụ thuộc V0.2, mà V0.2 phụ thuộc V0.1 và `P4`. Điền số bây giờ là bịa — `A4` cấm |
 | **Ngưỡng adoption** (star, download, active install) | [NFR §6 `X-5`](../../020-Requirements/NFR-Repro.md) đã loại tường minh nhóm này khỏi tập yêu cầu. `RQ.md` không có ngưỡng nào, và bịa ngưỡng là tạo KPI không có nguồn |
@@ -557,3 +601,5 @@ Ghi tường minh để không ai đọc lệch:
 | **2026-08-15** | **Mở rộng phạm vi tới thị trường** theo quyết định của `@TrisJr`. Thêm: **`LG`** Legal & Compliance track (§6.1, song song `P1`) · **`P4`** Design Partner & Market Validation (§9) · **`P5`** GTM & Commercial (§10.1, `TBD` có chủ ý). Phát hiện **hai blocker mới** chưa có trong Risk-Register (`LG3` lead time pháp lý, `LG1` license là quyết định một chiều) và **hai rủi ro mới của timeline** (`TL-r5`, `TL-r6`) — đề nghị đưa vào Risk-Register ở lần cập nhật `X2` tới. Lý do mở rộng: phạm vi cũ dừng ở *phần mềm tồn tại*, không chạm tới *có ai dùng* — mà `R-08` (Developer adoption) là risk 🔴 Critical |
 | **2026-08-15** | Sửa lỗi cấu trúc: ba dòng `SDLC-Agile-Workflow` · `Project-Governance` · `pm-runs/` bị đặt nhầm trong bảng §15, đã trả về đúng bảng **§14 Related Documents**. **Đăng ký rủi ro vào SSOT**: toàn bộ họ `TL-r1`…`TL-r6` và hai blocker mới (`TL-b1` license, `TL-b2` pháp chế TTL) đã được ghi vào [Risk-Register §4.4](../Risk-Register.md) — từ nay Risk-Register là nguồn có thẩm quyền cho chúng, §12 của tài liệu này là bản tóm tắt cho người đọc timeline |
 | **2026-08-15** | ✅ **`@TrisJr` DUYỆT — `status: draft → approved`.** Ba quyết định đi kèm:<br>**(1) `T0` chốt** — `W1` = 2026-08-17 → 2026-08-21 (`TL-A1`).<br>**(2) Capacity** — chọn phương án **giãn 1 tuần đệm**: Phase 0 từ 8 lên **9 tuần**, capacity 104% → **92%**, `GATE-06` dời `W8` → **`W9` (2026-10-16)**. Đệm là **`W7` có tên riêng**, có quy tắc tiêu (§2). Mọi mốc từ `P0-D` trở đi dịch **+1 tuần**.<br>**(3) Phát hiện `GAP-Redis`** — §22 bắt test app chạm Redis nhưng §18/`C-03` không capture Redis, mà §22 lại bắt destroy environment ⇒ **cả 10 scenario replay với input không được ghi**. Exit criteria của `A2` và `A4` đã sửa để **ép** ra quyết định này trước khi spike chạy; ba phương án ghi ở §3 |
+| **2026-08-15** | **Analysis fan-out của run [`2026-08-15-p0a-spike-protocol`](../pm-runs/2026-08-15-p0a-spike-protocol/run-plan.md) (4 lens read-only) ⇒ bốn quyết định `G1`–`G4` của `@TrisJr`.**<br>**`G1`** — `GAP-Redis` chọn **(c) + phần định nghĩa của (a)**. Kèm **hai đính chính đối với bản viết trước**: (`F1`) §22 **không** bắt mỗi request chạm cả 5 dependency — ràng buộc đó đến từ exit criteria `B1` của **chính tài liệu này**, `B1` siết chặt hơn nguồn; (`F2`) **không scenario nào trong 10** lấy Redis làm tác nhân gây lỗi. ⇒ chi phí thật của (c) là sửa một dòng exit criteria, không phải *"làm spike dễ hơn thực tế"*.<br>**`G2`** — `OQ-2` chốt **dữ liệu SYNTHETIC**, không ngoại lệ. Cấp miễn trừ cap cho `SEC-008`; `B9` đổi vai *quyết định → xác minh*.<br>**`G3`** — `A3` đóng thêm `U-13` + `U-16` ⇒ **denominator = 7**, ngưỡng hiệu dụng **`≥6/7`**.<br>**`G4`** — **Phase 0 → 10 tuần** (`P0-A` = `W1–W3`), `GATE-06` dời `W9` → **`W10` = 2026-10-23**; mọi mốc từ `P0-D` trở đi **+1 tuần**. Lý do: fan-out tìm ra **~4.5 MD phạm vi thật chưa được đếm** — ba ràng buộc chặn (canary sink · capture không-cap · `L2` bắt buộc) cộng `U-13`/`U-16`, metric thứ 6, probe `SC-11`, shortcut ledger.<br>Ripple đã áp: `B1`, `B2`, `B3`, `B5`, `B7`, `B9`, `C1` |
+| **2026-08-15** | 🚪 **`GATE A` DUYỆT — `@TrisJr`. `P0-A` ĐÓNG.** Ba deliverable (`Spec-Spike-Protocol`, `MTP-Spike-Phase-0`, `Template-Spike-Report`) chuyển `status: draft → approved`.<br>**Đóng băng theo luật `L1`**, ghi tại [`pm-runs/2026-08-15-p0a-spike-protocol/verdict.md`](../pm-runs/2026-08-15-p0a-spike-protocol/verdict.md): denominator **`D = 7`** · tập IN `{SC-1, SC-2, SC-3, SC-4, SC-5, SC-6, SC-8}` · observation set `{SC-7, SC-9, SC-10, SC-11}` · ngưỡng hiệu dụng **`≥6/7`** · chỉ số gate = **composite fail-closed** · **`K = 3`**.<br>⚠️ **`approved` KHÔNG nâng hypothesis thành định nghĩa sản phẩm** — cùng cách phân biệt `GATE-03` đã dùng cho 11 ADR. Nâng cấp vẫn là `D2`, sau `GATE-06`.<br>⇒ **`P0-B` được phép bắt đầu** (`W4`). `C1` vẫn bị chặn tới khi Known-Missing-Input Manifest niêm phong. Verify: 2 vòng `context-auditor` độc lập, **0 CRITICAL** |

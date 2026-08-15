@@ -4,12 +4,15 @@ type: moc
 status: draft
 project: TNMCORE-OS
 created: 2026-02-26
-updated: 2026-08-14
+updated: 2026-08-15
 ---
 
 # 📂 999-Resources Map of Content (MOC)
 
 Chào mừng tới danh mục Tài Nguyên của dự án. Đây là nơi chứa các mẫu, bảng thuật ngữ và ghi chép cuộc họp.
+
+> [!NOTE]
+> **`Template-Spike-Report` khác mọi template khác trong bảng dưới ở một điểm**: nó không chỉ định nghĩa *cấu trúc*, nó định nghĩa cả **phát biểu nào bị CẤM viết** — ví dụ *"production bug đã được sửa"* (`RQ.md §20.16` nêu nguyên văn khuôn cấm) và *"diverged vì non-determinism"* khi checklist known-missing-capture chưa được loại trừ. Đó là vì báo cáo này phục vụ một gate quyết định có đầu tư tiếp hay không, nên **ngôn từ của nó là một phần của hợp đồng**, không phải văn phong.
 
 > [!NOTE]
 > **Thư mục này dùng chung cho nhiều dự án**, không riêng Repro — cùng lý do với `Glossary.md`. Trường `project: TNMCORE-OS` ở frontmatter là **di sản của scaffold gốc**, giữ nguyên chờ quyết định; nó **không** có nghĩa các file trong đây chỉ thuộc TNMCORE-OS.
@@ -42,7 +45,8 @@ Chào mừng tới danh mục Tài Nguyên của dự án. Đây là nơi chứa
 | [Template-Report-Unit](./Templates/Template-Report-Unit.md) | Báo cáo đơn vị |
 | [Template-Risk-Register](./Templates/Template-Risk-Register.md) | Risk Register — `010-Planning/` |
 | [Template-SDD](./Templates/Template-SDD.md) | System Design Document — `030-Specs/Architecture/` |
-| [Template-Spec](./Templates/Template-Spec.md) | Technical Spec — `030-Specs/` |
+| [Template-Spec](./Templates/Template-Spec.md) | Technical Spec — `030-Specs/`. ⚠️ **Hiện là stub** *("Content to be added")* — chưa dùng được |
+| [Template-Spike-Report](./Templates/Template-Spike-Report.md) | **Spike Report** — `035-QA/Reports/`. *(2026-08-15)* Khuôn cho `C4` ở `P0-C`; đây là thứ `@TrisJr` đọc tại **`GATE-06`** |
 | [Template-SRS](./Templates/Template-SRS.md) | SRS — `020-Requirements/` |
 | [Template-Status-Report](./Templates/Template-Status-Report.md) | Status Report — `010-Planning/` |
 | [Template-Test-Plan](./Templates/Template-Test-Plan.md) | Master Test Plan — `035-QA/Test-Plans/` |

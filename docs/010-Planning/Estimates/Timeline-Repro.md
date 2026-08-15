@@ -136,7 +136,7 @@ graph TD
 | **P4** — Design Partner & Market Validation | `W38–W49` | 🔶 `CONDITIONAL` | Chứng minh **người thật** cài vào **production thật** và thu được giá trị | **Gate Product-Market Signal** |
 | **P5** — GTM & Commercial | `TBD` *(sau V0.2)* | 🔶 `CONDITIONAL` | Thương mại hoá — **chỉ sau khi North Star đo được** | quyết định commercial launch |
 
-**Tổng effort đã cấp vốn (`P0-A` → `P0-C`): ~46 MD trên 10 tuần.**
+**Tổng effort đã cấp vốn (`P0-A` → `P0-C`): ~46.5 MD trên 10 tuần.**
 
 > [!NOTE]
 > ✅ **CHỐT 2026-08-15 — hai lần điều chỉnh trong cùng ngày, ghi cả hai để thấy vì sao.**
@@ -144,15 +144,17 @@ graph TD
 > | | Bản gốc | Lần 1 — giãn đệm | **Lần 2 — sau analysis fan-out** |
 > |---|:--:|:--:|:--:|
 > | Phase 0 | 8 tuần | 9 tuần | **10 tuần** |
-> | Effort | 41.5 MD | 41.5 MD | **~46 MD** |
-> | Capacity | 41.5/40 = **104%** | 41.5/45 = 92% | **46/50 = 92%** |
+> | Effort | 41.5 MD | 41.5 MD | **~46.5 MD** *(gồm `B10` phát hiện sau `Gate A`)* |
+> | Capacity | 41.5/40 = **104%** | 41.5/45 = 92% | **46.5/50 = 93%** |
 > | `GATE-06` | `W8` | `W9` | **`W10` = 2026-10-23** |
 >
 > **Lần 1** — `TL-r1` nói mọi con số MD ở đây không có dữ liệu lịch sử đứng sau. Lịch 104% + ước lượng không baseline ⇒ trượt đẩy thẳng vào `GATE-06`, đúng cái gate duy nhất đã cấp vốn.
 >
 > **Lần 2** — analysis fan-out của run [`2026-08-15-p0a-spike-protocol`](../pm-runs/2026-08-15-p0a-spike-protocol/run-plan.md) tìm ra **~4.5 MD phạm vi thật chưa được đếm** trong `P0-A`: ba ràng buộc chặn (canary sink · capture không-cap · L2 bắt buộc), đóng thêm `U-13`/`U-16`, metric thứ 6, probe `SC-11`, shortcut ledger. `P0-A` từ 9.5 lên **~14 MD**.
 >
-> **Phân bổ mới:** `P0-A` = `W1–W3` (14/15 = **93%**) · `P0-B` = `W4–W7` (21.5/20 = **107%**) · `P0-C` = `W8–W10` (10.5/15 = **70%**).
+> **Phân bổ mới:** `P0-A` = `W1–W3` (14/15 = **93%**) · `P0-B` = `W4–W7` (**22.0**/20 = **110%**) · `P0-C` = `W8–W10` (10.5/15 = **70%**).
+>
+> ⚠️ **`P0-B` là sub-phase căng nhất và KHÔNG có đệm.** Nó vượt capacity ngay cả trước `B10`, và `B10` (0.5 MD, phát hiện sau `Gate A`) đẩy nó từ 107% lên **110%**. Đệm duy nhất của Phase 0 nằm ở `P0-C` — và đệm đó **đã có chủ**: nó dành cho khả năng `C1` phải chạy lại nếu phân bố `SEC-008` bị kiểm duyệt. ⇒ **`P0-B` trượt thì trượt thẳng vào `GATE-06`.**
 >
 > **Đệm nay nằm ở `P0-C`, và đó là chỗ đúng.** [`findings/quality-assurance.md`](../pm-runs/2026-08-15-p0a-spike-protocol/findings/quality-assurance.md) chỉ ra `C1` **có thể phải chạy lại toàn bộ** nếu phân bố `SEC-008` bị kiểm duyệt. Slack 30% của `P0-C` là chỗ hấp thụ đúng rủi ro đó — không phải đệm chung chung.
 >
@@ -219,7 +221,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 | **`L2` bắt buộc + ma trận 12 test `THREAT-018`** | `A5` | 0.5 | Exit criteria `B5` hiện **thoả được bằng L1 đơn thuần** ⇒ `THREAT-018` tái diễn nguyên vẹn |
 | **`escaped_side_effects` = metric thứ 6**, target `0` | `A5` + `A6` | 0.5 | `ADR-005` ghi risk 🔴 §20.4 hiện **không có bằng chứng chấp nhận nào được định nghĩa** ⇒ `GATE-06` không nói được gì về nó |
 | **`U-13` + `U-16`** đóng ở dạng hypothesis *(quyết định `G3`)* | `A3` | 1.5 | `U-13` (clock freeze hay virtual) **phải** đóng dù sao — `B3`/`B5` không xây được nếu thiếu; không đóng ở `A3` thì Engineer quyết **ngầm** trong `B5`. `U-16` là đầu vào bước 3 của thủ tục quy trách nhiệm mà `C3` phụ thuộc. Đóng cả hai ⇒ **denominator = 7** |
-| **Known-Missing-Input Manifest**, niêm phong trước `C1` | `A2` + `A5` | 0.5 | Không có thì `C3` quy scenario fail về *"non-determinism"* trong khi nguyên nhân thật là thiếu capture **đã biết trước** |
+| **Known-Missing-Input Manifest** — *chỉ phần **định nghĩa + cơ chế niêm phong*** | `A2` + `A5` | 0.5 | Không có thì `C3` quy scenario fail về *"non-determinism"* trong khi nguyên nhân thật là thiếu capture **đã biết trước**.<br>⚠️ **Phần viết ra 10 file thật là `B10`, thuộc `P0-B`** — nó đòi fixture phải tồn tại (`B8`) mới điền được trường `dự đoán ảnh hưởng` |
 | **Shortcut ledger** *(control `TL-r4`)* | `A1` | 0.25 | Prefix nhánh `spike/` là **quy ước, không phải control**. Không có ledger, review tái dùng ở `P1` dựa vào **trí nhớ** |
 | **Probe `SC-11`** — khai ở `A4`, dựng ở `B8` | `A4` | 0.25 | Không kiểm được chính thủ tục quy trách nhiệm trước khi `C3` chạy |
 
@@ -296,7 +298,22 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 | **B8** | Dựng fixture cho 10 scenario §22 (mỗi scenario một cách gây lỗi có chủ đích) | `test/spike/scenarios/` | 🧑‍💻 Engineer | 🧪 QA | B1 | 2.0 | 10 fixture **tái tạo được lỗi** trên môi trường production-like, chạy lại vẫn lỗi | §22 |
 | **B9** | Security review code spike. ⚠️ **Vai đã đổi sau `G2`**: từ *quyết định* thành **xác minh** — `OQ-2` đã được đóng tại `A7` ngày 2026-08-15 | `docs/010-Planning/pm-runs/{run}/findings/security-auditor.md` | 🛡️ Security | ⚙️ DevOps | B4 | 1.0 | Xác minh: (i) `B1`/`B2` **đúng là synthetic** — không dump/export nào của hệ thống thật lọt vào `src/spike/`; (ii) external HTTP API **đúng là stub tự chạy**, không API key thật; (iii) **shortcut ledger** §5 của Spike Protocol đã được điền **đúng thực tế** code hiện có | §20.5, `THREAT-005`, `G2` |
 
-**Cộng: 21.5 MD.**
+| **B10** | **Viết + niêm phong Known-Missing-Input Manifest** cho **cả 10 scenario**. `P0-A` đã cấp *định nghĩa* và *cơ chế* (`Spec §2`, [`MTP §6`](../../035-QA/Test-Plans/MTP-Spike-Phase-0.md)); task này tạo ra **hiện vật** | `test/spike/manifests/` (10 file) + commit hash ghi vào `T1` ô 6 | 🧪 QA | 🧑‍💻 Engineer | **B8** | 0.5 | 10 file đủ trường theo `MTP §6.2` — trong đó trường **`dự đoán ảnh hưởng`** ghi **trước khi chạy**; 4 mục sàn (Redis · filesystem state · env var · process state) có mặt trong **mọi** file.<br>🔒 **Niêm phong = commit vào git**; hash + ngày là **con dấu**. Sửa sau con dấu ⇒ **phiên bản mới** ⇒ **mở lại điều kiện tiên quyết của `C1`** | `MTP §6`, `G1` |
+
+**Cộng: 22.0 MD.**
+
+> [!NOTE]
+> **`B10` là hạng mục phát hiện sau `Gate A`** — nó **không** được đếm ở bất kỳ đâu trước đó. `B8` (2.0 MD) có exit criteria chỉ nói về *fixture tái tạo được lỗi*, không có chữ nào về manifest.
+>
+> **Vì sao nó thuộc `P0-B` chứ không phải `P0-A`:** `MTP §6.2` bắt mỗi mục manifest phải có trường **`dự đoán ảnh hưởng`** — *"input này có ảnh hưởng kết cục của scenario này không"*. Trả lời được điều đó **đòi fixture phải tồn tại**, mà fixture dựng ở `B8`. Ở `P0-A` chưa có fixture nào để dự đoán. *(Và `P0-A` đã đóng tại `Gate A` — nhét việc vào phase đã qua gate là đúng thứ trôi phạm vi mà bộ tài liệu này chống.)*
+>
+> **Vì sao tách task riêng, không gộp vào `B8`:** nó sinh ra artifact đo được (10 file + con dấu) và có exit criteria riêng. Gộp vào `B8` thì **con dấu không có ai chịu trách nhiệm**, mà con dấu chính là thứ `C1` phải kiểm.
+>
+> **Vì sao đặt ở `P0-B` chứ không phải đầu `P0-C`** *(nơi đang có slack 30%)* — hai lý do, lý do sau nặng hơn:
+> 1. Manifest viết lúc fixture còn nóng thì **chính xác hơn**; để sang `W8` phải đọc lại 10 fixture, tốn hơn phần MD tiết kiệm được.
+> 2. **Tính toàn vẹn của bằng chứng**: nếu manifest do đúng người sắp chạy `C1` viết ngay trước khi chạy, nó được viết bởi người **đã biết mình sắp đo gì và kỳ vọng gì**. Tách nó khỏi phase chạy — cả về thời gian lẫn task — làm con dấu mạnh hơn. Cùng logic với việc `L1` bắt đóng băng denominator **tại `Gate A`** chứ không phải lúc bắt đầu chạy.
+>
+> **Cái giá**: `P0-B` từ 107% lên **110%**, không còn đệm. Đệm của Phase 0 nằm ở `P0-C` (70%).
 
 > [!NOTE]
 > **Scenario 7, 9, 10 vẫn được dựng fixture, dù §20.2/§20.13 đã hoãn phần scheduler/race.** Lý do: `A4` cần denominator, mà denominator chỉ đúng khi ta biết **thật sự** scenario nào chạy được và scenario nào không — biết bằng cách thử, không bằng cách giả định. Kết quả của chúng được ghi riêng và **không** tính vào denominator nếu `A4` đã loại chúng.
@@ -309,7 +326,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 | ID | Task | Deliverable | Driver | Collaborators | Depends | MD | Exit criteria | Neo |
 |---|---|---|---|---|---|:--:|---|---|
-| **C1** | Chạy đủ **10 scenario × 7 bước** + probe `SC-11`, bước *Destroy original environment* **bắt buộc giữ nguyên**. **Mỗi capsule replay `K` lần** (`U-25`, `K` chốt ở `A5`) | `docs/035-QA/Performance/Perf-Spike-Phase-0.md` (dữ liệu thô) | 🧪 QA | 🧑‍💻 Engineer, ⚙️ DevOps | B1–B9 | 3.0 | 10/10 scenario chạy hết 7 bước; mỗi lần chạy có bằng chứng destroy **do công cụ độc lập sinh**; canary log thu **sau mỗi** scenario.<br>⛔ **ĐIỀU KIỆN TIÊN QUYẾT — `C1` không được khởi động trước khi**: (i) quyết định `G1` đã thành văn bản trong `Spec-Spike-Protocol.md` §2, **và** (ii) **Known-Missing-Input Manifest đã niêm phong**. Chạy trước ⇒ mất khả năng quy trách nhiệm | §22, `U-25` |
+| **C1** | Chạy đủ **10 scenario × 7 bước** + probe `SC-11`, bước *Destroy original environment* **bắt buộc giữ nguyên**. **Mỗi capsule replay `K` lần** (`U-25`, `K` chốt ở `A5`) | `docs/035-QA/Performance/Perf-Spike-Phase-0.md` (dữ liệu thô) | 🧪 QA | 🧑‍💻 Engineer, ⚙️ DevOps | B1–B9 | 3.0 | 10/10 scenario chạy hết 7 bước; mỗi lần chạy có bằng chứng destroy **do công cụ độc lập sinh**; canary log thu **sau mỗi** scenario.<br>⛔ **ĐIỀU KIỆN TIÊN QUYẾT — `C1` không được khởi động trước khi**: (i) quyết định `G1` đã thành văn bản trong `Spec-Spike-Protocol.md` §2, **và** (ii) **Known-Missing-Input Manifest đã niêm phong** — tức **`B10` đã Done**, con dấu (commit hash + ngày) đã chép vào `T1` ô 6. Chạy trước ⇒ mất khả năng quy trách nhiệm | §22, `U-25`, `B10` |
 | **C2** | Tổng hợp 5 metric §23 — Replay Success Rate, **Execution Match Rate**, Capture Overhead, Capsule Size (**avg và P95**), Replay Time | bảng số trong `Perf-Spike-Phase-0.md` | 🧪 QA | ⚙️ DevOps | C1 | 1.0 | Đủ 5 metric, capsule size có **cả** avg lẫn P95; mọi số ghi kèm điều kiện đo | §23, `C-04` |
 | **C3** | Phân loại scenario thất bại → **lớp bug nào không replay được**, và vì sao (thiếu capture? non-determinism? ngoài Supported Execution Class?) | mục phân tích trong Spike Report | 🏗️ Architect | 🧪 QA, 🕵️ BA | C2 | 1.5 | Mỗi scenario fail được quy về **một** nguyên nhân gốc, đối chiếu 9 hidden input §20.1 | §39, `R-01`, `R-02` |
 | **C4** | **Spike Report** — đối chiếu số đo với 4 ngưỡng §24 (ghi rõ chúng là *initial hypotheses*), và đối chiếu với rubric `A3` | `docs/035-QA/Reports/Report-Spike-Phase-0.md` | 🧪 QA | 🎩 PM, 🏗️ Architect | C3 | 2.0 | Báo cáo trả lời **thẳng** câu hỏi §39, kèm mức độ tin cậy và giới hạn của kết luận | §39, §24 |
@@ -603,3 +620,4 @@ Ghi tường minh để không ai đọc lệch:
 | **2026-08-15** | ✅ **`@TrisJr` DUYỆT — `status: draft → approved`.** Ba quyết định đi kèm:<br>**(1) `T0` chốt** — `W1` = 2026-08-17 → 2026-08-21 (`TL-A1`).<br>**(2) Capacity** — chọn phương án **giãn 1 tuần đệm**: Phase 0 từ 8 lên **9 tuần**, capacity 104% → **92%**, `GATE-06` dời `W8` → **`W9` (2026-10-16)**. Đệm là **`W7` có tên riêng**, có quy tắc tiêu (§2). Mọi mốc từ `P0-D` trở đi dịch **+1 tuần**.<br>**(3) Phát hiện `GAP-Redis`** — §22 bắt test app chạm Redis nhưng §18/`C-03` không capture Redis, mà §22 lại bắt destroy environment ⇒ **cả 10 scenario replay với input không được ghi**. Exit criteria của `A2` và `A4` đã sửa để **ép** ra quyết định này trước khi spike chạy; ba phương án ghi ở §3 |
 | **2026-08-15** | **Analysis fan-out của run [`2026-08-15-p0a-spike-protocol`](../pm-runs/2026-08-15-p0a-spike-protocol/run-plan.md) (4 lens read-only) ⇒ bốn quyết định `G1`–`G4` của `@TrisJr`.**<br>**`G1`** — `GAP-Redis` chọn **(c) + phần định nghĩa của (a)**. Kèm **hai đính chính đối với bản viết trước**: (`F1`) §22 **không** bắt mỗi request chạm cả 5 dependency — ràng buộc đó đến từ exit criteria `B1` của **chính tài liệu này**, `B1` siết chặt hơn nguồn; (`F2`) **không scenario nào trong 10** lấy Redis làm tác nhân gây lỗi. ⇒ chi phí thật của (c) là sửa một dòng exit criteria, không phải *"làm spike dễ hơn thực tế"*.<br>**`G2`** — `OQ-2` chốt **dữ liệu SYNTHETIC**, không ngoại lệ. Cấp miễn trừ cap cho `SEC-008`; `B9` đổi vai *quyết định → xác minh*.<br>**`G3`** — `A3` đóng thêm `U-13` + `U-16` ⇒ **denominator = 7**, ngưỡng hiệu dụng **`≥6/7`**.<br>**`G4`** — **Phase 0 → 10 tuần** (`P0-A` = `W1–W3`), `GATE-06` dời `W9` → **`W10` = 2026-10-23**; mọi mốc từ `P0-D` trở đi **+1 tuần**. Lý do: fan-out tìm ra **~4.5 MD phạm vi thật chưa được đếm** — ba ràng buộc chặn (canary sink · capture không-cap · `L2` bắt buộc) cộng `U-13`/`U-16`, metric thứ 6, probe `SC-11`, shortcut ledger.<br>Ripple đã áp: `B1`, `B2`, `B3`, `B5`, `B7`, `B9`, `C1` |
 | **2026-08-15** | 🚪 **`GATE A` DUYỆT — `@TrisJr`. `P0-A` ĐÓNG.** Ba deliverable (`Spec-Spike-Protocol`, `MTP-Spike-Phase-0`, `Template-Spike-Report`) chuyển `status: draft → approved`.<br>**Đóng băng theo luật `L1`**, ghi tại [`pm-runs/2026-08-15-p0a-spike-protocol/verdict.md`](../pm-runs/2026-08-15-p0a-spike-protocol/verdict.md): denominator **`D = 7`** · tập IN `{SC-1, SC-2, SC-3, SC-4, SC-5, SC-6, SC-8}` · observation set `{SC-7, SC-9, SC-10, SC-11}` · ngưỡng hiệu dụng **`≥6/7`** · chỉ số gate = **composite fail-closed** · **`K = 3`**.<br>⚠️ **`approved` KHÔNG nâng hypothesis thành định nghĩa sản phẩm** — cùng cách phân biệt `GATE-03` đã dùng cho 11 ADR. Nâng cấp vẫn là `D2`, sau `GATE-06`.<br>⇒ **`P0-B` được phép bắt đầu** (`W4`). `C1` vẫn bị chặn tới khi Known-Missing-Input Manifest niêm phong. Verify: 2 vòng `context-auditor` độc lập, **0 CRITICAL** |
+| **2026-08-15** | **Thêm task `B10`** vào `P0-B` — *viết + niêm phong 10 file Known-Missing-Input Manifest*, 0.5 MD, `Depends: B8`, driver 🧪 QA.<br>**Đây là phạm vi chưa từng được đếm**, phát hiện khi rà lại điều kiện tiên quyết của `C1` sau `Gate A`: `P0-A` đã cấp *định nghĩa* và *cơ chế niêm phong* (`Spec §2` + `MTP §6`), nhưng **không ai được giao viết ra hiện vật**. `B8` có exit criteria chỉ nói về fixture, không có chữ nào về manifest.<br>**Không thể đặt ở `P0-A`** vì trường `dự đoán ảnh hưởng` đòi fixture phải tồn tại — và vì `P0-A` đã đóng tại `Gate A`.<br>⇒ `P0-B`: 21.5 → **22.0 MD** (107% → **110%**, **không còn đệm**). Phase 0: 46 → **46.5 MD** / 50 = 93%. `GATE-06` **giữ nguyên 2026-10-23** |

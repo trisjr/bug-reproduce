@@ -36,4 +36,5 @@ Chiến lược, lịch trình và quản trị rủi ro. Xem thêm [Documentati
   - **Đóng băng theo luật `L1`**: denominator **`D = 7`**, ngưỡng hiệu dụng **`≥6/7`** *(luôn trình bày dạng `6/7`, không dạng `80%`)*, chỉ số gate = **composite fail-closed**, **`K = 3`**.
   - **Bốn quyết định `@TrisJr` tại gate**: `G1` `GAP-Redis` = (c)+(a) · `G2` dữ liệu **synthetic** · `G3` đóng `U-13`/`U-16` · `G4` Phase 0 → **10 tuần**.
   - ⚠️ **`approved` KHÔNG nâng hypothesis thành định nghĩa sản phẩm** — cùng cách phân biệt `GATE-03` đã dùng cho 11 ADR. Nâng cấp là `D2`, sau `GATE-06`.
-  - ⇒ **`P0-B` được phép bắt đầu** (`W4`). Nhưng `C1` **vẫn bị chặn** tới khi Known-Missing-Input Manifest được niêm phong.
+  - ⇒ **`P0-B` được phép bắt đầu** (`W4`). Nhưng `C1` **vẫn bị chặn** tới khi Known-Missing-Input Manifest được niêm phong — việc đó nay là task **`B10`** trong `P0-B`.
+- ⚠️ **`P0-B` (`W4`–`W7`) chạy ở 110% capacity và KHÔNG có đệm.** `B10` (0.5 MD, phát hiện sau `Gate A`) đẩy nó từ 107% lên 110%. Đệm duy nhất của Phase 0 nằm ở `P0-C` và **đã có chủ** — dành cho khả năng `C1` phải chạy lại nếu phân bố `SEC-008` bị kiểm duyệt. ⇒ **`P0-B` trượt thì trượt thẳng vào `GATE-06`**, không có gì hấp thụ.

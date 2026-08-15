@@ -140,7 +140,8 @@ created: 2026-08-15
   - ⚠️ `B7` đo lại `3.0–3.7` trên ngân sách `2.0` — **cố ý CHƯA cộng** vào tổng, vì `B7` chưa chạy. `B2` được cộng vì nó có **velocity thật** đứng sau (3 vòng dispatch); `B7` thì chưa. Ghi thành rủi ro đã biết, không trộn vào con số đã đo.
 - [x] Cập nhật [`Planning-MOC.md`](../../Planning-MOC.md) — dòng *"110% capacity"* nay là **122.5%**, kèm dòng ghi Wave 1 đã đóng
 - [x] **PM đặt dòng ledger `B2` vào [`Spec-Spike-Protocol §5.2`](../../../030-Specs/Spec-Spike-Protocol.md)** — dòng thứ 6, phân biệt rõ với 5 dòng pre-register, **cùng commit** với code `B2` ⇒ ràng buộc *"không hồi tố"* thoả
-- [ ] Commit + báo cáo tổng kết
+- [x] Commit + báo cáo tổng kết — `232a684` trên branch `spike/p0b-wave1`, **65 file**, message một dòng, không Co-authored (đúng `G-4`)
+  - ⚠️ **Branch CHỈ nằm local.** `G-4` cấp quyền **commit**, **không** cấp quyền push/PR. Merge là quyết định của `@TrisJr`.
 
 ## Nợ lại chuyển sang Wave 2 — PM giữ, KHÔNG để tự phát hiện
 

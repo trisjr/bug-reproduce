@@ -1,11 +1,17 @@
 ---
 id: SPEC-SPIKE-001
 type: technical-spec
-status: draft
+status: approved
 project: repro
+owner: "@TrisJr"
 created: 2026-08-15
 updated: 2026-08-15
 ---
+
+> [!IMPORTANT]
+> ✅ **`Gate A` DUYỆT — `@TrisJr`, 2026-08-15.** Tài liệu này là **protocol đã đóng băng** mà `P0-B` và `P0-C` phải tuân theo. Bản ghi quyết định + nội dung niêm phong theo luật `L1`: [`pm-runs/2026-08-15-p0a-spike-protocol/verdict.md`](../010-Planning/pm-runs/2026-08-15-p0a-spike-protocol/verdict.md).
+>
+> ⚠️ **`status: approved` KHÔNG nâng hypothesis thành định nghĩa sản phẩm.** Đây là cùng cách phân biệt `GATE-03` đã dùng cho 11 ADR: `Decision status: Accepted` trong khi `Open items` vẫn mở. Mọi mục mang nhãn `HYPOTHESIS — cần validate` trong tài liệu này **vẫn là hypothesis**; nâng cấp là task `D2`, thuộc `P1`, **sau `GATE-06`**. Xem [§1.3](#13-quy-tắc-cấm-nâng-cấp).
 
 # Spike Protocol — Phase 0
 

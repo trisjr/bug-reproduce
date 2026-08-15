@@ -1,10 +1,17 @@
 ---
 id: MTP-SPIKE-P0
 type: test-plan
-status: draft
+status: approved
 project: repro
+owner: "@TrisJr"
 created: 2026-08-15
+updated: 2026-08-15
 ---
+
+> [!IMPORTANT]
+> ✅ **`Gate A` DUYỆT — `@TrisJr`, 2026-08-15.** Measurement plan này đã **đóng băng**; `B3`, `B7` và `C1` phải xây theo đúng yêu cầu ở §8. Bản ghi quyết định: [`pm-runs/2026-08-15-p0a-spike-protocol/verdict.md`](../../010-Planning/pm-runs/2026-08-15-p0a-spike-protocol/verdict.md).
+>
+> ⚠️ Tài liệu này định nghĩa **cách đo**, **không** định nghĩa ngưỡng đạt — `approved` không đổi điều đó. Ngoại lệ ngưỡng duy nhất vẫn là `escaped_side_effects = 0` (§2.7), có ghi xuất xứ.
 
 # 🧪 MTP — Spike Phase 0 (Measurement Plan)
 

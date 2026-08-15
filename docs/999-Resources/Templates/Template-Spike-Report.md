@@ -1,9 +1,14 @@
 ---
 id: TEMP-SPIKEREPORT
 type: template
-status: draft
+status: approved
+owner: "@TrisJr"
 created: 2026-08-15
+updated: 2026-08-15
 ---
+
+> [!IMPORTANT]
+> ✅ **`Gate A` DUYỆT — `@TrisJr`, 2026-08-15.** Khuôn này đã **đóng băng**: 8 bảng `T1`–`T8` là **bắt buộc điền**, và danh sách phát biểu **CẤM** ở §3 là **ràng buộc**, không phải lời khuyên văn phong. Bản ghi quyết định: [`pm-runs/2026-08-15-p0a-spike-protocol/verdict.md`](../../010-Planning/pm-runs/2026-08-15-p0a-spike-protocol/verdict.md).
 
 # 🧪 Template: Spike Report — Phase 0
 

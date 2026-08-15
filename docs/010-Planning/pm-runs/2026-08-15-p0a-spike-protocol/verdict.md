@@ -220,3 +220,40 @@ Nó bổ sung một thứ không được yêu cầu và đáng giữ: **câu c�
 | `S1`–`S5`, `S7` của vòng 1 | Đã ghi ở mục *SUGGESTION chưa xử* phía trên |
 | **Glossary** — ~25 thuật ngữ mới; và **họ `G1` nay có 4 nghĩa** | Ngoài phạm vi run. **Ưu tiên cao nhất cho lần tới**: `Glossary` mục `GATE-0N` đã có sẵn luật chống trộn namespace, và run này vừa thêm họ thứ tư vào đúng chỗ luật đó cảnh báo |
 | 3 dead link trong run-state `2026-08-14` | Dấu vết lịch sử của run khác |
+
+---
+
+# 🚪 GATE A — quyết định của `@TrisJr` · 2026-08-15
+
+> **`GA`** — task cuối của `P0-A` theo [Timeline §3](../../Estimates/Timeline-Repro.md). Driver: 👤 **`@TrisJr`** *(vai duy nhất được đóng gate)*.
+
+## Quyết định: ✅ **DUYỆT**
+
+**Exit criteria của `GA`** — *"Trả lời được: chạy spike xong, tôi dùng cái gì để nói đạt hay không đạt?"* — **thoả**. Sáu câu hỏi con và nơi trả lời đã liệt kê ở mục *ĐÓNG RUN* phía trên.
+
+## 🔒 Đóng băng theo luật `L1` — có hiệu lực từ thời điểm này
+
+`Spec §4.7` luật **`L1` (Đóng băng)** bắt: *"Tập scenario và toàn bộ verdict kỳ vọng đóng băng tại `Gate A`, ghi vào `verdict.md`, trước khi `C1` chạy dòng lệnh đầu tiên."* Bản ghi niêm phong:
+
+| Mục | Giá trị đóng băng |
+|---|---|
+| **Denominator `D`** | **7** |
+| **Tập IN** *(vào denominator)* | `SC-1` Database state · `SC-2` External API response · `SC-3` Feature flag · `SC-4` Time-dependent · `SC-5` Missing data · `SC-6` Dependency/version difference · `SC-8` Side effect |
+| **Observation set** *(chạy, ghi riêng, NGOÀI denominator)* | `SC-7` Randomness *(`M-2` hỏng)* · `SC-9` Async behavior *(`M-3` hỏng)* · `SC-10` Race condition *(`M-4` hỏng)* · **`SC-11`** probe Redis |
+| **Ngưỡng hiệu dụng** | **`≥ 6/7`** — dạng hiệu dụng của ngưỡng §24 dòng 1. Trình bày **luôn** ở dạng `6/7`, **không** dạng `80%` |
+| **Chỉ số gate** | **Composite fail-closed** ở mức scenario — **không** phải `EMR` thô |
+| **`K`** *(`U-25`)* | **3** — scenario chỉ tính `reproduced` khi **cả 3 lần** đều `matched` |
+| **`GAP-Redis`** | Phương án **(c) + định nghĩa của (a)** — quyết định `G1` |
+| **Dữ liệu spike** | **SYNTHETIC**, không ngoại lệ — quyết định `G2` |
+| **Nhánh `SC-6`** | **(A)** replay theo version ghi trong capsule, verdict kỳ vọng `matched` |
+
+**Verdict kỳ vọng mức fixture (`M-5`)** chưa niêm phong được ở đây — nó sinh ra tại `B8` khi fixture tồn tại. Nó bị ràng buộc bởi luật **`L2` (bánh cóc một chiều)**: denominator **chỉ co, không bao giờ nở**, và ba con đường co hợp lệ đã liệt kê ở `Spec §4.7` bảng `L2-a`.
+
+## Hệ quả của quyết định
+
+1. **`P0-A` ĐÓNG.** Ba deliverable chuyển `status: draft → approved` — chúng là **protocol đã đóng băng** mà `P0-B`/`P0-C` phải tuân theo.
+2. ⚠️ **`approved` KHÔNG nâng hypothesis thành định nghĩa sản phẩm.** Đây là cùng cách phân biệt mà `GATE-03` đã dùng cho 11 ADR (`Decision status: Accepted` nhưng `Open items` vẫn mở). Mọi mục mang nhãn `HYPOTHESIS` **vẫn là hypothesis**; nâng cấp là `D2`, thuộc `P1`, **sau `GATE-06`**.
+3. **`P0-B` được phép bắt đầu** — nhưng `C1` vẫn bị chặn bởi điều kiện tiên quyết: Known-Missing-Input Manifest phải **niêm phong** trước.
+4. **Ngân sách đã tiêu**: `P0-A` ~14 MD / `W1`–`W3`. Còn lại của Phase 0: `P0-B` 21.5 MD (`W4`–`W7`) + `P0-C` 10.5 MD (`W8`–`W10`). **`GATE-06` = 2026-10-23.**
+
+> **Điều `GA` KHÔNG phán quyết**: nó **không** nói Repro khả thi. Nó chỉ nói *"nếu chạy spike theo protocol này, ta sẽ kết luận được"*. Câu hỏi khả thi thuộc **`GATE-06`**, và đó mới là gate quyết định có xây V0.1 hay không.

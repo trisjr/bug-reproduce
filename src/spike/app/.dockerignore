@@ -1,0 +1,5 @@
+# THROWAWAY — Repro Spike Phase 0 / P0-B.
+# Build context của src/spike/infra/Dockerfile.app chính là thư mục này.
+# node_modules dựng trên macOS không được đi vào image — `npm ci` trong image lo việc đó.
+node_modules/
+npm-debug.log

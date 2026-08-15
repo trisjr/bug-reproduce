@@ -1,0 +1,31 @@
+# ---------------------------------------------------------------------------
+# repro spike P0-B — B2 : image for the canary network sink AND for the
+# control-probe container of canary_coverage clause (i).
+#
+# curl is installed because run-plan §1.1 / security E1 names `curl` explicitly
+# as the control probe. The clause is about proving the canary holds the old
+# address; using a different client would weaken the correspondence with T8,
+# which is itself a `child_process` -> `curl` test.
+#
+# THROWAWAY (Spec-Spike-Protocol §0.3).
+# ---------------------------------------------------------------------------
+FROM node:22-alpine
+
+# curl  : run-plan §1.1 / security E1 names `curl` explicitly for the HTTP half
+#          of the control probe.
+# psql  : the DB half of the control probe. A raw TCP connect to spike-postgres
+#          proves only that SOMETHING accepts on that address. A real psql
+#          handshake with the destroyed environment's credentials, carrying the
+#          control marker as `application_name`, is what makes canary-db's own
+#          statement log say -- in the DB's words, not the tooling's -- that the
+#          alias `spike-postgres` resolved to this sink and that it logs
+#          statements. Without it, clause (iv) can never observe the DB sink.
+RUN apk add --no-cache curl postgresql-client
+
+WORKDIR /opt/canary
+COPY canary.js /opt/canary/canary.js
+COPY probe-control.sh /opt/canary/probe-control.sh
+RUN chmod 0755 /opt/canary/probe-control.sh
+
+ENV CANARY_LOG_DIR=/canary-log
+ENTRYPOINT ["node", "/opt/canary/canary.js"]

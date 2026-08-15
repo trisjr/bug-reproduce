@@ -1,0 +1,220 @@
+{
+  "schema": "repro.spike.canary-coverage/v1",
+  "run_id": "r20260815T171959Z",
+  "generated_at": "2026-08-15T17:20:34.203Z",
+  "canary_coverage": "incomplete",
+  "escaped_side_effects": 0,
+  "escaped_side_effects_readable": false,
+  "escaped_side_effects_source": "canary log (network sink + DB sink)",
+  "escaped_side_effects_source_rule": "MTP-Spike-Phase-0 §5.2 and Timeline B7-11: the source of truth is the canary log, NEVER the replay runtime log. Using the runtime to prove the runtime blocked something is circular verification.",
+  "baseline_from_own_tooling": {
+    "total": 27,
+    "network_sink": {
+      "canary_selftest": 1,
+      "control_probe": 3,
+      "verifier_probe": 3,
+      "canary_selftest_unmarked_loopback": 0
+    },
+    "network_sink_unlinked_marked_events": 0,
+    "db_sink": {
+      "db_local_unix_socket": 19,
+      "db_control_probe": 1
+    },
+    "rule": "Excluded ONLY by identity: a marker in a namespace derived from this run_id, or a structural impossibility (unix-socket statement; a peer on the canary container's own loopback). No constant is subtracted and no prefix of events is skipped.",
+    "markers": {
+      "control": "repro-canary-control-r20260815T171959Z",
+      "selftest": "repro-canary-selftest-r20260815T171959Z",
+      "verify_probe": "repro-verify-probe-r20260815T171959Z"
+    }
+  },
+  "escaped_side_effects_breakdown": {
+    "network_sink_distinct_connections": 0,
+    "network_sink_counted_events": [],
+    "network_sink_connections_excluded_by_reason": {
+      "canary_selftest": 1,
+      "control_probe": 3,
+      "verifier_probe": 3,
+      "canary_selftest_unmarked_loopback": 0
+    },
+    "network_sink_unlinked_events_counted": 0,
+    "db_sink_statement_log_lines_from_network_clients": 0,
+    "db_sink_statement_lines_total": 20,
+    "db_sink_statement_lines_excluded_by_reason": {
+      "db_local_unix_socket": 19,
+      "db_control_probe": 1
+    },
+    "db_sink_audit_rows": 0,
+    "db_sink_local_statement_lines_excluded": 19,
+    "control_probe_connections_excluded": 3,
+    "counting_rules": {
+      "R1": "The control probe is calibration, not a leak: every event sharing a conn_id with a marker-bearing event is excluded.",
+      "R2": "One connection counts once — an accept plus its request is one attempt.",
+      "R3": "The DB statement log is the headline DB source (it also catches statements that errored out). Audit rows are a subset and are reported, not added, to avoid double counting.",
+      "R4": "A statement line whose prefix says client=[local] arrived over the UNIX SOCKET (Postgres prints the literal '[local]' for %h, NOT an empty string). The workload under test runs in another container and can only reach this Postgres over TCP, so such a line is structurally impossible to attribute to it: it is initdb or an in-container exec. Excluded.",
+      "R5": "The canary's own compose healthcheck and verify.js's host-side port probes each carry their own marker namespace (repro-canary-selftest-*, repro-verify-probe-*), disjoint from the control probe's, and are excluded by marker. Without this, escaped_side_effects was a function of how long the canary stayed up.",
+      "R6": "A connection whose peer is the canary container's OWN loopback can only come from a process inside that container (the healthcheck). Host-origin traffic arrives as the bridge gateway address, so this exclusion cannot hide an MTP T12 loopback leak.",
+      "FORBIDDEN": "Subtracting a constant, skipping the first N events, or excluding by source address. None is used here. Excluding by source address in particular would blind the canary to exactly the host-origin leaks it is deployed to catch."
+    }
+  },
+  "verdict": {
+    "value": "NOT_EVALUABLE",
+    "unsatisfied_clauses": [
+      "ii"
+    ],
+    "fail_closed_rule": "Spec-Spike-Protocol §4.6 — bằng chứng thiếu ⇒ tính là KHÔNG đạt, KHÔNG phải loại khỏi mẫu số.",
+    "interpretation": "escaped_side_effects MUST NOT be read as a safety figure for this run. A 0 here is an uninterpretable number, not evidence of safety. The run counts as NOT PASSING."
+  },
+  "canary_covered_set": [
+    "spike-app",
+    "spike-httpstub",
+    "spike-redis",
+    "spike-postgres"
+  ],
+  "canary_covered_set_by_sink": {
+    "network_sink_self_declared": [
+      "spike-app",
+      "spike-httpstub",
+      "spike-redis"
+    ],
+    "db_sink_proven_by_its_own_statement_log": [
+      "spike-postgres"
+    ]
+  },
+  "canary_log_files": [
+    "canary-net-r20260815T171959Z.ndjson"
+  ],
+  "clauses": [
+    {
+      "id": "i",
+      "requirement": "A control curl to the OLD host, executed from inside the replay container, OUTSIDE every test, must appear in the canary log — in BOTH sinks.",
+      "marker": "repro-canary-control-r20260815T171959Z",
+      "satisfied": true,
+      "network_sink_satisfied": true,
+      "db_sink_satisfied": true,
+      "control_events_found": 3,
+      "control_events_by_port": {
+        "6379": 1,
+        "8080": 1,
+        "8081": 1
+      },
+      "db_control_hits": [
+        {
+          "alias_dialled": "spike-postgres",
+          "marker_seen": "repro-canary-control-r20260815T171959Z",
+          "application_name": "repro-canary-control-r20260815T171959Z",
+          "client": "10.83.0.4",
+          "marker_matches_run": true
+        }
+      ],
+      "why_it_matters": "Without a positive control, \"canary saw nothing\" and \"canary was not on the address\" are indistinguishable, and escaped_side_effects = 0 is unreadable."
+    },
+    {
+      "id": "ii",
+      "requirement": "The egress-test fixture must aim at a destination INSIDE the canary-covered set, and must record that fact in the fixture itself.",
+      "owner": "fixture task (B5 / B8) — B2 supplies the mechanism and reads the attestation",
+      "attestation_path": null,
+      "attestation_present": false,
+      "attestation_parse_error": null,
+      "expected_attestation_shape": {
+        "egress_targets": [
+          "<hostname the fixture aims at>"
+        ],
+        "declared_inside_canary_set": true,
+        "fixture_id": "<T8 / T12 / ...>"
+      },
+      "fixture_targets": [],
+      "targets_outside_canary_set": [],
+      "satisfied": false
+    },
+    {
+      "id": "iii",
+      "requirement": "The independent verifier enumerated EVERY loopback TCP listener (lsof -nP -iTCP -sTCP:LISTEN) at the START and the END of the scenario.",
+      "evidence_files": [
+        {
+          "file": "destroy-evidence-r20260815T171959Z-canary-active-2026-08-15T17-20-33-142Z.json",
+          "phase": "canary-active",
+          "has_start": true,
+          "has_end": true,
+          "lsof_ok": true
+        },
+        {
+          "file": "destroy-evidence-r20260815T171959Z-post-destroy-1-2026-08-15T17-20-20-026Z.json",
+          "phase": "post-destroy-1",
+          "has_start": true,
+          "has_end": true,
+          "lsof_ok": true
+        },
+        {
+          "file": "destroy-evidence-r20260815T171959Z-post-destroy-2-2026-08-15T17-20-20-616Z.json",
+          "phase": "post-destroy-2",
+          "has_start": true,
+          "has_end": true,
+          "lsof_ok": true
+        },
+        {
+          "file": "destroy-evidence-r20260815T171959Z-pre-destroy-2026-08-15T17-20-18-764Z.json",
+          "phase": "pre-destroy",
+          "has_start": true,
+          "has_end": true,
+          "lsof_ok": true
+        }
+      ],
+      "satisfied": true,
+      "why_it_matters": "L2's allowlist includes loopback by design, so T12 cannot be blocked and is a known blind spot. Enumerating listeners converts that blind spot into dated evidence at ~zero cost."
+    },
+    {
+      "id": "iv-bind",
+      "requirement": "The canary must actually HOLD every address in the expected covered set — no bind error, no alias missing.",
+      "expected_aliases": [
+        "spike-app",
+        "spike-httpstub",
+        "spike-redis",
+        "spike-postgres"
+      ],
+      "claimed_aliases": [
+        "spike-app",
+        "spike-httpstub",
+        "spike-redis",
+        "spike-postgres"
+      ],
+      "claimed_aliases_by_sink": {
+        "network_sink_self_declared": [
+          "spike-app",
+          "spike-httpstub",
+          "spike-redis"
+        ],
+        "db_sink_proven_by_its_own_statement_log": [
+          "spike-postgres"
+        ]
+      },
+      "missing_aliases": [],
+      "listen_errors": [],
+      "ports_listening": [
+        {
+          "port": 8080,
+          "mode": "http"
+        },
+        {
+          "port": 8081,
+          "mode": "http"
+        },
+        {
+          "port": 6379,
+          "mode": "tcp"
+        }
+      ],
+      "db_sink_harvested": true,
+      "satisfied": true,
+      "known_local_hazard": "tnm_redis holds 6379 and tnm_postgres holds 5433 on this daemon. The spike host ports are chosen to avoid them; up.sh and canary-up.sh fail closed if a chosen port is nonetheless held. Foreign containers are never stopped by this tooling."
+    }
+  ],
+  "provenance": {
+    "produced_by": "src/spike/infra/coverage/coverage.js",
+    "adjudication": "run-plan 2026-08-15-p0b-spike-build §1 (PM), folding three lens findings into one precondition",
+    "anchors": [
+      "Spec-Spike-Protocol §4.6 (fail-closed)",
+      "MTP-Spike-Phase-0 §5.1 (ECONNREFUSED trap), §5.2 (canary spec), §5.4 (T8/T12)",
+      "Spec-Security-Repro-Threat-Model THREAT-018 residual risk (b)"
+    ]
+  }
+}

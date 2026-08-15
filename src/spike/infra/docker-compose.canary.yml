@@ -1,0 +1,150 @@
+# ---------------------------------------------------------------------------
+# repro spike P0-B — B2 : CANARY SINK stack.
+#
+# Started AFTER destroy.sh. Re-claims the addresses the destroyed environment
+# used to answer on, from BOTH sides:
+#
+#   inside the docker network : via network aliases identical to the CT-3
+#                               service names (spike-app, spike-httpstub,
+#                               spike-redis, spike-postgres). This only works
+#                               because the network is `external` and survived
+#                               destroy.
+#   from the host             : by republishing EXACTLY the ports the
+#                               environment published, bound to 127.0.0.1 —
+#                               MTP §5.2 requires the canary to hold loopback,
+#                               otherwise T12 is blind and reports a false pass.
+#
+# LABEL NAMESPACE: repro.spike.canary=<run_id>. NOT repro.spike.env. destroy.sh
+# selects only on repro.spike.env, so running destroy twice (the idempotency
+# proof) does not kill the observer that the second evidence file depends on.
+# Teardown of this stack is canary-down.sh, never destroy.sh.
+# ---------------------------------------------------------------------------
+
+x-canary-labels: &canary-labels
+  repro.spike.canary: "${SPIKE_RUN_ID:?SPIKE_RUN_ID must be injected by canary-up.sh}"
+  repro.spike.role: "canary"
+  repro.spike.phase: "P0-B"
+  repro.spike.throwaway: "true"
+
+services:
+
+  # Holds spike-app, spike-httpstub (HTTP) and spike-redis (raw TCP).
+  canary-net:
+    container_name: canary-net-${SPIKE_RUN_ID}
+    build:
+      context: ./canary
+      dockerfile: Dockerfile.canary
+      # `build.labels` puts the canary run label ON THE IMAGE. Without it the
+      # image `repro-spike-canary:<run_id>` is outside EVERY label scope: destroy
+      # must not touch it (different namespace) and canary-down could not find
+      # it either, so one image per run accumulated forever. canary-down.sh
+      # removes images carrying this label.
+      labels: *canary-labels
+    image: repro-spike-canary:${SPIKE_RUN_ID}
+    labels: *canary-labels
+    environment:
+      SPIKE_RUN_ID: "${SPIKE_RUN_ID}"
+      CANARY_ROLE: "net"
+      CANARY_LOG_DIR: "/canary-log"
+      CANARY_PORTS: "${SPIKE_APP_PORT:-8080}:http,${SPIKE_STUB_PORT:-8081}:http,6379:tcp"
+      CANARY_ALIASES: "spike-app,spike-httpstub,spike-redis"
+      # SELF-TEST MARKER — distinct namespace from the control-probe marker on
+      # purpose. If the healthcheck carried the control marker it would SATISFY
+      # clause (i) by itself, and the positive control would become a tautology.
+      # Neither marker is a substring of the other.
+      CANARY_SELFTEST_MARKER: "repro-canary-selftest-${SPIKE_RUN_ID}"
+      SPIKE_APP_PORT: "${SPIKE_APP_PORT:-8080}"
+      SPIKE_STUB_PORT: "${SPIKE_STUB_PORT:-8081}"
+      SPIKE_REDIS_PORT: "6379"
+      SPIKE_PG_PORT: "5432"
+    volumes:
+      - ./canary-log:/canary-log
+    ports:
+      # EXACTLY the host ports the environment published. Same numbers on
+      # purpose: a canary on a different port proves nothing about the address
+      # the workload actually used.
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_APP_PORT:-18080}:${SPIKE_APP_PORT:-8080}"
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_STUB_PORT:-18081}:${SPIKE_STUB_PORT:-8081}"
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_REDIS_PORT:-16379}:6379"
+    networks:
+      spike:
+        aliases:
+          - spike-app
+          - spike-httpstub
+          - spike-redis
+    # The healthcheck connects to the canary's OWN port every `interval`. That
+    # made escaped_side_effects a FUNCTION OF UPTIME in the previous revision
+    # (~1 extra "leak" every 5s), i.e. a number with no fixed baseline to
+    # subtract. It is not fixed by counting differently; it is fixed by making
+    # the healthcheck IDENTIFY ITSELF. It now speaks HTTP and carries
+    # CANARY_SELFTEST_MARKER in both the path and a header, so the coverage
+    # evaluator excludes it for a NAMED reason (and reports how many it
+    # excluded), exactly like the control probe.
+    healthcheck:
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "var m=process.env.CANARY_SELFTEST_MARKER||'repro-canary-selftest';var r=require('node:http').request({host:'127.0.0.1',port:Number(process.env.SPIKE_APP_PORT||8080),path:'/__canary_selftest__?'+m,headers:{'x-repro-canary-selftest':m}},function(res){res.resume();res.on('end',function(){process.exit(0)})});r.on('error',function(){process.exit(1)});r.end()"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 3s
+    restart: "no"
+    mem_limit: 128m
+    cpus: 0.25
+
+  # Holds spike-postgres. Real Postgres so a leaked client completes a real
+  # handshake and its statements are actually logged.
+  canary-db:
+    container_name: canary-db-${SPIKE_RUN_ID}
+    image: postgres:16-alpine
+    labels: *canary-labels
+    environment:
+      # SAME credentials as the destroyed environment — see initdb SQL header.
+      POSTGRES_USER: "${SPIKE_PG_USER}"
+      POSTGRES_PASSWORD: "${SPIKE_PG_PASSWORD}"
+      POSTGRES_DB: "${SPIKE_PG_DATABASE}"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command:
+      - "postgres"
+      - "-c"
+      - "log_statement=all"
+      - "-c"
+      - "log_connections=on"
+      - "-c"
+      - "log_disconnections=on"
+      - "-c"
+      - "log_line_prefix=%m [canary] user=%u db=%d app=%a client=%h "
+      - "-c"
+      - "log_destination=stderr"
+      - "-c"
+      - "logging_collector=off"
+    volumes:
+      - ./canary/initdb:/docker-entrypoint-initdb.d:ro
+      - canary-pgdata:/var/lib/postgresql/data
+    ports:
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_PG_PORT:-15432}:5432"
+    networks:
+      spike:
+        aliases:
+          - spike-postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\" -h 127.0.0.1"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 8s
+    restart: "no"
+    mem_limit: 256m
+    cpus: 0.4
+
+networks:
+  spike:
+    external: true
+    name: "${SPIKE_NETWORK:-repro-spike-net}"
+
+volumes:
+  canary-pgdata:
+    name: "repro-spike-canary-pgdata-${SPIKE_RUN_ID}"
+    labels: *canary-labels

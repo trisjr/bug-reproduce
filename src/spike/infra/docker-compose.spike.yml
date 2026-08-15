@@ -1,0 +1,213 @@
+# ---------------------------------------------------------------------------
+# repro spike P0-B — B2 environment topology (production-like by TOPOLOGY,
+# never by DATA — Timeline B2 / G2: data is synthetic, no production dump).
+#
+# THROWAWAY (Spec-Spike-Protocol §0.3).
+#
+# HARD CONSTRAINT — read before editing:
+#   The network `repro-spike-net` is `external: true` and LONG-LIVED.
+#   destroy.sh MUST NOT remove it, and this file MUST NOT let compose own it.
+#   Reason: the DNS names spike-postgres / spike-redis / spike-httpstub / spike-app
+#   are the addresses the canary has to RE-CLAIM after destroy. If compose owns
+#   the network, `compose down` deletes it and those names cease to exist along
+#   with it — the whole evidence mechanism of the phase collapses.
+#   Never start these services with `docker compose up` directly; use ./up.sh,
+#   which creates the external network first and injects the per-run nonce.
+#
+# LABEL SCOPE:
+#   Everything here carries repro.spike.env=${SPIKE_RUN_ID} + repro.spike.nonce.
+#   That pair is destroy.sh's ONLY target filter. The network and the canary
+#   live in different label namespaces on purpose.
+#
+# ANONYMOUS-VOLUME TRAP:
+#   postgres and redis images declare VOLUME directives. Anonymous volumes born
+#   from them do NOT inherit compose labels -> a label-scoped destroy and a
+#   label-scoped verifier would both be blind to a real residual. Every VOLUME
+#   dir below is therefore bound to a NAMED, LABELED volume.
+# ---------------------------------------------------------------------------
+
+x-spike-labels: &spike-labels
+  repro.spike.env: "${SPIKE_RUN_ID:?SPIKE_RUN_ID must be injected by up.sh}"
+  repro.spike.nonce: "${SPIKE_NONCE:?SPIKE_NONCE must be injected by up.sh}"
+  repro.spike.role: "env"
+  repro.spike.phase: "P0-B"
+  repro.spike.throwaway: "true"
+
+services:
+
+  # --- CT-3 name: spike-app ------------------------------------------------
+  # Code owner: worker B1 (src/spike/app/). Dockerfile owner: B2 (this dir).
+  spike-app:
+    container_name: spike-app-${SPIKE_RUN_ID}
+    # ONE image serves both spike-app and spike-httpstub. The entrypoint is
+    # selected at RUNTIME via SPIKE_ENTRYPOINT, not baked per image: on a 2-vCPU
+    # colima box, building the same layers twice is pure waste.
+    # `build.labels` puts the run label ON THE IMAGE so destroy.sh cleans it —
+    # without it, one image per run accumulates forever outside the label scope.
+    image: repro-spike-app:${SPIKE_RUN_ID}
+    build:
+      context: ../app
+      dockerfile: ../infra/Dockerfile.app
+      labels: *spike-labels
+    labels: *spike-labels
+    environment:
+      # CT-4 — EXACTLY these names, no more, no less. B1 reads this set.
+      # SPIKE_ENTRYPOINT is infrastructure plumbing, not part of CT-4; B1's
+      # requireEnv() only checks that required keys are PRESENT, so extra keys
+      # are inert.
+      SPIKE_ENTRYPOINT: "app"
+      SPIKE_RUN_ID: "${SPIKE_RUN_ID}"
+      SPIKE_APP_PORT: "${SPIKE_APP_PORT:-8080}"
+      SPIKE_PG_HOST: "spike-postgres"
+      SPIKE_PG_PORT: "5432"
+      SPIKE_PG_USER: "${SPIKE_PG_USER}"
+      SPIKE_PG_PASSWORD: "${SPIKE_PG_PASSWORD}"
+      SPIKE_PG_DATABASE: "${SPIKE_PG_DATABASE}"
+      SPIKE_REDIS_HOST: "spike-redis"
+      SPIKE_REDIS_PORT: "6379"
+      SPIKE_HTTP_STUB_URL: "http://spike-httpstub:${SPIKE_STUB_PORT:-8081}"
+      SPIKE_FLAG_FILE: "/var/spike/flags/flags.json"
+    volumes:
+      - spike-flags:/var/spike/flags
+    ports:
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_APP_PORT:-18080}:${SPIKE_APP_PORT:-8080}"
+    networks:
+      spike:
+        aliases: ["spike-app"]
+    depends_on:
+      spike-postgres:
+        condition: service_healthy
+      spike-redis:
+        condition: service_healthy
+      spike-httpstub:
+        condition: service_healthy
+    # TCP-level healthcheck on purpose: CT-4 defines no /health endpoint, and
+    # inventing one would create an undocumented contract on B1.
+    healthcheck:
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "require('node:net').connect({host:'127.0.0.1',port:Number(process.env.SPIKE_APP_PORT||8080)}).on('connect',function(){process.exit(0)}).on('error',function(){process.exit(1)})"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    restart: "no"
+    mem_limit: 320m
+    cpus: 0.5
+
+  # --- CT-3 name: spike-httpstub -------------------------------------------
+  # Self-hosted stub for the external HTTP API. No real API key anywhere
+  # (Timeline B9(ii) verifies exactly this).
+  spike-httpstub:
+    container_name: spike-httpstub-${SPIKE_RUN_ID}
+    image: repro-spike-app:${SPIKE_RUN_ID}
+    build:
+      context: ../app
+      dockerfile: ../infra/Dockerfile.app
+      labels: *spike-labels
+    labels: *spike-labels
+    environment:
+      # B1's loadStubConfig() derives the stub's LISTEN port from
+      # SPIKE_HTTP_STUB_URL, not from SPIKE_APP_PORT. Both say 8081 below; keep
+      # them in agreement or the stub binds a port nothing routes to.
+      SPIKE_ENTRYPOINT: "httpstub"
+      SPIKE_RUN_ID: "${SPIKE_RUN_ID}"
+      SPIKE_APP_PORT: "${SPIKE_STUB_PORT:-8081}"
+      SPIKE_PG_HOST: "spike-postgres"
+      SPIKE_PG_PORT: "5432"
+      SPIKE_PG_USER: "${SPIKE_PG_USER}"
+      SPIKE_PG_PASSWORD: "${SPIKE_PG_PASSWORD}"
+      SPIKE_PG_DATABASE: "${SPIKE_PG_DATABASE}"
+      SPIKE_REDIS_HOST: "spike-redis"
+      SPIKE_REDIS_PORT: "6379"
+      SPIKE_HTTP_STUB_URL: "http://spike-httpstub:${SPIKE_STUB_PORT:-8081}"
+      SPIKE_FLAG_FILE: "/var/spike/flags/flags.json"
+    volumes:
+      - spike-flags:/var/spike/flags
+    ports:
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_STUB_PORT:-18081}:${SPIKE_STUB_PORT:-8081}"
+    networks:
+      spike:
+        aliases: ["spike-httpstub"]
+    healthcheck:
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "require('node:net').connect({host:'127.0.0.1',port:Number(process.env.SPIKE_APP_PORT||8081)}).on('connect',function(){process.exit(0)}).on('error',function(){process.exit(1)})"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    restart: "no"
+    mem_limit: 192m
+    cpus: 0.25
+
+  # --- CT-3 name: spike-postgres -------------------------------------------
+  spike-postgres:
+    container_name: spike-postgres-${SPIKE_RUN_ID}
+    image: postgres:16-alpine
+    labels: *spike-labels
+    environment:
+      POSTGRES_USER: "${SPIKE_PG_USER}"
+      POSTGRES_PASSWORD: "${SPIKE_PG_PASSWORD}"
+      POSTGRES_DB: "${SPIKE_PG_DATABASE}"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      # NAMED + LABELED. Never rely on the image's anonymous VOLUME.
+      - spike-pgdata:/var/lib/postgresql/data
+    ports:
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_PG_PORT:-15432}:5432"
+    networks:
+      spike:
+        aliases: ["spike-postgres"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\" -h 127.0.0.1"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 8s
+    restart: "no"
+    mem_limit: 384m
+    cpus: 0.5
+
+  # --- CT-3 name: spike-redis ----------------------------------------------
+  spike-redis:
+    container_name: spike-redis-${SPIKE_RUN_ID}
+    image: redis:7-alpine
+    labels: *spike-labels
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    volumes:
+      - spike-redisdata:/data
+    ports:
+      - "${HOST_BIND_ADDR:-127.0.0.1}:${HOST_REDIS_PORT:-16379}:6379"
+    networks:
+      spike:
+        aliases: ["spike-redis"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "127.0.0.1", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 3s
+    restart: "no"
+    mem_limit: 128m
+    cpus: 0.25
+
+networks:
+  spike:
+    external: true
+    name: "${SPIKE_NETWORK:-repro-spike-net}"
+
+volumes:
+  spike-pgdata:
+    name: "repro-spike-pgdata-${SPIKE_RUN_ID}"
+    labels: *spike-labels
+  spike-redisdata:
+    name: "repro-spike-redisdata-${SPIKE_RUN_ID}"
+    labels: *spike-labels
+  spike-flags:
+    name: "repro-spike-flags-${SPIKE_RUN_ID}"
+    labels: *spike-labels

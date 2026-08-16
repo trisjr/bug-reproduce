@@ -400,7 +400,7 @@ Two conventions run through all of it, and they are the reason it is worth readi
 
 Repro is developed with [Claude Code](https://claude.com/claude-code) as its primary engineering environment, orchestrated as a multi-agent SDLC — and the repository keeps the receipts:
 
-- [`.claude/agents/`](./.claude/agents/) — 13 specialist agent definitions (architect, security auditor, QA, DevOps, business analyst, and others).
+- [`.claude/agents/`](./.claude/agents/) — 12 specialist agent definitions (architect, security auditor, QA, DevOps, business analyst, and others).
 - [`docs/010-Planning/pm-runs/`](./docs/010-Planning/pm-runs/) — a complete audit trail for every orchestrated run: brief, plan, per-agent findings, escalations, verdict.
 
 Every decision gate, every escalation and every risk raised along the way is public. If you are curious what an AI-orchestrated engineering process actually looks like when it is written down honestly, that directory is the answer.

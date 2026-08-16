@@ -1,0 +1,20 @@
+{
+  "name": "repro-spike-app",
+  "version": "0.0.0-spike",
+  "private": true,
+  "description": "THROWAWAY spike app (P0-B, Spec-Spike-Protocol §0.3). Manifest NÀY là nguồn sự thật duy nhất về dependency: nó nằm đúng trong build context của src/spike/infra/Dockerfile.app (context = src/spike/app).",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start:app": "node server.js",
+    "start:httpstub": "node stub/server.js",
+    "start:seed": "node seed.js",
+    "start:test-invariant": "node test-invariant.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.11.1",
+    "pg": "^8.23.0"
+  }
+}

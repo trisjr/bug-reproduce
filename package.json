@@ -1,0 +1,18 @@
+{
+  "name": "repro-spike",
+  "version": "0.0.0-spike",
+  "private": true,
+  "description": "THROWAWAY spike code for Repro Phase 0 / P0-B (Spec-Spike-Protocol §0.3). Exists to answer RQ.md §39, NOT to become V0.1.",
+  "license": "UNLICENSED",
+  "//dependencies": "CỐ Ý KHÔNG khai dependency ở đây. Nguồn sự thật duy nhất là src/spike/app/package.json — đó là thư mục mà src/spike/infra/Dockerfile.app dùng làm build context. Chạy `npm install` trong src/spike/app/ trước khi chạy các script dưới đây.",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "spike:install": "npm install --prefix src/spike/app",
+    "spike:app": "node src/spike/app/server.js",
+    "spike:stub": "node src/spike/app/stub/server.js",
+    "spike:seed": "node src/spike/app/seed.js",
+    "spike:test-invariant": "node src/spike/app/test-invariant.js"
+  }
+}

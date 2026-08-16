@@ -53,3 +53,20 @@ data/
 .opencode
 /.antigravitycli/
 .claude
+
+# Spike P0-B — artifact do recorder/replay sinh ra.
+# Lý do: recorder B3 chạy KHÔNG CAP và không có redaction engine (shortcut ledger
+# Spec-Spike-Protocol §5.2), capsule là plaintext (SEC-015 bỏ qua). Một artifact lọt
+# vào git là vĩnh viễn — THREAT-006 đường 1: "Git history là bất biến theo thiết kế".
+src/spike/**/capsules/
+src/spike/**/artifacts/
+test/spike/**/capsules/
+*.capsule
+src/spike/**/canary-log/
+
+# NHƯNG hai đường dưới đây PHẢI vào git — chúng là bằng chứng có ngày tháng, không phải rác:
+#   test/spike/manifests/   — B10 niêm phong 10 file manifest; commit hash LÀ con dấu
+#   docs/035-QA/Evidence/   — bằng chứng destroy do công cụ độc lập sinh, JSON, mỗi lần chạy
+# Không thêm pattern rộng (*.json, evidence/, manifests/) nuốt mất chúng.
+!test/spike/manifests/
+!docs/035-QA/Evidence/

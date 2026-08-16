@@ -1,0 +1,1408 @@
+{
+  "schema": "repro.spike.destroy-evidence/v1",
+  "produced_by": {
+    "tool": "repro-spike-destroy-verifier",
+    "version": "1.0.0",
+    "source": "src/spike/infra/verify/verify.js",
+    "imports_destroy_module": false,
+    "shells_out_to_docker_cli_for_assertions": false,
+    "note": "Assertions come from the Docker Engine HTTP API over the unix socket, plus host TCP probes and lsof. The `docker` CLI is used only to list contexts, which is a disclosure field, not an assertion."
+  },
+  "run_id": "r20260815T163415Z",
+  "phase": "canary-active",
+  "label_scope": "repro.spike.env=r20260815T163415Z",
+  "host": {
+    "hostname": "trisjr.local",
+    "platform": "darwin",
+    "node": "v22.21.1"
+  },
+  "assertions": {
+    "destroy_clean": true,
+    "residual_containers": [],
+    "residual_volumes": [],
+    "residual_networks": [],
+    "residual_images": [],
+    "persistent_network_present": true,
+    "persistent_network_name": "repro-spike-net",
+    "foreign_assets_preserved": true,
+    "foreign_assets": [
+      {
+        "name": "tnm_postgres",
+        "present": true,
+        "state": "running",
+        "status": "Up 7 days (healthy)",
+        "preserved": true
+      },
+      {
+        "name": "tnm_redis",
+        "present": true,
+        "state": "running",
+        "status": "Up 7 days (healthy)",
+        "preserved": true
+      },
+      {
+        "name": "tnm_minio",
+        "present": true,
+        "state": "running",
+        "status": "Up 7 days",
+        "preserved": true
+      },
+      {
+        "name": "tnm_video_preprocessor",
+        "present": true,
+        "state": "running",
+        "status": "Up 7 days",
+        "preserved": true
+      }
+    ],
+    "published_ports": [
+      {
+        "port": 18080,
+        "result": "accepted"
+      },
+      {
+        "port": 18081,
+        "result": "accepted"
+      },
+      {
+        "port": 15432,
+        "result": "accepted"
+      },
+      {
+        "port": 16379,
+        "result": "accepted"
+      }
+    ],
+    "engine_errors": []
+  },
+  "observations": {
+    "spike_port_holders": [
+      {
+        "port": 18080,
+        "held": true,
+        "holders": [
+          {
+            "command": "ssh",
+            "pid": 82105,
+            "address": "127.0.0.1"
+          }
+        ]
+      },
+      {
+        "port": 18081,
+        "held": true,
+        "holders": [
+          {
+            "command": "ssh",
+            "pid": 82105,
+            "address": "127.0.0.1"
+          }
+        ]
+      },
+      {
+        "port": 15432,
+        "held": true,
+        "holders": [
+          {
+            "command": "ssh",
+            "pid": 82105,
+            "address": "127.0.0.1"
+          }
+        ]
+      },
+      {
+        "port": 16379,
+        "held": true,
+        "holders": [
+          {
+            "command": "ssh",
+            "pid": 82105,
+            "address": "127.0.0.1"
+          }
+        ]
+      }
+    ],
+    "anonymous_like_volumes_on_daemon": {
+      "count": 4,
+      "caveat": "Anonymous volumes do not inherit compose labels, so they are invisible to a label-scoped check. This count includes volumes owned by the foreign project and is therefore reported, not asserted. destroy.sh uses `docker rm -f -v` so anonymous volumes attached to in-scope containers are removed with them."
+    },
+    "loopback_listeners_at_start": [
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 49153,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  662u  IPv6 0x647232b53de0c9d4      0t0  TCP 127.0.0.1:49153 (LISTEN)"
+      },
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 52829,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  747u  IPv6 0xe77b452964540d98      0t0  TCP 127.0.0.1:52829 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44950,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin    9u  IPv4 0x79db943de3b6cd6a      0t0  TCP 127.0.0.1:44950 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44960,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin   10u  IPv4 0x18aeef495c66249b      0t0  TCP 127.0.0.1:44960 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 63342,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin   60u  IPv6 0x947c4f115d2b808f      0t0  TCP 127.0.0.1:63342 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62479,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  415u  IPv6 0xcc3fbfe272ec94a5      0t0  TCP 127.0.0.1:62479 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 30001,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  492u  IPv6 0xb82b580c9e2110c3      0t0  TCP 127.0.0.1:30001 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62482,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  495u  IPv6 0x2dbde316f7b4bffb      0t0  TCP 127.0.0.1:62482 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64182,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  505u  IPv6  0x54437877c986891      0t0  TCP 127.0.0.1:64182 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64642,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  513u  IPv6 0x505eb5748bdc6e6b      0t0  TCP 127.0.0.1:64642 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 50055,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  520u  IPv6 0x60a52b791f92471e      0t0  TCP 127.0.0.1:50055 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62480,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  524u  IPv6 0x794ee50e9eaf7d3c      0t0  TCP 127.0.0.1:62480 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62481,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  532u  IPv6 0xbfe8b2f3901beabf      0t0  TCP 127.0.0.1:62481 (LISTEN)"
+      },
+      {
+        "command": "embedding",
+        "pid": 56447,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62574,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "embedding 56447 admin    3u  IPv6 0x341e85506f5173d6      0t0  TCP 127.0.0.1:62574 (LISTEN)"
+      },
+      {
+        "command": "cef_serve",
+        "pid": 71393,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 30000,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "cef_serve 71393 admin   55u  IPv4 0x536310bc532d8c29      0t0  TCP 127.0.0.1:30000 (LISTEN)"
+      },
+      {
+        "command": "limactl",
+        "pid": 82090,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 60914,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "limactl   82090 admin   14u  IPv4 0x46073b5e5c6652a0      0t0  TCP 127.0.0.1:60914 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 16379,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   34u  IPv4  0x2a23f2547e80c2b      0t0  TCP 127.0.0.1:16379 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18080,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   35u  IPv4 0xa1294cb2f9f8d41b      0t0  TCP 127.0.0.1:18080 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18081,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   37u  IPv4  0x22bbfef1fac9a0f      0t0  TCP 127.0.0.1:18081 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 15432,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   40u  IPv4 0x89234cda8e7a4d53      0t0  TCP 127.0.0.1:15432 (LISTEN)"
+      }
+    ],
+    "loopback_listeners_at_end": [
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 49153,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  662u  IPv6 0x647232b53de0c9d4      0t0  TCP 127.0.0.1:49153 (LISTEN)"
+      },
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 52829,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  747u  IPv6 0xe77b452964540d98      0t0  TCP 127.0.0.1:52829 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44950,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin    9u  IPv4 0x79db943de3b6cd6a      0t0  TCP 127.0.0.1:44950 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44960,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin   10u  IPv4 0x18aeef495c66249b      0t0  TCP 127.0.0.1:44960 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 63342,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin   60u  IPv6 0x947c4f115d2b808f      0t0  TCP 127.0.0.1:63342 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62479,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  415u  IPv6 0xcc3fbfe272ec94a5      0t0  TCP 127.0.0.1:62479 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 30001,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  492u  IPv6 0xb82b580c9e2110c3      0t0  TCP 127.0.0.1:30001 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62482,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  495u  IPv6 0x2dbde316f7b4bffb      0t0  TCP 127.0.0.1:62482 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64182,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  505u  IPv6  0x54437877c986891      0t0  TCP 127.0.0.1:64182 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64642,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  513u  IPv6 0x505eb5748bdc6e6b      0t0  TCP 127.0.0.1:64642 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 50055,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  520u  IPv6 0x60a52b791f92471e      0t0  TCP 127.0.0.1:50055 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62480,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  524u  IPv6 0x794ee50e9eaf7d3c      0t0  TCP 127.0.0.1:62480 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62481,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  532u  IPv6 0xbfe8b2f3901beabf      0t0  TCP 127.0.0.1:62481 (LISTEN)"
+      },
+      {
+        "command": "embedding",
+        "pid": 56447,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62574,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "embedding 56447 admin    3u  IPv6 0x341e85506f5173d6      0t0  TCP 127.0.0.1:62574 (LISTEN)"
+      },
+      {
+        "command": "cef_serve",
+        "pid": 71393,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 30000,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "cef_serve 71393 admin   55u  IPv4 0x536310bc532d8c29      0t0  TCP 127.0.0.1:30000 (LISTEN)"
+      },
+      {
+        "command": "limactl",
+        "pid": 82090,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 60914,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "limactl   82090 admin   14u  IPv4 0x46073b5e5c6652a0      0t0  TCP 127.0.0.1:60914 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 16379,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   34u  IPv4  0x2a23f2547e80c2b      0t0  TCP 127.0.0.1:16379 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18080,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   35u  IPv4 0xa1294cb2f9f8d41b      0t0  TCP 127.0.0.1:18080 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18081,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   37u  IPv4  0x22bbfef1fac9a0f      0t0  TCP 127.0.0.1:18081 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 15432,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   40u  IPv4 0x89234cda8e7a4d53      0t0  TCP 127.0.0.1:15432 (LISTEN)"
+      }
+    ],
+    "all_listeners_at_start": [
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 7000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   10u  IPv4 0xd4dc01e674f8026a      0t0  TCP *:7000 (LISTEN)"
+      },
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 7000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   11u  IPv6 0xe3d8de8afd421b26      0t0  TCP *:7000 (LISTEN)"
+      },
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 5000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   12u  IPv4 0x3a9dbd585e2baec9      0t0  TCP *:5000 (LISTEN)"
+      },
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 5000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   13u  IPv6 0x8e7d1d02be7912c0      0t0  TCP *:5000 (LISTEN)"
+      },
+      {
+        "command": "rapportd",
+        "pid": 645,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 64068,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "rapportd    645 admin   10u  IPv4 0x549823b1075f6f47      0t0  TCP *:64068 (LISTEN)"
+      },
+      {
+        "command": "rapportd",
+        "pid": 645,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 64068,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "rapportd    645 admin   11u  IPv6 0x66e9d46baa15fb93      0t0  TCP *:64068 (LISTEN)"
+      },
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 49153,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  662u  IPv6 0x647232b53de0c9d4      0t0  TCP 127.0.0.1:49153 (LISTEN)"
+      },
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 52829,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  747u  IPv6 0xe77b452964540d98      0t0  TCP 127.0.0.1:52829 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44950,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin    9u  IPv4 0x79db943de3b6cd6a      0t0  TCP 127.0.0.1:44950 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44960,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin   10u  IPv4 0x18aeef495c66249b      0t0  TCP 127.0.0.1:44960 (LISTEN)"
+      },
+      {
+        "command": "node",
+        "pid": 31903,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 3000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "node      31903 admin   46u  IPv6 0x3c53237d3f45dd33      0t0  TCP *:3000 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 63342,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin   60u  IPv6 0x947c4f115d2b808f      0t0  TCP 127.0.0.1:63342 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62479,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  415u  IPv6 0xcc3fbfe272ec94a5      0t0  TCP 127.0.0.1:62479 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 30001,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  492u  IPv6 0xb82b580c9e2110c3      0t0  TCP 127.0.0.1:30001 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62482,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  495u  IPv6 0x2dbde316f7b4bffb      0t0  TCP 127.0.0.1:62482 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64182,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  505u  IPv6  0x54437877c986891      0t0  TCP 127.0.0.1:64182 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64642,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  513u  IPv6 0x505eb5748bdc6e6b      0t0  TCP 127.0.0.1:64642 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 50055,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  520u  IPv6 0x60a52b791f92471e      0t0  TCP 127.0.0.1:50055 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62480,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  524u  IPv6 0x794ee50e9eaf7d3c      0t0  TCP 127.0.0.1:62480 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62481,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  532u  IPv6 0xbfe8b2f3901beabf      0t0  TCP 127.0.0.1:62481 (LISTEN)"
+      },
+      {
+        "command": "embedding",
+        "pid": 56447,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62574,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "embedding 56447 admin    3u  IPv6 0x341e85506f5173d6      0t0  TCP 127.0.0.1:62574 (LISTEN)"
+      },
+      {
+        "command": "node",
+        "pid": 68094,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 4322,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "node      68094 admin   37u  IPv6 0xf0ca8bfb21575c7c      0t0  TCP *:4322 (LISTEN)"
+      },
+      {
+        "command": "cef_serve",
+        "pid": 71393,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 30000,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "cef_serve 71393 admin   55u  IPv4 0x536310bc532d8c29      0t0  TCP 127.0.0.1:30000 (LISTEN)"
+      },
+      {
+        "command": "limactl",
+        "pid": 82090,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 60914,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "limactl   82090 admin   14u  IPv4 0x46073b5e5c6652a0      0t0  TCP 127.0.0.1:60914 (LISTEN)"
+      },
+      {
+        "command": "limactl",
+        "pid": 82091,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 53,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "limactl   82091 admin    9u  IPv6 0x1fb270b0408c3b49      0t0  TCP *:53 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 6379,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   13u  IPv4 0x4153c0ba08146d10      0t0  TCP *:6379 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 9000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   14u  IPv4 0x3615ed5e08045965      0t0  TCP *:9000 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 9001,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   15u  IPv4 0xc893cd75cdab78c0      0t0  TCP *:9001 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 5433,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   16u  IPv4 0x1cc58abbdb668e3e      0t0  TCP *:5433 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 8100,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   17u  IPv4 0x1d77198d36721ed5      0t0  TCP *:8100 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 16379,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   34u  IPv4  0x2a23f2547e80c2b      0t0  TCP 127.0.0.1:16379 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18080,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   35u  IPv4 0xa1294cb2f9f8d41b      0t0  TCP 127.0.0.1:18080 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18081,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   37u  IPv4  0x22bbfef1fac9a0f      0t0  TCP 127.0.0.1:18081 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 15432,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   40u  IPv4 0x89234cda8e7a4d53      0t0  TCP 127.0.0.1:15432 (LISTEN)"
+      },
+      {
+        "command": "node",
+        "pid": 91763,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 4321,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "node      91763 admin   21u  IPv6 0x5d41b987b1f41997      0t0  TCP *:4321 (LISTEN)"
+      }
+    ],
+    "all_listeners_at_end": [
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 7000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   10u  IPv4 0xd4dc01e674f8026a      0t0  TCP *:7000 (LISTEN)"
+      },
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 7000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   11u  IPv6 0xe3d8de8afd421b26      0t0  TCP *:7000 (LISTEN)"
+      },
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 5000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   12u  IPv4 0x3a9dbd585e2baec9      0t0  TCP *:5000 (LISTEN)"
+      },
+      {
+        "command": "ControlCe",
+        "pid": 637,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 5000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ControlCe   637 admin   13u  IPv6 0x8e7d1d02be7912c0      0t0  TCP *:5000 (LISTEN)"
+      },
+      {
+        "command": "rapportd",
+        "pid": 645,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 64068,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "rapportd    645 admin   10u  IPv4 0x549823b1075f6f47      0t0  TCP *:64068 (LISTEN)"
+      },
+      {
+        "command": "rapportd",
+        "pid": 645,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 64068,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "rapportd    645 admin   11u  IPv6 0x66e9d46baa15fb93      0t0  TCP *:64068 (LISTEN)"
+      },
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 49153,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  662u  IPv6 0x647232b53de0c9d4      0t0  TCP 127.0.0.1:49153 (LISTEN)"
+      },
+      {
+        "command": "jetbrains",
+        "pid": 762,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 52829,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "jetbrains   762 admin  747u  IPv6 0xe77b452964540d98      0t0  TCP 127.0.0.1:52829 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44950,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin    9u  IPv4 0x79db943de3b6cd6a      0t0  TCP 127.0.0.1:44950 (LISTEN)"
+      },
+      {
+        "command": "figma_age",
+        "pid": 852,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 44960,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "figma_age   852 admin   10u  IPv4 0x18aeef495c66249b      0t0  TCP 127.0.0.1:44960 (LISTEN)"
+      },
+      {
+        "command": "node",
+        "pid": 31903,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 3000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "node      31903 admin   46u  IPv6 0x3c53237d3f45dd33      0t0  TCP *:3000 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 63342,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin   60u  IPv6 0x947c4f115d2b808f      0t0  TCP 127.0.0.1:63342 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62479,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  415u  IPv6 0xcc3fbfe272ec94a5      0t0  TCP 127.0.0.1:62479 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 30001,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  492u  IPv6 0xb82b580c9e2110c3      0t0  TCP 127.0.0.1:30001 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62482,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  495u  IPv6 0x2dbde316f7b4bffb      0t0  TCP 127.0.0.1:62482 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64182,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  505u  IPv6  0x54437877c986891      0t0  TCP 127.0.0.1:64182 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 64642,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  513u  IPv6 0x505eb5748bdc6e6b      0t0  TCP 127.0.0.1:64642 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 50055,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  520u  IPv6 0x60a52b791f92471e      0t0  TCP 127.0.0.1:50055 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62480,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  524u  IPv6 0x794ee50e9eaf7d3c      0t0  TCP 127.0.0.1:62480 (LISTEN)"
+      },
+      {
+        "command": "webstorm",
+        "pid": 54633,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62481,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "webstorm  54633 admin  532u  IPv6 0xbfe8b2f3901beabf      0t0  TCP 127.0.0.1:62481 (LISTEN)"
+      },
+      {
+        "command": "embedding",
+        "pid": 56447,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "127.0.0.1",
+        "port": 62574,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "embedding 56447 admin    3u  IPv6 0x341e85506f5173d6      0t0  TCP 127.0.0.1:62574 (LISTEN)"
+      },
+      {
+        "command": "node",
+        "pid": 68094,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 4322,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "node      68094 admin   37u  IPv6 0xf0ca8bfb21575c7c      0t0  TCP *:4322 (LISTEN)"
+      },
+      {
+        "command": "cef_serve",
+        "pid": 71393,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 30000,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "cef_serve 71393 admin   55u  IPv4 0x536310bc532d8c29      0t0  TCP 127.0.0.1:30000 (LISTEN)"
+      },
+      {
+        "command": "limactl",
+        "pid": 82090,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 60914,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "limactl   82090 admin   14u  IPv4 0x46073b5e5c6652a0      0t0  TCP 127.0.0.1:60914 (LISTEN)"
+      },
+      {
+        "command": "limactl",
+        "pid": 82091,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 53,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "limactl   82091 admin    9u  IPv6 0x1fb270b0408c3b49      0t0  TCP *:53 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 6379,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   13u  IPv4 0x4153c0ba08146d10      0t0  TCP *:6379 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 9000,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   14u  IPv4 0x3615ed5e08045965      0t0  TCP *:9000 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 9001,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   15u  IPv4 0xc893cd75cdab78c0      0t0  TCP *:9001 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 5433,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   16u  IPv4 0x1cc58abbdb668e3e      0t0  TCP *:5433 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "*",
+        "port": 8100,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "ssh       82105 admin   17u  IPv4 0x1d77198d36721ed5      0t0  TCP *:8100 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 16379,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   34u  IPv4  0x2a23f2547e80c2b      0t0  TCP 127.0.0.1:16379 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18080,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   35u  IPv4 0xa1294cb2f9f8d41b      0t0  TCP 127.0.0.1:18080 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 18081,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   37u  IPv4  0x22bbfef1fac9a0f      0t0  TCP 127.0.0.1:18081 (LISTEN)"
+      },
+      {
+        "command": "ssh",
+        "pid": 82105,
+        "user": "admin",
+        "type": "IPv4",
+        "address": "127.0.0.1",
+        "port": 15432,
+        "is_loopback": true,
+        "is_wildcard": false,
+        "raw": "ssh       82105 admin   40u  IPv4 0x89234cda8e7a4d53      0t0  TCP 127.0.0.1:15432 (LISTEN)"
+      },
+      {
+        "command": "node",
+        "pid": 91763,
+        "user": "admin",
+        "type": "IPv6",
+        "address": "*",
+        "port": 4321,
+        "is_loopback": false,
+        "is_wildcard": true,
+        "raw": "node      91763 admin   21u  IPv6 0x5d41b987b1f41997      0t0  TCP *:4321 (LISTEN)"
+      }
+    ],
+    "lsof_ok": true,
+    "why_listeners_are_recorded": "L2's egress allowlist includes loopback BY DESIGN, so MTP T12 (destination resolving to loopback) is a known blind spot. Enumerating every listener at start and end turns that blind spot into dated evidence. On this host the hazard is live: the foreign project holds 6379 and 5433, so a leaked WRITE to loopback could reach a real database instead of the canary -- THREAT-018 residual risk (b)."
+  },
+  "independence": {
+    "tool_layer": true,
+    "authority_layer": false,
+    "probed_socket": "/Users/trisjr/.colima/default/docker.sock",
+    "docker_contexts": [
+      {
+        "name": "colima",
+        "endpoint": "unix:///Users/trisjr/.colima/default/docker.sock",
+        "current": true,
+        "probed_by_this_run": true,
+        "socket_exists": true
+      },
+      {
+        "name": "default",
+        "endpoint": "unix:///var/run/docker.sock",
+        "current": false,
+        "probed_by_this_run": false,
+        "socket_exists": false
+      },
+      {
+        "name": "desktop-linux",
+        "endpoint": "unix:///Users/trisjr/.docker/run/docker.sock",
+        "current": false,
+        "probed_by_this_run": false,
+        "socket_exists": false
+      }
+    ],
+    "proposition_proven": "Within the declared label scope, on ONE docker context, at the moment of measurement, no resource matching the scope exists.",
+    "proposition_NOT_proven": "That no path exists by which the original environment still lives. The source of truth is the same dockerd that destroy commands; resources surviving under a non-probed context are invisible to this tool. Closing this needs a provider-side inventory, which a local simulation does not have. Declared in Spec-Spike-Protocol §5.2 shortcut ledger."
+  },
+  "volatile": {
+    "started_at": "2026-08-15T16:34:48.519Z",
+    "finished_at": "2026-08-15T16:34:48.707Z",
+    "port_probe_timings_ms": [
+      {
+        "port": 18080,
+        "ms": 0,
+        "detail": null
+      },
+      {
+        "port": 18081,
+        "ms": 0,
+        "detail": null
+      },
+      {
+        "port": 15432,
+        "ms": 0,
+        "detail": null
+      },
+      {
+        "port": 16379,
+        "ms": 0,
+        "detail": null
+      }
+    ],
+    "lsof_line_count_start": 35,
+    "lsof_line_count_end": 35
+  }
+}

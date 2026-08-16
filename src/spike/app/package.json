@@ -3,7 +3,7 @@
   "version": "0.0.0-spike",
   "private": true,
   "description": "THROWAWAY spike app (P0-B, Spec-Spike-Protocol §0.3). Manifest NÀY là nguồn sự thật duy nhất về dependency: nó nằm đúng trong build context của src/spike/infra/Dockerfile.app (context = src/spike/app).",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "node": ">=22.0.0"
   },

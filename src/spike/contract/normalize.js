@@ -220,6 +220,9 @@ const KINDS = Object.freeze([
   'outbound-http',
   'feature-flag',
   'clock',
+  'stack-trace',
+  'git-commit',
+  'runtime-metadata',
 ]);
 
 const DIRECTIONS = Object.freeze(['READ', 'WRITE']);
@@ -254,6 +257,8 @@ function normalize(unit) {
     if (Object.keys(t.query).length > 0) extraArgs.query = t.query;
   } else if (kind === 'feature-flag') {
     target = String(unit.target ?? '').trim();
+  } else if (kind === 'stack-trace' || kind === 'git-commit' || kind === 'runtime-metadata') {
+    target = unit.target === undefined || unit.target === null ? null : String(unit.target).trim();
   } else {
     // kind === 'clock' — không có target (Spec §3.7, hàng `I1`).
     target = null;
@@ -291,6 +296,58 @@ function normalize(unit) {
   });
 }
 
+/**
+ * Hàm thuần derive `direction` ('READ'|'WRITE') từ `kind` và `target`.
+ * Dùng chung cho B3 (capture) và B5 (replay) — D-3.
+ * @param {string} kind
+ * @param {string|null} [target]
+ * @returns {'READ'|'WRITE'}
+ */
+function directionOf(kind, target) {
+  if (!kind) {
+    throw new TypeError('directionOf: kind is required');
+  }
+  const k = String(kind).trim().toLowerCase();
+  if (!KINDS.includes(k)) {
+    throw new RangeError(
+      'directionOf: unknown kind "' + kind + '" (Spec §3.2 cho phép: ' + KINDS.join(', ') + ')'
+    );
+  }
+
+  if (
+    k === 'inbound-http' ||
+    k === 'clock' ||
+    k === 'feature-flag' ||
+    k === 'stack-trace' ||
+    k === 'git-commit' ||
+    k === 'runtime-metadata'
+  ) {
+    return 'READ';
+  }
+
+  if (k === 'outbound-http') {
+    const t = String(target || '').trim();
+    const method = t.split(/\s+/)[0]?.toUpperCase();
+    if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+      return 'WRITE';
+    }
+    return 'READ';
+  }
+
+  if (k === 'db-query') {
+    const t = String(target || '').trim();
+    // Bỏ comment và whitespace ở đầu SQL
+    const clean = t.replace(/^\s*(?:\/\*[\s\S]*?\*\/|--[^\r\n]*[\r\n]+)\s*/g, '').trim();
+    const firstWord = clean.split(/\s+/)[0]?.toUpperCase();
+    if (['INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER', 'TRUNCATE'].includes(firstWord)) {
+      return 'WRITE';
+    }
+    return 'READ';
+  }
+
+  return 'READ';
+}
+
 module.exports = {
   REDACTION_MARKER,
   SQL_LITERAL_PLACEHOLDER,
@@ -303,4 +360,5 @@ module.exports = {
   applyRedactionMarkers,
   isRedactionMarker,
   normalize,
+  directionOf,
 };

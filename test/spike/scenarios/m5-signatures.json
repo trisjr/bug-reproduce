@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "M-5 Pre-Registered Scenario Error Signatures & Expected Verdicts",
+  "version": "spike-p0b-wave2",
+  "date": "2026-08-16",
+  "author": "@TrisJr / repro-spike",
+  "rule": "L1 (Pre-registration): M-5 error signatures and expected verdicts must be frozen and approved before fixture execution",
+  "scenarios": [
+    {
+      "id": "SC-1",
+      "name": "Database state",
+      "category": "database",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "db_state_mismatch",
+        "description": "Customer tier and discount balance in DB state causes checkout price deviation",
+        "trigger": "POST /checkout with customer_id CUST-002 (tier gold)"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-2",
+      "name": "External API response",
+      "category": "external-api",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "upstream_decline",
+        "description": "Payment authorization endpoint returns declined status code 402",
+        "trigger": "POST /checkout with SKU-GPU-004 exceeding decline threshold"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-3",
+      "name": "Feature flag",
+      "category": "feature-flag",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "flag_variation",
+        "description": "checkout_discount_v2 flag enabled changes pricing discount application",
+        "trigger": "POST /checkout with flag checkout_discount_v2: true"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-4",
+      "name": "Time-dependent",
+      "category": "clock",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "night_window_surcharge",
+        "description": "Request during 22:00-06:00 UTC triggers 5% night surcharge pricing window",
+        "trigger": "POST /checkout with simulated clock in night window"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-5",
+      "name": "Missing data",
+      "category": "missing-data",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "entity_not_found_404",
+        "description": "Non-existent SKU or customer returns 404 with intact U-infinity anchor",
+        "trigger": "POST /checkout with SKU-NONEXISTENT-999"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-6",
+      "name": "Dependency/version difference",
+      "category": "version",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "version_matching_branch_a",
+        "description": "Branch (A): Replay with identical dependency/runtime metadata as captured in capsule",
+        "trigger": "POST /checkout under baseline dependency environment"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-7",
+      "name": "Randomness",
+      "category": "randomness",
+      "inClass": false,
+      "mechanism": "none-declaration",
+      "failure_signature": {
+        "type": "unseeded_uuid_outcome",
+        "description": "Unseeded randomUUID in request_id affects outcome payload",
+        "trigger": "POST /checkout without x-spike-request-id header"
+      },
+      "expected_verdict": "diverged"
+    },
+    {
+      "id": "SC-8",
+      "name": "Side effect",
+      "category": "side-effect",
+      "inClass": true,
+      "mechanism": "M-cap",
+      "failure_signature": {
+        "type": "unconditional_order_insertion_on_decline",
+        "description": "Order record inserted into PostgreSQL despite 402 payment decline",
+        "trigger": "POST /checkout with SKU-GPU-004 triggering 402 but inserting DB row"
+      },
+      "expected_verdict": "matched"
+    },
+    {
+      "id": "SC-9",
+      "name": "Async behavior",
+      "category": "async",
+      "inClass": false,
+      "mechanism": "none-declaration",
+      "failure_signature": {
+        "type": "unclosed_async_tail",
+        "description": "Background promise executed after HTTP response sent",
+        "trigger": "POST /checkout with async_tail: true"
+      },
+      "expected_verdict": "diverged"
+    },
+    {
+      "id": "SC-10",
+      "name": "Race condition",
+      "category": "concurrency",
+      "inClass": false,
+      "mechanism": "none-declaration",
+      "failure_signature": {
+        "type": "concurrent_order_count_race",
+        "description": "Concurrent orders interleave COUNT and INSERT operations producing non-deterministic order_count",
+        "trigger": "POST /checkout concurrent requests for same customer_id"
+      },
+      "expected_verdict": "diverged"
+    }
+  ]
+}

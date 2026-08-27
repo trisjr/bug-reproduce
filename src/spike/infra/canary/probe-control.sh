@@ -82,7 +82,8 @@ node -e '
 var net = require("node:net");
 var marker = process.argv[1];
 var targets = [
-  ["spike-redis", Number(process.env.SPIKE_REDIS_PORT || 6379)]
+  ["spike-redis", Number(process.env.SPIKE_REDIS_PORT || 6379)],
+  ["127.0.0.1", Number(process.env.HOST_REDIS_PORT || 16379)]
 ];
 var pending = targets.length;
 targets.forEach(function (t) {

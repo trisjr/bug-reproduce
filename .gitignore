@@ -5,7 +5,7 @@ node_modules/
 
 # Testing
 coverage/
-
+!src/spike/infra/coverage/
 # Production
 build/
 dist/

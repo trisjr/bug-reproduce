@@ -36,7 +36,7 @@ RUN_ID="${RUN_ID_ARG:-r$(date -u +%Y%m%dT%H%M%SZ)}"
 #      the §5.2 shortcut ledger.
 NONCE="$(head -c 12 /dev/urandom | od -An -tx1 | tr -d ' \n')"
 
-# --- the long-lived external network --------------------------------------
+# --- the long-lived external and internal networks -------------------------
 if docker network inspect "${SPIKE_NETWORK}" >/dev/null 2>&1; then
   log "network ${SPIKE_NETWORK} already present (long-lived, reused)"
 else
@@ -47,6 +47,19 @@ else
     --label "repro.spike.phase=P0-B" \
     --subnet "${SPIKE_NETWORK_SUBNET}" \
     "${SPIKE_NETWORK}" >/dev/null
+fi
+
+if docker network inspect "${SPIKE_INTERNAL_NETWORK}" >/dev/null 2>&1; then
+  log "network ${SPIKE_INTERNAL_NETWORK} already present (long-lived, reused)"
+else
+  log "creating long-lived internal network ${SPIKE_INTERNAL_NETWORK} (--internal)"
+  docker network create \
+    --internal \
+    --label "${LABEL_PERSISTENT_KEY}=true" \
+    --label "${LABEL_ROLE_KEY}=network" \
+    --label "repro.spike.phase=P0-B" \
+    --subnet "${SPIKE_INTERNAL_SUBNET}" \
+    "${SPIKE_INTERNAL_NETWORK}" >/dev/null
 fi
 
 # --- render the per-run env file ------------------------------------------

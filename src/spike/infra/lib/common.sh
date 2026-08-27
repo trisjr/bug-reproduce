@@ -27,9 +27,10 @@ LABEL_CANARY_KEY="repro.spike.canary"
 # --- topology --------------------------------------------------------------
 SPIKE_NETWORK="${SPIKE_NETWORK:-repro-spike-net}"
 SPIKE_NETWORK_SUBNET="${SPIKE_NETWORK_SUBNET:-10.83.0.0/24}"
+SPIKE_INTERNAL_NETWORK="${SPIKE_INTERNAL_NETWORK:-repro-spike-internal-net}"
+SPIKE_INTERNAL_SUBNET="${SPIKE_INTERNAL_SUBNET:-10.83.1.0/24}"
 COMPOSE_PROJECT_ENV="${COMPOSE_PROJECT_ENV:-repro-spike-env}"
 COMPOSE_PROJECT_CANARY="${COMPOSE_PROJECT_CANARY:-repro-spike-canary}"
-
 # --- container-side ports (CT-3 DNS names resolve to these) ----------------
 SPIKE_APP_PORT="${SPIKE_APP_PORT:-8080}"
 SPIKE_STUB_PORT="${SPIKE_STUB_PORT:-8081}"

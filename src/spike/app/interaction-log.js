@@ -28,11 +28,15 @@ const KIND = Object.freeze({
 
 class InteractionLog {
   /**
-   * @param {{runId: string, requestId: string, sink?: (line: string) => void}} options
+   * @param {{runId: string, requestId: string, sink?: (line: string) => void, enabled?: boolean}} options
    */
-  constructor({ runId, requestId, sink }) {
+  constructor({ runId, requestId, sink, enabled }) {
     this.runId = runId;
     this.requestId = requestId;
+    this.enabled =
+      enabled !== undefined
+        ? Boolean(enabled)
+        : process.env.SPIKE_INTERACTION_LOG !== 'false' && process.env.SPIKE_INTERACTION_LOG !== '0';
     this.sink = sink || ((line) => process.stdout.write(line));
     this.entries = [];
     this.outcomeOrdinal = null;
@@ -57,7 +61,9 @@ class InteractionLog {
       error,
     };
     this.entries.push(entry);
-    this.sink(`${JSON.stringify(entry)}\n`);
+    if (this.enabled) {
+      this.sink(`${JSON.stringify(entry)}\n`);
+    }
     return entry.ordinal;
   }
 

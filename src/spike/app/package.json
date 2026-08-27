@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start:app": "node server.js",
+    "start:app-recorded": "node -r ../recorder/index.js server.js",
     "start:httpstub": "node stub/server.js",
     "start:seed": "node seed.js",
     "start:test-invariant": "node test-invariant.js"

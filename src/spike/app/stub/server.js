@@ -26,7 +26,8 @@ const MAX_CALL_LOG = 500;
 
 /** @type {Array<object>} bộ nhớ trong — bằng chứng phía stub cho test bất biến. */
 const callLog = [];
-
+/** @type {Map<string, {statusCode: number, body: object, count: number}>} */
+const configuredFaults = new Map();
 /**
  * @param {object} payload
  * @returns {{decision: 'approved'|'declined', authorization_code: string|null, reason: string|null,
@@ -102,7 +103,29 @@ function main() {
 
     if (req.method === 'POST' && url.pathname === '/__stub/reset') {
       callLog.length = 0;
+      configuredFaults.clear();
       sendJson(res, 200, { status: 'reset' });
+      return;
+    }
+
+    // Δ3: Fault injection endpoint cho B8 fixture
+    if (req.method === 'POST' && url.pathname === '/__stub/fault') {
+      let faultSpec;
+      try {
+        faultSpec = await readBody(req);
+      } catch (error) {
+        sendJson(res, 400, { error: 'bad-request', detail: error.message });
+        return;
+      }
+      const targetPath = faultSpec.path || '/payments/authorize';
+      const statusCode = Number(faultSpec.statusCode || faultSpec.status || 500);
+      const body = faultSpec.body || {
+        error: faultSpec.error || 'simulated-fault',
+        detail: faultSpec.detail || 'deterministic fault injected via /__stub/fault',
+      };
+      const count = faultSpec.count !== undefined ? Number(faultSpec.count) : Infinity;
+      configuredFaults.set(targetPath, { statusCode, body, count });
+      sendJson(res, 200, { status: 'fault-configured', targetPath, statusCode, body, count });
       return;
     }
 
@@ -115,7 +138,33 @@ function main() {
         return;
       }
 
-      const result = authorize(payload);
+      // Kiểm tra fault injection cấu hình qua endpoint hoặc header
+      const headerFaultStatus = req.headers['x-spike-stub-status'];
+      const headerFaultJson = req.headers['x-spike-stub-fault'];
+      let activeFault = null;
+
+      if (headerFaultStatus || headerFaultJson) {
+        let faultBody = { error: 'simulated-fault', detail: 'injected via header' };
+        if (headerFaultJson) {
+          try {
+            faultBody = JSON.parse(String(headerFaultJson));
+          } catch (_) {}
+        }
+        activeFault = {
+          statusCode: Number(headerFaultStatus || 500),
+          body: faultBody,
+        };
+      } else if (configuredFaults.has('/payments/authorize')) {
+        const f = configuredFaults.get('/payments/authorize');
+        if (f.count > 0) {
+          f.count -= 1;
+          activeFault = f;
+        }
+      }
+
+      const result = activeFault ? activeFault.body : authorize(payload);
+      const statusCode = activeFault ? activeFault.statusCode : 200;
+
       if (callLog.length < MAX_CALL_LOG) {
         callLog.push({
           ordinal: callLog.length + 1,
@@ -124,9 +173,10 @@ function main() {
           path: '/payments/authorize',
           body: payload,
           response: result,
+          status_code: statusCode,
         });
       }
-      sendJson(res, 200, result);
+      sendJson(res, statusCode, result);
       return;
     }
 

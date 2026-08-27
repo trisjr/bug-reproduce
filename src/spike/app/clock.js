@@ -18,18 +18,48 @@ const { KIND } = require('./interaction-log');
 const NIGHT_WINDOW_START_HOUR_UTC = 22;
 const NIGHT_WINDOW_END_HOUR_UTC = 6;
 
+let customClockProvider = null;
+
+/**
+ * Đăng ký clock provider tuỳ chỉnh (dùng cho B8 fixture / fault injection).
+ * @param {(() => number|Date)|Date|number|string|null} provider
+ */
+function setClockProvider(provider) {
+  customClockProvider = provider;
+}
+
+function resetClockProvider() {
+  customClockProvider = null;
+}
+
 /**
  * Đọc đồng hồ trong process và ghi lại thành một đơn vị `clock`.
  * @param {import('./interaction-log').InteractionLog} log
  * @param {string} label định danh điểm đọc (Spec §3.2 field `target`)
+ * @param {Date|number|string} [overrideDate] giá trị đè trực tiếp cho lần đọc này
  * @returns {Date}
  */
-function readClock(log, label) {
-  const now = new Date(Date.now());
+function readClock(log, label, overrideDate) {
+  let ts;
+  if (overrideDate !== undefined && overrideDate !== null) {
+    ts = overrideDate instanceof Date ? overrideDate.getTime() : new Date(overrideDate).getTime();
+  } else if (typeof customClockProvider === 'function') {
+    const val = customClockProvider();
+    ts = val instanceof Date ? val.getTime() : new Date(val).getTime();
+  } else if (customClockProvider instanceof Date) {
+    ts = customClockProvider.getTime();
+  } else if (customClockProvider !== null && customClockProvider !== undefined) {
+    ts = new Date(customClockProvider).getTime();
+  } else {
+    ts = Date.now();
+  }
+
+  const now = new Date(ts);
+  const isInjected = overrideDate !== undefined || customClockProvider !== null;
   log.record({
     kind: KIND.CLOCK,
     target: label,
-    args: { source: 'Date.now()' },
+    args: { source: isInjected ? 'injected' : 'Date.now()' },
     result: now.toISOString(),
   });
   return now;
@@ -61,4 +91,6 @@ module.exports = {
   orderDate,
   pricingWindow,
   readClock,
+  setClockProvider,
+  resetClockProvider,
 };

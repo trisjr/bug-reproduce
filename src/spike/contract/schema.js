@@ -171,6 +171,44 @@ function validateClassAssessment(block, errors, path) {
 }
 
 // ---------------------------------------------------------------------------
+// drift — Lớp cờ drift (Spec §3.6 bước 3 · MTP §7.1:527)
+// ---------------------------------------------------------------------------
+/**
+ * Lớp cờ drift mang giá trị hai bên (capsule vs local) cho 4 trục:
+ *   - gitCommit: Git commit hash / SHA
+ *   - runtime: runtime metadata (Node.js version, platform...)
+ *   - dependency: dependency lockfile / packages
+ *   - schemaVersion: DB migration / schema version
+ *
+ * @param {object} spec
+ */
+function makeDriftFlags(spec) {
+  const s = spec || {};
+  function makeDriftEntry(entry) {
+    if (!entry || typeof entry !== 'object') {
+      return { capsule: null, local: null, drifted: false };
+    }
+    const cap = entry.capsule === undefined ? null : entry.capsule;
+    const loc = entry.local === undefined ? null : entry.local;
+    const drf =
+      typeof entry.drifted === 'boolean'
+        ? entry.drifted
+        : cap !== null && loc !== null && cap !== loc;
+    return {
+      capsule: cap,
+      local: loc,
+      drifted: drf,
+    };
+  }
+  return {
+    gitCommit: makeDriftEntry(s.gitCommit),
+    runtime: makeDriftEntry(s.runtime),
+    dependency: makeDriftEntry(s.dependency),
+    schemaVersion: makeDriftEntry(s.schemaVersion),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Đơn vị so sánh: interaction (6 field) + hai neo
 // ---------------------------------------------------------------------------
 /** 6 field VÀO SO SÁNH của bản ghi `interaction` (Spec §3.2 · H-S2). */
@@ -251,7 +289,9 @@ function makeArtifact(spec) {
     notCapsuleFormatV1: true, // đọc được bằng mắt trong chính artifact
     capsuleId: s.capsuleId,
     scenarioId: s.scenarioId,
+    manifestCommitHash: s.manifestCommitHash === undefined ? null : s.manifestCommitHash,
     classAssessment: s.classAssessment === undefined ? null : s.classAssessment,
+    drift: s.drift === undefined ? null : s.drift,
     u0: s.u0 === undefined ? null : s.u0,
     interactions: Array.isArray(s.interactions) ? s.interactions.slice() : [],
     uInfinity: s.uInfinity === undefined ? null : s.uInfinity,
@@ -289,6 +329,17 @@ function validateArtifact(artifact) {
   for (const f of ['capsuleId', 'scenarioId']) {
     if (typeof a[f] !== 'string' || a[f].length === 0) {
       errors.push('artifact.' + f + ': bắt buộc, chuỗi không rỗng (MTP §8.1 B3-4)');
+    }
+  }
+  if (a.manifestCommitHash !== undefined && a.manifestCommitHash !== null) {
+    if (typeof a.manifestCommitHash !== 'string' || a.manifestCommitHash.length === 0) {
+      errors.push('artifact.manifestCommitHash: phải là chuỗi commit hash hoặc null');
+    }
+  }
+
+  if (a.drift !== undefined && a.drift !== null) {
+    if (typeof a.drift !== 'object') {
+      errors.push('artifact.drift: phải là object chứa cờ drift');
     }
   }
 
@@ -349,8 +400,16 @@ function validateUnit(unit, errors, path) {
   if (typeof unit.truncated !== 'boolean') {
     errors.push(path + '.truncated: phải là boolean (MTP §8.1 B3-8 — Spec §3.6 bước 2b)');
   }
-  if (unit.kind !== 'clock' && (unit.target === null || unit.target === undefined)) {
-    errors.push(path + '.target: chỉ đơn vị `clock` được phép không có target (Spec §3.7)');
+  const NO_TARGET_ALLOWED = ['clock', 'stack-trace', 'git-commit', 'runtime-metadata'];
+  if (!NO_TARGET_ALLOWED.includes(unit.kind) && (unit.target === null || unit.target === undefined)) {
+    errors.push(
+      path +
+        '.target: đơn vị loại "' +
+        unit.kind +
+        '" BẮT BUỘC có target (chỉ ' +
+        NO_TARGET_ALLOWED.join(', ') +
+        ' được phép null, Spec §3.7)'
+    );
   }
 }
 
@@ -372,6 +431,7 @@ module.exports = {
   INTERACTION_COMPARED_FIELDS,
   INTERACTION_META_FIELDS,
   makeClassAssessment,
+  makeDriftFlags,
   makeInteraction,
   makeU0,
   makeUInfinity,

@@ -98,9 +98,10 @@ function computePricing({ unitPriceCents, quantity, tier, flags, window }) {
  * HÀM THUẦN — chữ ký KHÔNG CÓ tham số cache. Đây là bằng chứng cấu trúc cho G1:
  * kết cục không thể phụ thuộc Redis vì Redis không đi vào được hàm này.
  */
-function buildOutcome({ runId, request, customer, pricing, authorization, orderId, orderCount, date }) {
+function buildOutcome({ runId, requestId, request, customer, pricing, authorization, orderId, orderCount, date, finalizedAt }) {
   return Object.freeze({
     run_id: runId,
+    request_id: requestId || null,
     status: authorization.decision,
     order_id: orderId,
     customer_id: customer.id,
@@ -109,6 +110,7 @@ function buildOutcome({ runId, request, customer, pricing, authorization, orderI
     quantity: request.quantity,
     pricing,
     order_date: date,
+    finalized_at: finalizedAt ? finalizedAt.toISOString() : undefined,
     orders_for_customer: orderCount,
     authorization: Object.freeze({
       decision: authorization.decision,
@@ -144,6 +146,13 @@ async function handleCheckout(ctx, rawBody) {
   const product = productResult.rows[0];
   const customer = customerResult.rows[0];
   if (!product || !customer) {
+    // Δ6: nhánh 404 phát mốc kết cục + response-sent để neo U∞ tồn tại
+    log.markOutcomeComputed();
+    log.record({
+      kind: KIND.MARKER,
+      target: 'response-sent',
+      result: { status_code: 404, outcome_status: 'not-found' },
+    });
     return {
       statusCode: 404,
       body: { error: 'not-found', detail: 'sku hoặc customer_id không tồn tại trong dữ liệu synthetic' },
@@ -186,11 +195,14 @@ async function handleCheckout(ctx, rawBody) {
   });
   const countResult = await runQuery(pool, log, { sql: SQL.COUNT_ORDERS, values: [customer.id] });
 
+  // Δ2: đọc clock lần 2 để kiểm chứng hệ quả t2 - t1
+  const finalizedAt = readClock(log, 'checkout.order-finalized');
   const orderId = Number(insertResult.rows[0].id);
   const orderCount = countResult.rows[0].order_count;
 
   const outcome = buildOutcome({
     runId: config.runId,
+    requestId,
     request,
     customer,
     pricing,
@@ -198,8 +210,8 @@ async function handleCheckout(ctx, rawBody) {
     orderId,
     orderCount,
     date,
+    finalizedAt,
   });
-
   // ==========================================================================
   // KẾT CỤC ĐÃ ĐÓNG BĂNG. Mọi thứ dưới đây KHÔNG ĐƯỢC đổi `outcome`.
   // ==========================================================================
@@ -217,6 +229,25 @@ async function handleCheckout(ctx, rawBody) {
     lastOrderValue: String(orderId),
   });
 
+
+  // Δ5: đuôi async không đóng trong cửa sổ request (cho SC-9)
+  if (ctx.asyncTail === true || (rawBody && typeof rawBody === 'object' && rawBody.async_tail === true)) {
+    setImmediate(async () => {
+      try {
+        log.record({
+          kind: KIND.MARKER,
+          target: 'async-tail-dispatched',
+          result: { status: 'running-after-response', order_id: orderId },
+        });
+        await new Promise((r) => setTimeout(r, 50));
+        log.record({
+          kind: KIND.MARKER,
+          target: 'async-tail-completed',
+          result: { status: 'completed-after-response', order_id: orderId },
+        });
+      } catch (_) {}
+    });
+  }
   const statusCode = outcome.status === 'approved' ? 201 : 402;
   log.record({
     kind: KIND.MARKER,

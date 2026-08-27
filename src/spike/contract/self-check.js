@@ -182,6 +182,54 @@ check(
   C.INTERACTION_COMPARED_FIELDS.slice(),
   ['kind', 'target', 'arguments', 'direction', 'result', 'ordinal']
 );
+// ---------------------------------------------------------------------------
+console.log('\n[directionOf(kind, target)] hàm thuần derive direction (D-3, B0\')');
+// ---------------------------------------------------------------------------
+check('directionOf inbound-http -> READ', C.directionOf('inbound-http', '/checkout'), 'READ');
+check('directionOf clock -> READ', C.directionOf('clock'), 'READ');
+check('directionOf feature-flag -> READ', C.directionOf('feature-flag', 'new_feature'), 'READ');
+check('directionOf stack-trace -> READ', C.directionOf('stack-trace', 'TypeError'), 'READ');
+check('directionOf git-commit -> READ', C.directionOf('git-commit', 'HEAD'), 'READ');
+check('directionOf runtime-metadata -> READ', C.directionOf('runtime-metadata'), 'READ');
+check('directionOf outbound-http GET -> READ', C.directionOf('outbound-http', 'GET https://api.example/data'), 'READ');
+check('directionOf outbound-http POST -> WRITE', C.directionOf('outbound-http', 'POST https://api.example/pay'), 'WRITE');
+check('directionOf outbound-http DELETE -> WRITE', C.directionOf('outbound-http', 'DELETE /item/1'), 'WRITE');
+check('directionOf db-query SELECT -> READ', C.directionOf('db-query', 'SELECT * FROM users WHERE id = $1'), 'READ');
+check('directionOf db-query INSERT -> WRITE', C.directionOf('db-query', 'INSERT INTO orders (id) VALUES ($1)'), 'WRITE');
+check('directionOf db-query UPDATE -> WRITE', C.directionOf('db-query', 'UPDATE orders SET status = $1'), 'WRITE');
+check('directionOf db-query DELETE -> WRITE', C.directionOf('db-query', 'DELETE FROM cart WHERE id = $1'), 'WRITE');
+
+// ---------------------------------------------------------------------------
+console.log('\n[normalize(unit) - 3 kind mới §18] stack-trace · git-commit · runtime-metadata');
+// ---------------------------------------------------------------------------
+const stUnit = C.normalize(C.makeInteraction({
+  kind: 'stack-trace',
+  target: 'TypeError: cannot read property',
+  direction: 'READ',
+  result: 'at handleCheckout (checkout.js:120)',
+  ordinal: 7,
+}));
+check('stack-trace normalize ok', stUnit.kind, 'stack-trace');
+check('stack-trace target giữ nguyên', stUnit.target, 'TypeError: cannot read property');
+
+const gitUnit = C.normalize(C.makeInteraction({
+  kind: 'git-commit',
+  target: '15c462e',
+  direction: 'READ',
+  result: { branch: 'main' },
+  ordinal: 8,
+}));
+check('git-commit normalize ok', gitUnit.kind, 'git-commit');
+check('git-commit target là commit hash', gitUnit.target, '15c462e');
+
+const metaUnit = C.normalize(C.makeInteraction({
+  kind: 'runtime-metadata',
+  direction: 'READ',
+  result: { node: process.version, arch: process.arch },
+  ordinal: 9,
+}));
+check('runtime-metadata target null được chấp nhận', metaUnit.target, null);
+
 
 // ---------------------------------------------------------------------------
 console.log('\n[schema] artifact + hai neo U0/U∞ + class_assessment (Spec §3.1 · §2.6)');
@@ -254,6 +302,22 @@ checkTrue(
   C.validateArtifact(buildArtifact({ classAssessment: badAxis })).ok === false
 );
 
+
+// manifestCommitHash & drift flags
+const withManifest = buildArtifact({
+  manifestCommitHash: 'ca88a6e0867c6e15c462e9b99589232a684977ae',
+  drift: C.makeDriftFlags({
+    gitCommit: { capsule: 'ca88a6e', local: 'ca88a6e', drifted: false },
+    runtime: { capsule: 'v22.21.1', local: 'v22.21.1', drifted: false },
+    dependency: { capsule: 'hash1', local: 'hash2', drifted: true },
+    schemaVersion: { capsule: '20260815_01', local: '20260815_01', drifted: false },
+  }),
+});
+const vManifest = C.validateArtifact(withManifest);
+checkTrue('artifact có manifestCommitHash và drift flags hợp lệ', vManifest.ok, JSON.stringify(vManifest.errors));
+checkTrue('drift flag dependency phát hiện drifted=true', withManifest.drift.dependency.drifted === true);
+checkTrue('drift flag gitCommit phát hiện drifted=false', withManifest.drift.gitCommit.drifted === false);
+check('manifestCommitHash có trong artifact', withManifest.manifestCommitHash, 'ca88a6e0867c6e15c462e9b99589232a684977ae');
 // round-trip
 const rt = C.parseArtifact(C.serializeArtifact(good));
 checkTrue('serialize/parse round-trip giữ nguyên hợp lệ', C.validateArtifact(rt).ok);

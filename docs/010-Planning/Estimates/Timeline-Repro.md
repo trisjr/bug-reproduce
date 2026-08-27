@@ -19,7 +19,7 @@ updated: 2026-08-15
 >
 > | ID | Giả định | Nội dung |
 > |---|---|---|
-> | **`TL-A1`** | **Trục thời gian tương đối** | Mọi mốc ghi dạng `W1`, `W2`… tính từ **`T0`** = tuần khởi động Phase 0. ✅ **`T0` ĐÃ CHỐT 2026-08-15**: **`W1` = 2026-08-17 → 2026-08-21** (tuần làm việc đầu tiên sau ngày duyệt). ⇒ `W10` = **2026-10-19 → 2026-10-23**, và **`GATE-06` rơi vào 2026-10-23**. Các bảng bên dưới **vẫn giữ ký hiệu `W`**, không nhúng ngày — quy đổi là cơ học và tránh phải sửa ~40 ô mỗi lần lịch trượt. |
+> | **`TL-A1`** | **Trục thời gian tương đối** | Mọi mốc ghi dạng `W1`, `W2`… tính từ **`T0`** = tuần khởi động Phase 0. ✅ **`T0` ĐÃ CHỐT 2026-08-15**: **`W1` = 2026-08-17 → 2026-08-21** (tuần làm việc đầu tiên sau ngày duyệt). ⇒ `W12` = **2026-11-02 → 2026-11-06**, và **`GATE-06` rơi vào 2026-11-06** *(cập nhật 2026-08-16 — bản cũ ghi `W10` = 2026-10-23, xem §15)*. Các bảng bên dưới **vẫn giữ ký hiệu `W`**, không nhúng ngày — quy đổi là cơ học và tránh phải sửa ~40 ô mỗi lần lịch trượt. |
 > | **`TL-A2`** | **Capacity = solo** | **Một người thực thi (`@TrisJr`)**, được hỗ trợ bởi các **agent role**. Effort ghi bằng **MD (man-day)** của một người. Đúng với thực tế đã ghi ở [Charter §5.1](../Charter-Repro.md) — *dự án một người*. |
 >
 > **Hệ quả của `TL-A2` phải nói thẳng**: mọi cột `Driver` / `Collaborators` bên dưới là **vai trò**, không phải người khác nhau. Một người giữ mọi vai ⇒ **không có phản biện độc lập thật sự**, kể cả ở các gate. Đây là rủi ro quản trị đã được ghi ở Charter §5.1, timeline này không xoá nó.
@@ -126,35 +126,41 @@ graph TD
 | Phase | Tuần | Trạng thái vốn | Mục tiêu — đúng một câu | Gate ra |
 |---|---|---|---|---|
 | **P0-A** — Spike Protocol | `W1–W3` | ✅ **Đã cấp vốn** | Làm cho spike **có thể cho ra pass/fail** | **Gate A** |
-| **P0-B** — Spike Build | `W4–W7` | ✅ **Đã cấp vốn** | Dựng đủ công cụ throwaway để chạy 10 scenario | — |
-| **P0-C** — Spike Run & Report | `W8–W10` | ✅ **Đã cấp vốn** | Trả lời câu hỏi §39 bằng **dữ liệu đo**, không bằng ý kiến | **`GATE-06` (§39)** |
-| **P0-D** — Nhánh KHÔNG | `W11–W13` | ⚠️ dự phòng | Xác định lớp bug nào **không** replay được và thu hẹp phạm vi | quyết định lại |
-| **P1** — Gỡ khoá sau gate | `W11–W15` | 🔶 `CONDITIONAL` | Biến hypothesis của spike thành **định nghĩa chốt**, gỡ 4 blocker | **`D10` cấp vốn V0.1** |
-| **LG** — Legal & Compliance | `W11–W22` *(song song)* | 🔶 `CONDITIONAL` | Làm cho việc **phát hành** và **cài vào production người khác** hợp pháp | `LG3` đóng trước `P4` |
-| **P2** — Build V0.1 | `W16–W33` | 🔶 `CONDITIONAL` | Hiện thực core replay loop + nghĩa vụ phi chức năng | Execution Match Rate ≥ `N-05` |
-| **P3** — Release V0.1 | `W34–W37` | 🔶 `CONDITIONAL` | Phát hành OSS an toàn và cài được trong vài phút | Release v0.1.0 |
-| **P4** — Design Partner & Market Validation | `W38–W49` | 🔶 `CONDITIONAL` | Chứng minh **người thật** cài vào **production thật** và thu được giá trị | **Gate Product-Market Signal** |
+| **P0-B** — Spike Build | `W4–W9` ⬆️ | ✅ **Đã cấp vốn** | Dựng đủ công cụ throwaway để chạy 10 scenario | — |
+| **P0-C** — Spike Run & Report | `W10–W12` ⬆️ | ✅ **Đã cấp vốn** | Trả lời câu hỏi §39 bằng **dữ liệu đo**, không bằng ý kiến | **`GATE-06` (§39)** |
+| **P0-D** — Nhánh KHÔNG | `W13–W15` | ⚠️ dự phòng | Xác định lớp bug nào **không** replay được và thu hẹp phạm vi | quyết định lại |
+| **P1** — Gỡ khoá sau gate | `W13–W17` | 🔶 `CONDITIONAL` | Biến hypothesis của spike thành **định nghĩa chốt**, gỡ 4 blocker | **`D10` cấp vốn V0.1** |
+| **LG** — Legal & Compliance | `W13–W24` *(song song)* | 🔶 `CONDITIONAL` | Làm cho việc **phát hành** và **cài vào production người khác** hợp pháp | `LG3` đóng trước `P4` |
+| **P2** — Build V0.1 | `W18–W35` | 🔶 `CONDITIONAL` | Hiện thực core replay loop + nghĩa vụ phi chức năng | Execution Match Rate ≥ `N-05` |
+| **P3** — Release V0.1 | `W36–W39` | 🔶 `CONDITIONAL` | Phát hành OSS an toàn và cài được trong vài phút | Release v0.1.0 |
+| **P4** — Design Partner & Market Validation | `W40–W51` | 🔶 `CONDITIONAL` | Chứng minh **người thật** cài vào **production thật** và thu được giá trị | **Gate Product-Market Signal** |
 | **P5** — GTM & Commercial | `TBD` *(sau V0.2)* | 🔶 `CONDITIONAL` | Thương mại hoá — **chỉ sau khi North Star đo được** | quyết định commercial launch |
 
-**Tổng effort đã cấp vốn (`P0-A` → `P0-C`): ~46.5 MD trên 10 tuần.**
+**Tổng effort đã cấp vốn (`P0-A` → `P0-C`): ~54.0–54.7 MD trên 12 tuần.** *(cũ ~46.5 MD / 10 tuần — cập nhật 2026-08-16, xem §15)*
 
 > [!NOTE]
 > ✅ **CHỐT 2026-08-15 — hai lần điều chỉnh trong cùng ngày, ghi cả hai để thấy vì sao.**
 >
-> | | Bản gốc | Lần 1 — giãn đệm | **Lần 2 — sau analysis fan-out** |
-> |---|:--:|:--:|:--:|
-> | Phase 0 | 8 tuần | 9 tuần | **10 tuần** |
-> | Effort | 41.5 MD | 41.5 MD | **~46.5 MD** *(gồm `B10` phát hiện sau `Gate A`)* |
-> | Capacity | 41.5/40 = **104%** | 41.5/45 = 92% | **46.5/50 = 93%** |
-> | `GATE-06` | `W8` | `W9` | **`W10` = 2026-10-23** |
+> | | Bản gốc | Lần 1 — giãn đệm | Lần 2 — sau analysis fan-out | **Lần 3 — 2026-08-16, sau fan-out `P0-B`** |
+> |---|:--:|:--:|:--:|:--:|
+> | Phase 0 | 8 tuần | 9 tuần | 10 tuần | **12 tuần** |
+> | Effort | 41.5 MD | 41.5 MD | ~46.5 MD | **~54.0–54.7 MD** |
+> | Capacity | 41.5/40 = **104%** | 41.5/45 = 92% | 46.5/50 = 93% | **54.0–54.7/60 = 90–91%** |
+> | `GATE-06` | `W8` | `W9` | `W10` = 2026-10-23 | **`W12` = 2026-11-06** |
+>
+> **Lần 3** — analysis fan-out của run [`2026-08-16-p0b-wave2-4`](../pm-runs/2026-08-16-p0b-wave2-4/run-plan.md) (4 lens read-only) tìm ra **ba hạng mục chưa ai sở hữu** (`B0'` mở rộng schema · `S-1` seam `B1`/`B2` · `INF-1` nợ hạ tầng + `L2`) và **năm ước lượng vượt**. `P0-B` từ 24.5 lên **29.5–30.2 MD** ⇒ cần 6 tuần thay vì 4.
+>
+> ⚠️ **Khác hai lần trước ở một điểm**: lần này **không phải** ước lượng bi quan hơn. Bốn lens **đọc code thật và chạy lệnh thật** — `coverage.js` chạy lại ra `4` thay vì `3`; `--permission` đo trên 8 kịch bản; `colima ssh -- free -m` in `Swap: 0`.
 >
 > **Lần 1** — `TL-r1` nói mọi con số MD ở đây không có dữ liệu lịch sử đứng sau. Lịch 104% + ước lượng không baseline ⇒ trượt đẩy thẳng vào `GATE-06`, đúng cái gate duy nhất đã cấp vốn.
 >
 > **Lần 2** — analysis fan-out của run [`2026-08-15-p0a-spike-protocol`](../pm-runs/2026-08-15-p0a-spike-protocol/run-plan.md) tìm ra **~4.5 MD phạm vi thật chưa được đếm** trong `P0-A`: ba ràng buộc chặn (canary sink · capture không-cap · L2 bắt buộc), đóng thêm `U-13`/`U-16`, metric thứ 6, probe `SC-11`, shortcut ledger. `P0-A` từ 9.5 lên **~14 MD**.
 >
-> **Phân bổ mới:** `P0-A` = `W1–W3` (14/15 = **93%**) · `P0-B` = `W4–W7` (**22.0**/20 = **110%**) · `P0-C` = `W8–W10` (10.5/15 = **70%**).
+> **Phân bổ hiện hành (sau lần 3):** `P0-A` = `W1–W3` (14/15 = **93%**, ✅ đã đóng) · `P0-B` = `W4–W9` (**29.5–30.2**/30 = **98–101%**) · `P0-C` = `W10–W12` (10.5/15 = **70%**).
 >
-> ⚠️ **`P0-B` là sub-phase căng nhất và KHÔNG có đệm.** Nó vượt capacity ngay cả trước `B10`, và `B10` (0.5 MD, phát hiện sau `Gate A`) đẩy nó từ 107% lên **110%**. Đệm duy nhất của Phase 0 nằm ở `P0-C` — và đệm đó **đã có chủ**: nó dành cho khả năng `C1` phải chạy lại nếu phân bố `SEC-008` bị kiểm duyệt. ⇒ **`P0-B` trượt thì trượt thẳng vào `GATE-06`.**
+> ⚠️ **`P0-B` vẫn là sub-phase căng nhất và vẫn KHÔNG có đệm** — giãn 2 tuần chỉ đưa nó từ **147–151%** về **≈100%**, tức là **vừa đủ, không dư một ngày**. Đệm duy nhất của Phase 0 vẫn nằm ở `P0-C` và vẫn **đã có chủ**: dành cho khả năng `C1` phải chạy lại nếu phân bố `SEC-008` bị kiểm duyệt. ⇒ **`P0-B` trượt lần nữa thì trượt thẳng vào `GATE-06`.**
+>
+> 📌 **Con số `P0-B` nay có velocity thật đứng sau, không còn thuần phán đoán.** `B2` đo bằng Wave 1 (3 vòng dispatch); `B7`/`B8`/`B9`/`B10` đo lại bằng 4 lens đọc code. Đây là điều `TL-r1` đòi hỏi trước khi tin bất kỳ ước lượng nào.
 >
 > **Đệm nay nằm ở `P0-C`, và đó là chỗ đúng.** [`findings/quality-assurance.md`](../pm-runs/2026-08-15-p0a-spike-protocol/findings/quality-assurance.md) chỉ ra `C1` **có thể phải chạy lại toàn bộ** nếu phân bố `SEC-008` bị kiểm duyệt. Slack 30% của `P0-C` là chỗ hấp thụ đúng rủi ro đó — không phải đệm chung chung.
 >
@@ -179,7 +185,7 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 | Mốc | Tuần | Nghĩa là gì |
 |---|:--:|---|
-| **Trả lời được câu hỏi kỹ thuật** | `W10` *(= 2026-10-23)* | `GATE-06` — biết Repro có khả thi hay không. **Đây là mốc duy nhất đã được cấp vốn** |
+| **Trả lời được câu hỏi kỹ thuật** | `W12` *(= 2026-11-06)* | `GATE-06` — biết Repro có khả thi hay không. **Đây là mốc duy nhất đã được cấp vốn** |
 | **OSS public launch** | `W37` | Phần mềm **tồn tại** và cài được. **Chưa** chứng minh có ai dùng |
 | **Có tín hiệu thị trường** | `W49` | `P4-8` — có tổ chức thật chạy Repro trên production thật. **Sớm nhất ~49 tuần từ `T0`** |
 
@@ -301,16 +307,37 @@ Toàn bộ con số này **chỉ để lập ngân sách sơ bộ** và **sẽ �
 
 | **B10** | **Viết + niêm phong Known-Missing-Input Manifest** cho **cả 10 scenario**. `P0-A` đã cấp *định nghĩa* và *cơ chế* (`Spec §2`, [`MTP §6`](../../035-QA/Test-Plans/MTP-Spike-Phase-0.md)); task này tạo ra **hiện vật** | `test/spike/manifests/` (10 file) + commit hash ghi vào `T1` ô 6 | 🧪 QA | 🧑‍💻 Engineer | **B8** | 0.5 | 10 file đủ trường theo `MTP §6.2` — trong đó trường **`dự đoán ảnh hưởng`** ghi **trước khi chạy**; 4 mục sàn (Redis · filesystem state · env var · process state) có mặt trong **mọi** file.<br>🔒 **Niêm phong = commit vào git**; hash + ngày là **con dấu**. Sửa sau con dấu ⇒ **phiên bản mới** ⇒ **mở lại điều kiện tiên quyết của `C1`** | `MTP §6`, `G1` |
 
-**Cộng: 24.5 MD** *(cũ 22.0 — cập nhật 2026-08-15 sau analysis fan-out của `P0-B` và Wave 1 thực tế)*.
+**Cộng: 29.5–30.2 MD** *(cũ 24.5 — cập nhật 2026-08-16 sau analysis fan-out của Wave 2–4; trước đó 22.0)*.
+
+> **Ba task 🆕 chưa từng được đếm, phát hiện 2026-08-16.** Cả ba nằm ở **ranh giới ownership** — đúng lớp lỗi `INT-1`/`INT-2` mà Wave 1 đã trả giá một lần.
+>
+> | ID | Task | Deliverable | Driver | Depends | MD | Exit criteria |
+> |---|---|---|---|---|:--:|---|
+> | **B0'** | 🆕 **Mở rộng contract** — 3 `kind` còn thiếu của 8 nhóm §18 (`stack-trace`, `git-commit`, `runtime-metadata`, hiện **đều ném `RangeError`**) + **lớp cờ drift** (`Spec §3.6` bước 3 · `MTP:527` đòi *"giá trị hai bên"*) + con trỏ commit hash manifest + hàm thuần **`directionOf(kind, target)`** | `src/spike/contract/` | 🏗️ Architect | B0 | **0.8** | Mở rộng **không đổi signature** (`B1`/`B2` đã merge, không được phải sửa theo); `self-check` phủ hết phần mới; `README` ghi nghĩa vụ `B3`/`B5` gọi `directionOf()` và `B3` **cấm đọc** `interaction-log.js` |
+> | **S-1** | 🆕 **Seam `B1`/`B2`** — `Δ1` tiêm clock · `Δ2` đọc clock ≥2 lần · `Δ3` fault injection tất định cho stub · `Δ4` random chạm kết cục · `Δ5` async không đóng · `Δ6` `U∞` ở nhánh 404 · `Δ7` instrument latency in-process · `Δ8` công tắc recorder OFF/ON **trước `require`** · `Δ9` công tắc `InteractionLog` | `src/spike/app/`, `docker-compose.spike.yml` | 🧑‍💻 Engineer | B1, B2 | **0.8** | `test-invariant.js` **vẫn pass**; Redis **vẫn không** ảnh hưởng kết cục (`G1`); mỗi env var mới vào `APP_ENV_KEYS` **và** compose **cùng lượt** (`CT-4` fail-fast); ⛔ `CTL-1` giữ nguyên |
+> | **INF-1** | 🆕 **Nợ hạ tầng + `L2`** — vá `W-7` (đếm đôi statement SQL) · metric `loopback_listeners_not_covered_by_canary` · positive control loopback · mạng `--internal` cho `B5` · `cap_drop`/`no-new-privileges` · **cổng tài nguyên fail-closed** (`memory.peak`/`oom_kill`/`nr_throttled` + probe 4/4 `tnm_*`) | `src/spike/infra/` | ⚙️ DevOps | B2 | **0.6** | `W-7`: quy tắc **`R7` "một statement đếm một lần"** + 2 test hồi quy, ⛔ **không** lọc bỏ dòng `STATEMENT:` (`R3` cần nó cho audit); cổng phải **fail-closed** và exit code **khác `30`** |
+
+> 🔺 **`B7` tách đôi** *(quyết định `D-6`, 2026-08-16)*: `Timeline` khai `B7 ← B3, A5` là **thiếu** — 4/6 metric đọc verdict `B6`, `t_verify`, và `T1`–`T12` của `B5` (`MTP:84,85,91,92,576`). ⇒ **`B7a`** harness overhead (`Depends: B3`, ≈**2.3 MD**) tách khỏi **`B7b`** fidelity + composite `B7-12` (`Depends: B4, B5, B6`, ≈**1.2–1.9 MD**). Không giảm MD nhưng **giải phóng lịch**: `B7a` chạy được sớm thay vì cả khối bị giam tới Wave 3.
 
 | Thay đổi | Cũ → Mới | Căn cứ |
 |---|:--:|---|
+| 🆕 `B0'` · `S-1` · `INF-1` | `—` → **2.2** | Ba hạng mục ở ranh giới ownership, không task nào được giao. `B0'`: schema thiếu 3/8 nhóm capture và **toàn bộ lớp drift** ⇒ `Spec §3.6` bước 3 chết, scenario 6 không vào được denominator. `S-1`: **5/10 scenario của `B8` không dựng được** và `B7` không đo được gì nếu thiếu 9 seam. `INF-1`: `W-7` đã **tái hiện bằng số** (3 leak đọc ra 4) |
+| `B7` — harness | `2.0` → **3.5–4.2** | *"6 metric"* thực chất **≈85 scalar tổng hợp + ≈180 scalar hàng** (ước lượng cũ "≈60+" **thấp ~40%**). Cộng 2 khoản chưa đếm: instrument latency và công tắc recorder, **cả hai chạm file của task đã đóng**. Đính chính: `ab` (ApacheBench) **CÓ mặt** trên máy — cần viết **driver phát tải**, không phải **load tool** |
+| `B8` — fixture | `2.0` → **2.5** | **`M-5`** (chữ ký lỗi + verdict kỳ vọng) là deliverable orphan: `Spec:722-731` chấm ✅ cho cả 10, nhưng `Gate A verdict:250` hoãn hiện vật sang `B8`, mà exit criteria `B8` **không có nó** |
+| `B9` — security review | `1.0` → **1.5** | Thêm mục **(iv)** phân loại exclusion STRUCTURAL/FORGEABLE *(token miễn trừ `SPIKE_RUN_ID` được **inject thẳng vào workload bị đo**)* và **(v)** bề mặt **output** — ba mục (i)–(iii) hiện có **đều chỉ nhìn input** |
+| `B10` — manifest | `0.5` → **0.8** | **11 file, không phải 10** — `SC-11` cần manifest để nhãn `incomplete-capture` chứng minh được (`MTP:525`); cộng tiêu thụ file tiền-đăng-ký `T1` (`DEBT-3`) |
 | 🆕 `B0` — contract dùng chung | `—` → **1.0** | Không có `B0` thì `B3`/`B5`/`B6` hoặc chạy **tuần tự cứng**, hoặc trả giá tích hợp ở `B6` — nơi `P0-B` **không còn đệm**. Ba consumer dùng chung một hàm định danh; hai phía hiện thực lệch nhau tái tạo đúng cơ chế hỏng `R1`, ở tầng match thay vì tầng hook |
 | `B2` — môi trường + destroy | `2.0` → **3.5** | Khối lượng mà `2.0 MD` **giả định không tồn tại**: verifier độc lập, DB sink của canary, chiếm lại địa chỉ sau destroy. **Wave 1 xác nhận bằng thực tế** — task này tốn **3 vòng** (dispatch → resume → worker mới vá 2 CRITICAL) |
 
-> ⚠️ **`B7` cũng vượt: đo lại `3.0–3.7` MD trên ngân sách `2.0`** — *"6 metric"* thực chất là **≈60+ scalar**, `B7-12` composite là trường riêng, và load generator phải **tự viết** (`k6`/`autocannon`/`wrk`/`hey` **đều vắng mặt** trên máy). **Chưa** cộng vào tổng vì `B7` chưa chạy — ước lượng chưa có thực tế đứng sau, khác `B2`. Nhưng nó là **rủi ro đã biết**, không phải bất ngờ sắp tới.
+🔴 **Capacity: `29.5–30.2 MD` trên `W4–W9` = `30 MD` ⇒ 98–101%.**
 
-🔴 **Capacity: `24.5 MD` trên `W4–W7` = `20 MD` ⇒ 122.5%** *(cộng `B7` thì `25.5–26.2`, tức 128–131%)*. Trước đó đã là **110% không đệm**, và đệm duy nhất của Phase 0 nằm ở `P0-C` (70%) — **đã có chủ**, dành cho khả năng `C1` chạy lại vì phân bố `SEC-008`.
+> **Đường đi của con số này**, để về sau còn đọc lại được: `21.5` → `22.0` (`B10`, 110%) → `24.5` (Wave 1: 🆕`B0` + `B2` đo lại, **122.5%**) → **`29.5–30.2`** (fan-out Wave 2–4: 🆕`B0'`+`S-1`+`INF-1` + 4 task đo lại).
+>
+> Trên phân bổ **cũ** `W4–W7` (20 MD) thì đây là **147–151%** — không chạy được. `@TrisJr` chọn **giãn Phase 0 thêm 2 tuần** (`G-3`, 2026-08-16) thay vì cắt scope; `P0-B` nay là `W4–W9`.
+>
+> ⚠️ **98–101% vẫn là KHÔNG có đệm.** Giãn lịch đưa `P0-B` về vừa đủ, không dư một ngày. Đệm duy nhất của Phase 0 vẫn ở `P0-C` (70%) và vẫn **đã có chủ** — dành cho khả năng `C1` chạy lại vì phân bố `SEC-008`. ⇒ **`P0-B` trượt lần nữa thì trượt thẳng vào `GATE-06`**, không có gì hấp thụ.
+>
+> 📌 **Bốn lens hội tụ về một rủi ro không nằm trong bảng MD nào**: `P0-B` có thể giao đủ mọi task, mọi test xanh, mọi luật tuân thủ đúng chữ — mà `GATE-06` vẫn **không có một con số nào đọc được**. Bốn đường vào: `B3` ghi `inClass` sai ⇒ denominator sụp hoặc không có bộ lọc · `M-5` không có chủ ⇒ verdict diễn giải **sau khi nhìn kết quả** · exclusion của bộ đếm **giả mạo được** · điều kiện đo không cho phép diễn giải con số. Chi tiết: [`pm-runs/2026-08-16-p0b-wave2-4/findings/`](../pm-runs/2026-08-16-p0b-wave2-4/).
 
 > [!NOTE]
 > **`B10` là hạng mục phát hiện sau `Gate A`** — nó **không** được đếm ở bất kỳ đâu trước đó. `B8` (2.0 MD) có exit criteria chỉ nói về *fixture tái tạo được lỗi*, không có chữ nào về manifest.
@@ -632,3 +659,4 @@ Ghi tường minh để không ai đọc lệch:
 | **2026-08-15** | 🚪 **`GATE A` DUYỆT — `@TrisJr`. `P0-A` ĐÓNG.** Ba deliverable (`Spec-Spike-Protocol`, `MTP-Spike-Phase-0`, `Template-Spike-Report`) chuyển `status: draft → approved`.<br>**Đóng băng theo luật `L1`**, ghi tại [`pm-runs/2026-08-15-p0a-spike-protocol/verdict.md`](../pm-runs/2026-08-15-p0a-spike-protocol/verdict.md): denominator **`D = 7`** · tập IN `{SC-1, SC-2, SC-3, SC-4, SC-5, SC-6, SC-8}` · observation set `{SC-7, SC-9, SC-10, SC-11}` · ngưỡng hiệu dụng **`≥6/7`** · chỉ số gate = **composite fail-closed** · **`K = 3`**.<br>⚠️ **`approved` KHÔNG nâng hypothesis thành định nghĩa sản phẩm** — cùng cách phân biệt `GATE-03` đã dùng cho 11 ADR. Nâng cấp vẫn là `D2`, sau `GATE-06`.<br>⇒ **`P0-B` được phép bắt đầu** (`W4`). `C1` vẫn bị chặn tới khi Known-Missing-Input Manifest niêm phong. Verify: 2 vòng `context-auditor` độc lập, **0 CRITICAL** |
 | **2026-08-15** | **Thêm task `B10`** vào `P0-B` — *viết + niêm phong 10 file Known-Missing-Input Manifest*, 0.5 MD, `Depends: B8`, driver 🧪 QA.<br>**Đây là phạm vi chưa từng được đếm**, phát hiện khi rà lại điều kiện tiên quyết của `C1` sau `Gate A`: `P0-A` đã cấp *định nghĩa* và *cơ chế niêm phong* (`Spec §2` + `MTP §6`), nhưng **không ai được giao viết ra hiện vật**. `B8` có exit criteria chỉ nói về fixture, không có chữ nào về manifest.<br>**Không thể đặt ở `P0-A`** vì trường `dự đoán ảnh hưởng` đòi fixture phải tồn tại — và vì `P0-A` đã đóng tại `Gate A`.<br>⇒ `P0-B`: 21.5 → **22.0 MD** (107% → **110%**, **không còn đệm**). Phase 0: 46 → **46.5 MD** / 50 = 93%. `GATE-06` **giữ nguyên 2026-10-23** |
 | **2026-08-15** | **`P0-B` Wave 1 CHẠY XONG** — run [`2026-08-15-p0b-spike-build`](../pm-runs/2026-08-15-p0b-spike-build/verdict.md), lane `code`, tier `T2`. Ba task song song ownership rời nhau: **`B0`** (🆕) · **`B1`** · **`B2`**.<br>**Hai thay đổi phạm vi vào bảng §4**: (1) 🆕 **`B0`** — contract spike dùng chung (`1.0` MD), phát hiện ở analysis fan-out: `B3`/`B5`/`B6` có **ba** consumer chung một hàm định danh, không có `B0` thì hoặc chạy tuần tự cứng hoặc trả giá tích hợp ở `B6`. (2) **`B2` `2.0` → `3.5` MD** — khối lượng mà `2.0` giả định không tồn tại (verifier độc lập, DB sink canary, chiếm lại địa chỉ sau destroy); Wave 1 xác nhận bằng thực tế: **3 vòng** mới xong.<br>**Hai hạng mục orphan đã có chủ**: khối **`class_assessment`** → `B3`, cổng **`inconclusive`** → `B6`. Cả hai `Spec §2.6`/`§3.5` **bắt buộc** nhưng xuất hiện **0 lần** trong `Timeline` và `MTP` trước đó; `Template-Spike-Report` thì **đã có ô để in** ⇒ `C4` sẽ phải báo cáo thứ `P0-B` không xây.<br>⇒ `P0-B`: 22.0 → **24.5 MD** trên `W4–W7` = 20 MD ⇒ **122.5%** (110% → 122.5%). ⚠️ `B7` đo lại `3.0–3.7` trên ngân sách `2.0` — **chưa** cộng vì chưa chạy.<br>**Bằng chứng máy đầu tiên của dự án**: `docs/035-QA/Evidence/` có 11 file JSON. Run sạch đọc **`escaped_side_effects = 0`**, và bộ đếm được chứng minh **không mù** — bơm 3 leak không marker, bắt đủ 3/3. Verify: 2 vòng `quality-assurance`, vòng 1 tìm **2 CRITICAL** (một trong đó ngoài phạm vi được giao), vòng 2 xác nhận đóng bằng số đo thật |
+| **2026-08-16** | 🔴 **Analysis fan-out của Wave 2–4** — run [`2026-08-16-p0b-wave2-4`](../pm-runs/2026-08-16-p0b-wave2-4/run-plan.md), lane `code`, tier `T3`, 4 lens read-only. **Đây là lần điều chỉnh lịch thứ ba của Phase 0.**<br>**Ba task 🆕 chưa ai sở hữu, cả ba ở ranh giới ownership**: **`B0'`** (0.8) mở rộng schema — thiếu 3/8 nhóm capture §18 và **toàn bộ lớp cờ drift** ⇒ `Spec §3.6` bước 3 chết, scenario 6 không vào được denominator; **`S-1`** (0.8) seam `B1`/`B2` — **5/10 scenario của `B8` không dựng được** và `B7` không đo được gì nếu thiếu 9 seam; **`INF-1`** (0.6) nợ hạ tầng + `L2` — `W-7` đã **tái hiện bằng số** (3 leak đọc ra 4), và `L2` tầng mạng hiện **bằng không** (`up.sh` tạo network **không** `--internal`).<br>**Bốn task đo lại**: `B7` `2.0` → `3.5–4.2` *(≈85 scalar tổng hợp + ≈180 scalar hàng, không phải "6 metric"; đính chính: `ab` **có** trên máy ⇒ cần **driver phát tải**, không phải **load tool**)* · `B8` `2.0` → `2.5` *(`M-5` orphan)* · `B9` `1.0` → `1.5` · `B10` `0.5` → `0.8` *(**11** file, thêm `SC-11`)*. **`B7` tách `B7a`/`B7b`** vì `Depends` cũ thiếu `B5`/`B6`.<br>⇒ `P0-B`: 24.5 → **29.5–30.2 MD**. Trên `W4–W7` (20 MD) là **147–151%** — không chạy được.<br>🚪 **Gate 2026-08-16, bốn quyết định `@TrisJr`**: `G-1` chạy **Wave 2** rồi đóng run · `G-2` **không nâng colima** run này (`DEBT-1` **chưa đóng**, hỏi lại trước `B7`) · `G-3` **giãn Phase 0 8 → 12 tuần**, `P0-B` = `W4–W9`, `P0-C` = `W10–W12`, **`GATE-06` dời `W10` → `W12` = 2026-11-06**; mọi mốc từ `P0-D` trở đi **+2 tuần** · `G-4` **`@TrisJr` duyệt `M-5`** *trước* khi `B8` chạy fixture.<br>⚠️ **Rủi ro không nằm trong bảng MD nào, bốn lens hội tụ**: `P0-B` có thể giao đủ mọi task, mọi test xanh, mọi luật tuân thủ đúng chữ — mà `GATE-06` **không có một con số nào đọc được**. Bốn đường vào: `B3` ghi `inClass` sai ⇒ denominator sụp *hoặc* không có bộ lọc · `M-5` không có chủ ⇒ verdict diễn giải **sau khi nhìn kết quả**, cộng `X5` hạ ngưỡng `6/7` → `5/6` → `4/5` · exclusion của bộ đếm **giả mạo được** *(token miễn trừ được inject thẳng vào workload bị đo)* · điều kiện đo không cho phép diễn giải *(CFS throttling; `mem_limit` kiểm duyệt `peak RSS`; seq-scan tăng đơn điệu **thổi phồng overhead recorder có hệ thống**)*.<br>⚠️ **Wave 2 CHƯA chạy được** — safety classifier chặn toàn bộ `Bash` và dispatch của phiên; run-state đã đóng băng ở trạng thái *gate đã duyệt, chưa dispatch*. Xem [`escalations.md`](../pm-runs/2026-08-16-p0b-wave2-4/escalations.md) |

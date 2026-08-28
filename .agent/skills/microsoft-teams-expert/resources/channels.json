@@ -1,0 +1,24 @@
+{
+    "channels": [
+        {
+            "alias": "TEAM BOM",
+            "id": "19:7a78e3e460024ab5ae3d35524f0f28b7@thread.v2",
+            "description": "Channel dành cho ban điều hành và quản lý dự án."
+        },
+        {
+            "alias": "TEAM NINZACO",
+            "id": "19:f8bcd9b2e8cf4346b7ebd1592ac0bed0@thread.v2",
+            "description": "Channel dành cho dự án NinzaCo."
+        },
+        {
+            "alias": "TEAM DEV NINZACO",
+            "id": "19:5424bbcab6c548bea8aacc6ac38aeae0@thread.v2",
+            "description": "Channel dành cho Team Dev dự án NinzaCo."
+        },
+        {
+            "alias": "Quan Nguyen",
+            "id": "quannguyen@tenomad.com",
+            "description": "chat member quannguyen"
+        }
+    ]
+}

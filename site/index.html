@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repro — Production happened. Now replay it.</title>
+<meta name="description" content="Repro turns production bugs into reproducible local executions. It records the boundary of a failing execution into a portable Repro Capsule, then replays it deterministically on your machine.">
+<meta name="theme-color" content="#0A0D14">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Repro — Production happened. Now replay it.">
+<meta property="og:description" content="Capture the execution, not the environment. A reproducibility layer for Node.js production bugs.">
+<meta property="og:url" content="https://trisjr.github.io/bug-reproduce/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0D14'/%3E%3Crect x='7' y='9' width='6' height='14' rx='1.5' fill='%23F2A05A'/%3E%3Crect x='19' y='9' width='6' height='14' rx='1.5' fill='%2345DCC9'/%3E%3C/svg%3E">
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   REPRO — site tokens
+   amber  = RECORDED   (production, the past)
+   teal   = REPLAYED   (local, deterministic)
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --void:#0A0D14;
+  --void-2:#111623;
+  --void-3:#161C2B;
+  --bone:#E8E4DA;
+  --bone-2:#F0EDE5;
+  --bone-3:#DCD7CA;
+  --ink:#14171C;
+
+  --ember:#D96D2C;
+  --ember-lit:#F2A05A;
+  --flux:#0B8D80;
+  --flux-lit:#45DCC9;
+
+  --slate:#7A8090;
+  --slate-lit:#8C93A4;
+
+  --rule-d:rgba(255,255,255,.11);
+  --rule-d-2:rgba(255,255,255,.20);
+  --rule-l:rgba(20,23,28,.15);
+  --rule-l-2:rgba(20,23,28,.30);
+
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --pad:clamp(1.25rem,5vw,3rem);
+  --gutter:min(1200px,100% - var(--pad) * 2);
+  --nav-h:56px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--void);
+  color:var(--bone);
+  font-family:var(--body);
+  font-size:clamp(1rem,.96rem + .2vw,1.0625rem);
+  line-height:1.68;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;display:block}
+
+/* ── type roles ─────────────────────────────────────────────── */
+.display{
+  font-family:var(--display);
+  font-stretch:118%;
+  font-weight:700;
+  line-height:1.02;
+  letter-spacing:-.018em;
+  margin:0;
+}
+h1.display{font-size:clamp(2.5rem,1.4rem + 5.2vw,5rem)}
+h2.display{font-size:clamp(1.95rem,1.2rem + 3vw,3.15rem)}
+h3.display{font-size:clamp(1.15rem,1.05rem + .5vw,1.45rem);letter-spacing:-.008em}
+
+.mono{font-family:var(--mono);font-variant-ligatures:none}
+
+/* panel label — the page's structural device.
+   Every label is a real identifier from the codebase. */
+.tag{
+  font-family:var(--mono);
+  font-size:.6875rem;
+  font-weight:600;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  display:inline-flex;
+  align-items:center;
+  gap:.55em;
+}
+.tag::before{
+  content:"";
+  width:1.6em;height:1px;
+  background:currentColor;
+  opacity:.55;
+}
+.lede{font-size:clamp(1.0625rem,1rem + .35vw,1.25rem);line-height:1.62;max-width:62ch}
+
+a{color:inherit}
+:focus-visible{outline:2px solid var(--flux-lit);outline-offset:3px;border-radius:2px}
+
+/* ── grounds ────────────────────────────────────────────────── */
+.wrap{width:var(--gutter);margin-inline:auto}
+section[id],header[id]{scroll-margin-top:calc(var(--nav-h) + 1.25rem)}
+.band{padding-block:clamp(4rem,9vw,7.5rem);position:relative}
+.band--dark{background:var(--void);color:var(--bone)}
+.band--dark .tag{color:var(--ember-lit)}
+.band--dark .muted{color:var(--slate-lit)}
+.band--light{background:var(--bone);color:var(--ink)}
+.band--light .tag{color:var(--flux)}
+.band--light .muted{color:#5C6270}
+.band--light a{color:var(--ink)}
+
+.band + .band--dark{border-top:1px solid var(--rule-d)}
+.band--light + .band--light{border-top:1px solid var(--rule-l)}
+
+/* ── nav: a persistent instrument bar over both grounds ─────── */
+.nav{
+  position:sticky;top:0;z-index:60;
+  background:rgba(10,13,20,.86);
+  backdrop-filter:blur(14px) saturate(1.4);
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid var(--rule-d);
+  color:var(--bone);
+}
+.nav__in{
+  width:var(--gutter);margin-inline:auto;
+  height:var(--nav-h);
+  display:flex;align-items:center;gap:1.5rem;
+}
+.brand{
+  display:flex;align-items:baseline;gap:.55rem;
+  text-decoration:none;font-family:var(--display);font-stretch:118%;
+  font-weight:800;letter-spacing:.02em;font-size:1.0625rem;
+}
+.brand em{
+  font-family:var(--mono);font-style:normal;font-weight:500;
+  font-size:.6875rem;letter-spacing:.1em;color:var(--flux-lit);
+}
+.nav__links{display:flex;gap:1.35rem;margin-left:auto;align-items:center}
+.nav__links a{
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;
+  text-decoration:none;color:var(--slate-lit);
+  padding-block:.35rem;transition:color .18s;
+}
+.nav__links a:hover{color:var(--bone)}
+.nav__cta{
+  margin-left:auto;
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;
+  text-decoration:none;
+  border:1px solid var(--rule-d-2);border-radius:2px;
+  padding:.42rem .8rem;
+  transition:border-color .18s,background .18s;
+  white-space:nowrap;
+}
+.nav__cta:hover{border-color:var(--flux-lit);background:rgba(69,220,201,.09)}
+.nav__links + .nav__cta{margin-left:1.35rem}
+@media (max-width:900px){
+  .nav__links{display:none}
+  .nav__links + .nav__cta{margin-left:auto}
+}
+
+/* ══ HERO ═══════════════════════════════════════════════════ */
+.hero{
+  padding-top:clamp(3.5rem,7vw,6rem);
+  padding-bottom:clamp(3.5rem,7vw,6rem);
+  background:
+    radial-gradient(120% 80% at 8% -10%,rgba(242,160,90,.13),transparent 60%),
+    radial-gradient(100% 70% at 95% 5%,rgba(69,220,201,.10),transparent 62%),
+    var(--void);
+}
+.hero__kicker{color:var(--ember-lit);margin-bottom:1.6rem}
+.hero h1{max-width:16ch}
+.hero h1 .alt{color:var(--flux-lit)}
+.hero__sub{margin:1.8rem 0 0;max-width:56ch;color:#B9BDC8}
+.hero__actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2.2rem}
+.btn{
+  font-family:var(--mono);font-size:.8125rem;letter-spacing:.04em;
+  text-decoration:none;border-radius:2px;
+  padding:.72rem 1.15rem;border:1px solid transparent;
+  display:inline-flex;align-items:center;gap:.55rem;
+  transition:transform .16s,background .18s,border-color .18s;
+}
+.btn--primary{background:var(--flux-lit);color:#04231F;font-weight:600}
+.btn--primary:hover{background:#6BE8D8;transform:translateY(-1px)}
+.btn--ghost{border-color:var(--rule-d-2);color:var(--bone)}
+.btn--ghost:hover{border-color:var(--ember-lit);color:var(--ember-lit)}
+.band--light .btn--ghost{border-color:var(--rule-l-2);color:var(--ink)}
+.band--light .btn--ghost:hover{border-color:var(--flux);color:var(--flux)}
+.band--light .btn--primary{background:var(--flux);color:#F2FBF9}
+.band--light .btn--primary:hover{background:#0AA294}
+
+.hero__meta{
+  margin-top:2.6rem;padding-top:1.4rem;
+  border-top:1px solid var(--rule-d);
+  display:flex;flex-wrap:wrap;gap:.6rem 2rem;
+  font-family:var(--mono);font-size:.75rem;color:var(--slate-lit);
+  letter-spacing:.04em;
+}
+.hero__meta b{color:var(--bone);font-weight:500}
+
+/* ══ SIGNATURE: dual-column execution readout ═══════════════ */
+.readout{
+  margin-top:clamp(3rem,6vw,4.5rem);
+  border:1px solid var(--rule-d-2);
+  border-radius:4px;
+  background:linear-gradient(180deg,var(--void-2),#0D1119);
+  overflow:hidden;
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.9);
+}
+.readout__bar{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  padding:.7rem 1rem;
+  border-bottom:1px solid var(--rule-d);
+  background:rgba(255,255,255,.025);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;
+  color:var(--slate-lit);text-transform:uppercase;
+}
+.readout__bar strong{color:var(--bone);font-weight:500;letter-spacing:.04em;text-transform:none}
+.readout__dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--ember-lit);
+  box-shadow:0 0 0 3px rgba(242,160,90,.16);
+  flex:none;
+}
+.readout__grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr);
+}
+.chan{padding:1rem .5rem 1.15rem}
+.chan__head{
+  display:flex;align-items:center;gap:.5rem;
+  height:2.4rem;
+  font-family:var(--mono);font-size:.6875rem;letter-spacing:.14em;
+  text-transform:uppercase;padding:0 .75rem;
+  border-bottom:1px solid var(--rule-d);
+  margin:0 0 .7rem;
+}
+.chan__head span{color:var(--slate);letter-spacing:.06em;text-transform:none;font-size:.6875rem}
+.chan--rec .chan__head{color:var(--ember-lit)}
+.chan--rep .chan__head{color:var(--flux-lit)}
+.chan--rep{border-left:1px solid var(--rule-d)}
+
+.row{
+  display:grid;
+  grid-template-columns:4.7em minmax(0,1fr);
+  gap:.65em;
+  align-items:baseline;
+  font-family:var(--mono);
+  font-size:clamp(.66rem,.44rem + .52vw,.78rem);
+  line-height:1.5;
+  margin:0;
+  padding:.32rem .75rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  opacity:0;
+}
+.row b{font-weight:600;letter-spacing:.02em}
+.row i{font-style:normal;color:#9AA1B0}
+.chan--rec .row b{color:var(--ember-lit)}
+.chan--rep .row b{color:var(--flux-lit)}
+.row--err i{color:#E8746A}
+
+/* the equivalence spine */
+.spine{
+  border-left:1px solid var(--rule-d);
+  border-right:1px solid var(--rule-d);
+  display:flex;flex-direction:column;
+  padding:1rem 0 1.15rem;
+  background:rgba(255,255,255,.015);
+}
+.spine__head{
+  height:2.4rem;flex:none;
+  border-bottom:1px solid var(--rule-d);
+  margin:0 0 .7rem;
+}
+.eq{
+  font-family:var(--mono);
+  font-size:clamp(.66rem,.44rem + .52vw,.78rem);
+  line-height:1.5;
+  text-align:center;
+  color:var(--flux-lit);
+  margin:0;
+  padding:.32rem 0;
+  opacity:0;
+}
+
+.readout__verdict{
+  border-top:1px solid var(--rule-d);
+  padding:.85rem 1rem;
+  display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;
+  color:var(--slate-lit);
+  background:rgba(69,220,201,.05);
+  margin:0;
+  opacity:0;
+}
+.stamp{
+  color:#04231F;background:var(--flux-lit);
+  font-weight:700;letter-spacing:.1em;
+  padding:.25rem .6rem;border-radius:2px;
+}
+.readout__caption{
+  margin:.9rem 0 0;
+  font-family:var(--mono);font-size:.7rem;color:var(--slate);
+  letter-spacing:.03em;
+}
+
+/* animation — plays once on load */
+@keyframes rowIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes eqIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes fadeIn{to{opacity:1}}
+.chan--rec .row{animation:rowIn .34s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:calc(.22s + var(--i) * .11s)}
+.chan--rep .row{animation:rowIn .34s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:calc(1.12s + var(--i) * .11s)}
+.eq{animation:eqIn .3s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:calc(1.98s + var(--i) * .06s)}
+.readout__verdict{animation:fadeIn .5s ease forwards;animation-delay:2.5s}
+
+@media (max-width:760px){
+  .readout__grid{grid-template-columns:minmax(0,1fr)}
+  .spine{
+    flex-direction:row;justify-content:center;align-items:center;gap:.5rem;
+    border-left:0;border-right:0;
+    border-top:1px solid var(--rule-d);border-bottom:1px solid var(--rule-d);
+    padding:.5rem 0;
+  }
+  .spine__head{display:none}
+  .eq{padding:0}
+  .chan--rep{border-left:0}
+}
+
+/* ══ generic blocks ═════════════════════════════════════════ */
+.head{max-width:64ch}
+.head .tag{margin-bottom:1.1rem}
+.head p{margin:1.1rem 0 0}
+
+.terminal{
+  border:1px solid var(--rule-d-2);border-radius:4px;
+  background:#0D1119;color:#C7CCD8;
+  font-family:var(--mono);font-size:.8125rem;line-height:1.75;
+  padding:1.1rem 1.15rem;
+  overflow-x:auto;
+  margin:0;
+}
+.band--light .terminal{border-color:rgba(20,23,28,.55)}
+.terminal .c{color:var(--slate-lit)}
+.terminal .k{color:var(--flux-lit)}
+.terminal .s{color:var(--ember-lit)}
+.terminal .e{color:#E8746A}
+
+pre{margin:0}
+code{font-family:var(--mono)}
+
+/* the 9 questions — an interrogation grid */
+/* exactly nine questions → an exact 3 × 3 grid */
+.qgrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  background:var(--rule-d);
+  border:1px solid var(--rule-d);
+  margin-top:2.5rem;
+}
+.q{
+  background:var(--void);
+  padding:1.15rem 1.15rem 1.25rem;
+  display:flex;gap:.85rem;align-items:flex-start;
+  transition:background .2s;
+}
+.q:hover{background:var(--void-2)}
+.q dt{
+  font-family:var(--mono);font-size:.7rem;font-weight:600;
+  color:var(--ember-lit);flex:none;padding-top:.28rem;letter-spacing:.06em;
+}
+.q dd{margin:0;font-size:.94rem;line-height:1.55}
+@media (max-width:880px){.qgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.qgrid{grid-template-columns:minmax(0,1fr)}}
+
+/* production vs local */
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule-d);border:1px solid var(--rule-d);margin-top:2.5rem}
+.cols2 > div{background:var(--void);padding:1.4rem 1.3rem}
+.cols2 h4{
+  margin:0 0 1rem;font-family:var(--mono);font-size:.6875rem;
+  letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+}
+.cols2 > div:first-child h4{color:var(--ember-lit)}
+.cols2 > div:last-child h4{color:var(--flux-lit)}
+.cols2 ul{margin:0;padding:0;list-style:none;font-family:var(--mono);font-size:.8125rem;line-height:2.1;color:#B9BDC8}
+.cols2 li + li{border-top:1px solid rgba(255,255,255,.05)}
+@media (max-width:620px){.cols2{grid-template-columns:minmax(0,1fr)}}
+
+/* the thesis */
+.thesis{
+  padding-block:clamp(4.5rem,10vw,8rem);
+  background:var(--void);
+  border-top:1px solid var(--rule-d);
+  text-align:center;
+}
+.thesis p{
+  font-family:var(--display);font-stretch:118%;font-weight:700;
+  font-size:clamp(1.9rem,1rem + 4.4vw,4rem);
+  line-height:1.05;letter-spacing:-.02em;
+  margin:1.6rem auto 0;max-width:18ch;
+}
+.thesis .strike{color:var(--slate);position:relative;white-space:nowrap}
+.thesis .strike::after{
+  content:"";position:absolute;left:-2%;right:-2%;top:54%;
+  height:.055em;background:var(--ember-lit);border-radius:2px;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .6s cubic-bezier(.5,0,.2,1) .25s;
+}
+.thesis.in .strike::after{transform:scaleX(1)}
+.thesis .keep{color:var(--flux-lit)}
+
+/* ══ THE SEAM — the boundary crossing ═══════════════════════ */
+.seam{
+  background:linear-gradient(180deg,var(--void) 0%,var(--void) 42%,var(--bone) 42%,var(--bone) 100%);
+  padding-block:0;
+}
+.capsule{
+  border:1px solid var(--rule-d-2);
+  border-radius:4px;
+  background:linear-gradient(155deg,#12182A,#0C1017);
+  box-shadow:0 40px 90px -50px rgba(0,0,0,1);
+  overflow:hidden;
+}
+.capsule__top{
+  padding:1.15rem 1.25rem;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+  border-bottom:1px solid var(--rule-d);
+}
+.capsule__id{font-family:var(--mono);font-size:clamp(.8rem,.6rem + .55vw,1rem);color:var(--bone);letter-spacing:.02em}
+.capsule__id .dim{color:var(--slate)}
+.sealed{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--flux-lit);border:1px solid rgba(69,220,201,.4);
+  border-radius:2px;padding:.28rem .6rem;white-space:nowrap;
+}
+.capsule__body{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));
+  gap:1px;background:var(--rule-d);
+}
+.field{background:#0C1017;padding:1rem 1.15rem}
+.field dt{font-family:var(--mono);font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.4rem}
+.field dd{margin:0;font-family:var(--mono);font-size:.78rem;color:#C7CCD8;line-height:1.55;word-break:break-word}
+.field dd .hi{color:var(--ember-lit)}
+
+/* ══ pipeline stages ════════════════════════════════════════ */
+.stages{margin-top:3rem;border-top:1px solid var(--rule-l)}
+.stage{
+  display:grid;
+  grid-template-columns:minmax(140px,1fr) minmax(0,2.6fr);
+  gap:1.5rem 2.5rem;
+  padding:1.9rem 0;
+  border-bottom:1px solid var(--rule-l);
+  align-items:start;
+}
+.stage__key{position:sticky;top:calc(var(--nav-h) + 1rem)}
+.stage__name{
+  font-family:var(--display);font-stretch:118%;font-weight:700;
+  font-size:1.15rem;letter-spacing:.01em;margin:0 0 .35rem;
+}
+.stage__pkg{font-family:var(--mono);font-size:.7rem;color:var(--flux);letter-spacing:.04em}
+.stage__body p{margin:0 0 .9rem}
+.stage__body p:last-child{margin-bottom:0}
+.stage__list{margin:.2rem 0 0;padding:0;list-style:none;display:grid;gap:.42rem}
+.stage__list li{
+  font-family:var(--mono);font-size:.78rem;line-height:1.6;color:#3E444F;
+  padding-left:1.15rem;position:relative;
+}
+.stage__list li::before{
+  content:"▸";position:absolute;left:0;color:var(--ember);font-size:.7rem;top:.12rem;
+}
+.stage__list b{color:var(--ink);font-weight:600}
+@media (max-width:780px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:.9rem}
+  .stage__key{position:static}
+}
+
+/* ══ packages ═══════════════════════════════════════════════ */
+.pkgs{display:grid;gap:1px;background:var(--rule-l);border:1px solid var(--rule-l);margin-top:2.75rem}
+.pkg{
+  background:var(--bone-2);
+  padding:1.5rem 1.4rem;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.15fr);gap:1.1rem 2.25rem;
+}
+.pkg__name{font-family:var(--mono);font-size:.95rem;font-weight:700;color:var(--ink);margin:0 0 .3rem;word-break:break-word}
+.pkg__role{font-size:.86rem;color:#5C6270;line-height:1.5}
+.pkg__caps{margin:0;font-size:.9rem;line-height:1.62;color:#3E444F}
+.pkg__caps code{
+  font-size:.78em;background:rgba(11,141,128,.11);color:#07665C;
+  padding:.08em .38em;border-radius:2px;white-space:nowrap;
+}
+@media (max-width:780px){.pkg{grid-template-columns:minmax(0,1fr);gap:.75rem}}
+
+/* ══ security ═══════════════════════════════════════════════ */
+/* nine guarantees, mirroring the nine questions → 3 × 3 */
+.sec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--rule-d);border:1px solid var(--rule-d);margin-top:2.75rem}
+@media (max-width:980px){.sec{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.sec{grid-template-columns:minmax(0,1fr)}}
+.sec article{background:var(--void);padding:1.4rem 1.35rem}
+.sec h3{
+  margin:0 0 .55rem;font-size:1rem;font-family:var(--display);
+  font-stretch:118%;font-weight:700;letter-spacing:-.005em;
+}
+.sec p{margin:0;font-size:.9rem;line-height:1.6;color:#B9BDC8}
+.sec .ids{
+  display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.85rem;
+}
+.sec .ids span{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;
+  color:var(--ember-lit);border:1px solid rgba(242,160,90,.32);
+  border-radius:2px;padding:.16rem .42rem;
+}
+
+/* ══ quickstart ═════════════════════════════════════════════ */
+.qs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2.5rem;margin-top:2.75rem;align-items:start}
+@media (max-width:900px){.qs{grid-template-columns:minmax(0,1fr);gap:2rem}}
+.qs__step{margin-bottom:1.6rem}
+.qs__step:last-child{margin-bottom:0}
+.qs__num{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--flux);margin-bottom:.6rem;display:block;
+}
+.qs__step p{margin:0 0 .8rem;font-size:.94rem;color:#3E444F}
+
+.verbs{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.85rem}
+.verbs th{
+  text-align:left;font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;
+  text-transform:uppercase;color:#5C6270;font-weight:600;
+  padding:0 .9rem .6rem 0;border-bottom:1px solid var(--rule-l-2);
+}
+.verbs td{padding:.62rem .9rem .62rem 0;border-bottom:1px solid var(--rule-l);vertical-align:top}
+.verbs td:first-child{font-family:var(--mono);color:#07665C;white-space:nowrap;font-size:.8rem}
+.verbs tr:last-child td{border-bottom:0}
+.tablewrap{overflow-x:auto}
+
+/* ══ metrics ════════════════════════════════════════════════ */
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--rule-l);border:1px solid var(--rule-l);margin-top:2.75rem}
+@media (max-width:820px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.metrics{grid-template-columns:minmax(0,1fr)}}
+.metric{background:var(--bone-2);padding:1.5rem 1.35rem}
+.metric__v{
+  font-family:var(--display);font-stretch:118%;font-weight:800;
+  font-size:clamp(1.8rem,1.2rem + 2vw,2.5rem);line-height:1;
+  letter-spacing:-.03em;color:var(--ink);margin-bottom:.55rem;
+}
+.metric__v .u{font-size:.45em;color:var(--flux);letter-spacing:0;margin-left:.15em}
+.metric__l{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;color:#5C6270;line-height:1.55}
+.metric__l b{color:var(--ink);font-weight:600}
+
+/* ══ roadmap ════════════════════════════════════════════════ */
+.road{margin-top:2.75rem;border-top:1px solid var(--rule-l-2)}
+.road__row{
+  display:grid;grid-template-columns:minmax(88px,.5fr) minmax(0,1fr) minmax(0,2fr) auto;
+  gap:1rem 1.75rem;align-items:baseline;
+  padding:1.35rem 0;border-bottom:1px solid var(--rule-l);
+}
+.road__v{font-family:var(--mono);font-size:.85rem;font-weight:700;color:var(--ink)}
+.road__t{font-size:.95rem;color:#3E444F}
+.road__c{font-family:var(--mono);font-size:.78rem;color:#5C6270;line-height:1.65}
+.road__s{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.2rem .5rem;border-radius:2px;white-space:nowrap;
+}
+.s--done{color:#07665C;background:rgba(11,141,128,.13)}
+.s--next{color:#8A4212;background:rgba(217,109,44,.15)}
+.s--plan{color:#5C6270;background:rgba(20,23,28,.07)}
+@media (max-width:820px){
+  .road__row{grid-template-columns:minmax(0,1fr) auto;gap:.5rem 1rem}
+  .road__c{grid-column:1 / -1}
+}
+
+/* ══ docs ═══════════════════════════════════════════════════ */
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,265px),1fr));gap:1px;background:var(--rule-l);border:1px solid var(--rule-l);margin-top:2.75rem}
+.doc{
+  background:var(--bone-2);padding:1.3rem 1.3rem 1.4rem;
+  text-decoration:none;display:block;transition:background .18s;
+}
+.doc:hover{background:#F7F5F0}
+.doc:hover .doc__n{color:var(--flux)}
+.doc__n{font-family:var(--mono);font-size:.85rem;font-weight:600;margin-bottom:.4rem;transition:color .18s}
+.doc__d{font-size:.86rem;color:#5C6270;line-height:1.55}
+.doc__n::after{content:" ↗";font-size:.75em;opacity:.5}
+
+/* ══ footer ═════════════════════════════════════════════════ */
+.foot{background:var(--void);color:var(--bone);padding-block:clamp(3.5rem,7vw,5.5rem)}
+.foot__thesis{
+  font-family:var(--display);font-stretch:118%;font-weight:700;
+  font-size:clamp(1.35rem,.9rem + 2vw,2.1rem);line-height:1.15;
+  letter-spacing:-.015em;margin:0 0 2.5rem;max-width:22ch;
+}
+.foot__thesis .keep{color:var(--flux-lit)}
+.foot__grid{
+  display:flex;flex-wrap:wrap;gap:1.5rem 3rem;justify-content:space-between;
+  align-items:baseline;
+  padding-top:1.6rem;border-top:1px solid var(--rule-d);
+  font-family:var(--mono);font-size:.75rem;color:var(--slate-lit);letter-spacing:.04em;
+}
+.foot__grid a{color:var(--slate-lit);text-decoration:none;transition:color .18s}
+.foot__grid a:hover{color:var(--flux-lit)}
+.foot__links{display:flex;flex-wrap:wrap;gap:1.35rem}
+
+/* ══ scroll reveal ══════════════════════════════════════════ */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-delay:0ms !important;transition-duration:.001ms !important}
+  .row,.eq,.readout__verdict{opacity:1}
+  .rv{opacity:1;transform:none}
+  .thesis .strike::after{transform:scaleX(1)}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__in">
+    <a class="brand" href="#top">Repro <em>V0.1</em></a>
+    <div class="nav__links">
+      <a href="#problem">Problem</a>
+      <a href="#how">How it works</a>
+      <a href="#packages">Packages</a>
+      <a href="#security">Security</a>
+      <a href="#start">Quickstart</a>
+      <a href="#verified">Verified</a>
+      <a href="#docs">Docs</a>
+    </div>
+    <a class="nav__cta" href="https://github.com/trisjr/bug-reproduce">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- ═══════════ PRODUCTION SIDE ═══════════ -->
+<header class="band band--dark hero" id="top">
+  <div class="wrap">
+    <p class="tag hero__kicker">Reproducibility layer for Node.js</p>
+    <h1 class="display">Production happened.<br><span class="alt">Now replay it.</span></h1>
+    <p class="lede hero__sub">
+      Repro records the boundary of a failing execution — every value that crossed into your
+      code from the outside — and seals it into a portable capsule. You replay that capsule
+      on your machine, after the original environment is gone, and your application walks
+      the same path with the same inputs.
+    </p>
+
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="#start">Read the quickstart</a>
+      <a class="btn btn--ghost" href="https://github.com/trisjr/bug-reproduce">View on GitHub</a>
+    </div>
+
+    <p class="hero__meta">
+      <span>Stage <b>V0.1 · Core Engine</b></span>
+      <span>Tests <b>111 / 111 passing</b></span>
+      <span>Node <b>≥ 22</b></span>
+      <span>License <b>MIT</b></span>
+      <span>Target <b>Node.js · PostgreSQL · HTTP</b></span>
+    </p>
+
+    <!-- SIGNATURE: the same execution, twice -->
+    <section class="readout" aria-label="Example execution diff between a recorded production run and a local replay">
+      <div class="readout__bar">
+        <span class="readout__dot" aria-hidden="true"></span>
+        <span>capsule <strong>cap_1842</strong></span>
+        <span>app <strong>checkout-service@1.0.0</strong></span>
+        <span>clock frozen at <strong>2026-08-14T09:12:44.318Z</strong></span>
+      </div>
+
+      <div class="readout__grid">
+        <div class="chan chan--rec">
+          <p class="chan__head">Recorded <span>· production</span></p>
+          <p class="row" style="--i:0"><b>inbound</b><i>POST /api/checkout → 500</i></p>
+          <p class="row" style="--i:1"><b>clock</b><i>Date.now() → 1786…44318</i></p>
+          <p class="row" style="--i:2"><b>pg</b><i>SELECT … FROM carts WHERE id=$1 → 1 row</i></p>
+          <p class="row" style="--i:3"><b>pg</b><i>SELECT … FROM promotions … → 0 rows</i></p>
+          <p class="row" style="--i:4"><b>https</b><i>GET risk-api/v2/score → 200</i></p>
+          <p class="row" style="--i:5"><b>flag</b><i>checkout_v2 → on</i></p>
+          <p class="row row--err" style="--i:6"><b>throw</b><i>TypeError: … 'discount' of null</i></p>
+        </div>
+
+        <div class="spine" aria-hidden="true">
+          <div class="spine__head"></div>
+          <span class="eq" style="--i:0">≡</span>
+          <span class="eq" style="--i:1">≡</span>
+          <span class="eq" style="--i:2">≡</span>
+          <span class="eq" style="--i:3">≡</span>
+          <span class="eq" style="--i:4">≡</span>
+          <span class="eq" style="--i:5">≡</span>
+          <span class="eq" style="--i:6">≡</span>
+        </div>
+
+        <div class="chan chan--rep">
+          <p class="chan__head">Replayed <span>· local</span></p>
+          <p class="row" style="--i:0"><b>inbound</b><i>POST /api/checkout → 500</i></p>
+          <p class="row" style="--i:1"><b>clock</b><i>Date.now() → 1786…44318</i></p>
+          <p class="row" style="--i:2"><b>pg</b><i>SELECT … FROM carts WHERE id=$1 → 1 row</i></p>
+          <p class="row" style="--i:3"><b>pg</b><i>SELECT … FROM promotions … → 0 rows</i></p>
+          <p class="row" style="--i:4"><b>https</b><i>GET risk-api/v2/score → 200</i></p>
+          <p class="row" style="--i:5"><b>flag</b><i>checkout_v2 → on</i></p>
+          <p class="row row--err" style="--i:6"><b>throw</b><i>TypeError: … 'discount' of null</i></p>
+        </div>
+      </div>
+
+      <p class="readout__verdict">
+        <span class="stamp">EXECUTION_MATCHED</span>
+        <span>7 / 7 interactions equivalent</span>
+        <span>tier 1 · byte equality</span>
+      </p>
+    </section>
+    <p class="readout__caption">Illustrative output of <code>repro diff cap_1842</code> — what production did, beside what your laptop just did.</p>
+  </div>
+</header>
+
+<!-- ═══════════ THE PROBLEM ═══════════ -->
+<section class="band band--dark" id="problem">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">The problem</p>
+      <h2 class="display">A bug happens in production.<br>Nobody can reproduce it locally.</h2>
+      <p class="lede muted">Your observability stack hands you this, and then stops.</p>
+    </div>
+
+    <div class="rv" style="margin-top:2.5rem">
+      <pre class="terminal"><code><span class="e">ERROR #1842</span>
+<span class="e">TypeError: Cannot read property 'discount' of null</span>
+<span class="c">POST</span>     <span class="k">/api/checkout</span>
+<span class="c">User</span>     18392
+<span class="c">Trace ID</span> abc123</code></pre>
+    </div>
+
+    <div class="head rv" style="margin-top:3.5rem">
+      <h3 class="display">Nine questions it does not answer</h3>
+      <p class="muted">You now answer these from memory and guesswork.</p>
+    </div>
+
+    <dl class="qgrid rv">
+      <div class="q"><dt>Q1</dt><dd>Which exact request triggered it?</dd></div>
+      <div class="q"><dt>Q2</dt><dd>What did the database return <b>at that moment</b>?</dd></div>
+      <div class="q"><dt>Q3</dt><dd>What did the external API respond?</dd></div>
+      <div class="q"><dt>Q4</dt><dd>Which feature flags were on?</dd></div>
+      <div class="q"><dt>Q5</dt><dd>What state was that user in?</dd></div>
+      <div class="q"><dt>Q6</dt><dd>Which version was running?</dd></div>
+      <div class="q"><dt>Q7</dt><dd>What was the system clock?</dd></div>
+      <div class="q"><dt>Q8</dt><dd>What happened in the downstream service?</dd></div>
+      <div class="q"><dt>Q9</dt><dd>Was it order- or timing-dependent?</dd></div>
+    </dl>
+
+    <div class="head rv" style="margin-top:4rem">
+      <p class="tag">Why observability is not the gap</p>
+      <p class="lede">
+        Logs, traces, metrics and stack frames answer <b>“what happened?”</b> — brilliantly.
+        They were never designed to answer the question that actually unblocks you:
+        <b>“can I make that same execution happen again?”</b>
+      </p>
+      <p class="muted">
+        That is a different problem. Repro does not replace Sentry, Datadog, an APM, a logging
+        platform, a testing framework or your CI. It adds a reproducibility layer on top of the
+        diagnostics you already have.
+      </p>
+    </div>
+
+    <div class="head rv" style="margin-top:4rem">
+      <p class="tag">And cloning production does not work</p>
+      <h3 class="display">The environments never line up.</h3>
+    </div>
+
+    <div class="cols2 rv">
+      <div>
+        <h4>Production</h4>
+        <ul>
+          <li>Kubernetes, 20 API replicas</li>
+          <li>PostgreSQL cluster</li>
+          <li>Redis, Kafka</li>
+          <li>Live external APIs</li>
+          <li>Cloud infra, secrets, flags</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Local</h4>
+        <ul>
+          <li>Docker, 1 API</li>
+          <li>Local PostgreSQL</li>
+          <li>Local Redis</li>
+          <li>Mock services</li>
+          <li><code>.env</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="lede muted rv" style="margin-top:2rem">
+      Cloning that produces enormous complexity and still does not reproduce the bug — because the
+      bug was never caused by the infrastructure. It was caused by the inputs that execution received.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ THE THESIS ═══════════ -->
+<section class="thesis rv">
+  <div class="wrap">
+    <p class="tag" style="justify-content:center;color:var(--ember-lit)">The key insight</p>
+    <p class="display">Capture the <span class="strike">environment</span> <span class="keep">execution</span>.</p>
+  </div>
+</section>
+
+<!-- ═══════════ THE SEAM: the boundary crossing ═══════════ -->
+<section class="seam">
+  <div class="wrap">
+    <div class="capsule rv">
+      <div class="capsule__top">
+        <p class="capsule__id mono">cap_1842<span class="dim">.repro.tar.gz</span></p>
+        <span class="sealed">Sealed · AES-256-GCM</span>
+      </div>
+      <dl class="capsule__body">
+        <div class="field"><dt>Manifest</dt><dd>v1 · schema validated</dd></div>
+        <div class="field"><dt>Integrity</dt><dd>HMAC-SHA256 <span class="hi">digest-before-parse</span></dd></div>
+        <div class="field"><dt>Boundary channels</dt><dd>inbound · pg · https · flags · clock</dd></div>
+        <div class="field"><dt>Bounds</dt><dd>≤ 100 interactions · ≤ 64 KB</dd></div>
+        <div class="field"><dt>Redaction</dt><dd>headers · PII · <span class="hi">PAN (Luhn)</span></dd></div>
+        <div class="field"><dt>Custody</dt><dd>DEK held at Key Custody</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ LOCAL SIDE ═══════════ -->
+<section class="band band--light" id="how" style="padding-top:clamp(3rem,6vw,5rem)">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">How it works</p>
+      <h2 class="display">Five stages, one boundary.</h2>
+      <p class="lede">
+        Repro intercepts your application in-process, seals what crossed the boundary, and hands
+        you a capsule you can run anywhere. The stages below are the real pipeline, not a metaphor
+        for it.
+      </p>
+    </div>
+
+    <div class="stages">
+      <article class="stage rv">
+        <div class="stage__key">
+          <h3 class="stage__name">Capture</h3>
+          <p class="stage__pkg">@repro/node · in production</p>
+        </div>
+        <div class="stage__body">
+          <p>
+            The SDK tracks execution context with <code>AsyncLocalStorage</code> and monkey-patches
+            the boundary: <code>pg</code>, <code>http</code>/<code>https</code>, the clock, and flag
+            evaluation. Capture is failure-triggered and asynchronous, so a healthy request path
+            pays nothing.
+          </p>
+          <ul class="stage__list">
+            <li><b>Bounded by design</b> — a ring buffer caps a capsule at 100 interactions / 64 KB (SEC-008)</li>
+            <li><b>Redacted at capture time</b> — before anything is written, not after</li>
+            <li><b>Zero external production dependencies</b> — the SDK ships no third-party runtime code (SEC-037)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="stage rv">
+        <div class="stage__key">
+          <h3 class="stage__name">Seal</h3>
+          <p class="stage__pkg">@repro/core · envelope encryption</p>
+        </div>
+        <div class="stage__body">
+          <p>
+            The recorded boundary becomes a <b>Repro Capsule</b>: a POSIX ustar archive carrying a
+            Manifest v1, the interaction log, and a runtime fingerprint. The payload is encrypted
+            with AES-256-GCM under a data encryption key generated from a CSPRNG; the key itself
+            lives at Key Custody, never inside the capsule.
+          </p>
+          <ul class="stage__list">
+            <li><b>Digest before parse</b> — HMAC-SHA256 checked with <code>timingSafeEqual</code> before any JSON or tar is read (SEC-027)</li>
+            <li><b>Zip-Slip safe</b> — path traversal and decompression bombs are rejected at read time (THREAT-009)</li>
+            <li><b>Memory zeroization</b> — the DEK buffer is overwritten with <code>0x00</code> after use (SEC-038)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="stage rv">
+        <div class="stage__key">
+          <h3 class="stage__name">Pull</h3>
+          <p class="stage__pkg">@repro/cli · on your machine</p>
+        </div>
+        <div class="stage__body">
+          <p>
+            <code>repro pull cap_1842</code> fetches the capsule into local storage and locks it
+            down on arrival. Production data landing on a laptop is treated as the sensitive event
+            it is.
+          </p>
+          <ul class="stage__list">
+            <li><b>POSIX permissions</b> — <code>0600</code> on files, <code>0700</code> on directories (SEC-042)</li>
+            <li><b>Git Guard</b> — refuses to write a capsule into a Git repository unless it is explicitly ignored (SEC-043)</li>
+            <li><b>Crypto-shredding</b> — <code>repro purge</code> destroys the key at custody, rendering the capsule permanently unreadable (GDPR Art. 17)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="stage rv">
+        <div class="stage__key">
+          <h3 class="stage__name">Replay</h3>
+          <p class="stage__pkg">@repro/replay · deterministic</p>
+        </div>
+        <div class="stage__body">
+          <p>
+            The replay engine injects the original request into your local code and answers every
+            outbound call from the capsule instead of the network. The clock is frozen at T0, so
+            time-dependent branches take the branch they took in production.
+          </p>
+          <ul class="stage__list">
+            <li><b>Wire mocking adapters</b> — a PostgreSQL query matcher, an outbound HTTP responder, a feature flag evaluator</li>
+            <li><b>Virtual clock</b> — deterministic and frozen at T0 (ADR-010)</li>
+            <li><b>Layer 1 write defense</b> — an AST SQL filter blocks mutating DML/DDL, an HTTP verb guard blocks non-idempotent verbs</li>
+            <li><b>Fail-closed</b> — <code>FallbackGuard</code> enforces Rule E9: zero live network, zero live database, no silent fallback (ADR-005)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="stage rv">
+        <div class="stage__key">
+          <h3 class="stage__name">Diff</h3>
+          <p class="stage__pkg">@repro/diff · verdict</p>
+        </div>
+        <div class="stage__body">
+          <p>
+            A replay is only useful if you can trust it. The diff engine compares the recorded and
+            replayed executions and returns a verdict — matched, or diverged with a reason.
+          </p>
+          <ul class="stage__list">
+            <li><b>Four canonical normalizers</b> — SQL whitespace and casing, URL query ordering, recursive JSON sorting with float rounding, header filtering (ADR-006)</li>
+            <li><b>Two-tier equivalence</b> — tier 1 byte equality, then a tier 2 semantic rubric</li>
+            <li><b>Six-step divergence attribution</b> — when it diverges, you are told which boundary drifted and why</li>
+            <li><b>Terminal execution diff</b> — a two-column side-by-side readout, with the first divergence marked</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PACKAGES ═══════════ -->
+<section class="band band--light" id="packages">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">Architecture</p>
+      <h2 class="display">Five packages, one workspace.</h2>
+      <p class="lede">
+        Repro V0.1 is an ESM-native <code>npm workspaces</code> monorepo. Each package owns one
+        stage of the pipeline and depends only on the domain core.
+      </p>
+    </div>
+
+    <div class="pkgs rv">
+      <article class="pkg">
+        <div>
+          <h3 class="pkg__name">@repro/core</h3>
+          <p class="pkg__role">Domain types &amp; cryptography</p>
+        </div>
+        <p class="pkg__caps">
+          Zod and JSON schemas, Manifest v1, AES-256-GCM authenticated envelope encryption,
+          HMAC-SHA256 digest-before-parse <code>SEC-027</code>, memory zeroization
+          <code>SEC-038</code>, the Key Custody REST client, and Zip-Slip safe POSIX ustar tar I/O
+          <code>THREAT-009</code>.
+        </p>
+      </article>
+
+      <article class="pkg">
+        <div>
+          <h3 class="pkg__name">@repro/node</h3>
+          <p class="pkg__role">In-process capture SDK</p>
+        </div>
+        <p class="pkg__caps">
+          <code>AsyncLocalStorage</code> context tracking, monkey-patching interceptors for
+          <code>pg</code> and <code>http</code>/<code>https</code>, format-preserving PII and PAN
+          scrubbing with Luhn verification <code>SEC-002</code> <code>SEC-005</code>, and a bounded
+          ring buffer capped at 100 rows / 64 KB <code>SEC-008</code>. Zero external production
+          dependencies <code>SEC-037</code>.
+        </p>
+      </article>
+
+      <article class="pkg">
+        <div>
+          <h3 class="pkg__name">@repro/replay</h3>
+          <p class="pkg__role">Deterministic replay engine</p>
+        </div>
+        <p class="pkg__caps">
+          Wire mocking adapters for PostgreSQL, outbound HTTP and feature flags; a deterministic
+          virtual clock frozen at T0 <code>ADR-010</code>; a synthetic request injector; and Layer 1
+          write defense — <code>L1AstSqlFilter</code>, <code>HttpVerbGuard</code>, and a
+          <code>FallbackGuard</code> that enforces Rule E9 fail-closed.
+        </p>
+      </article>
+
+      <article class="pkg">
+        <div>
+          <h3 class="pkg__name">@repro/diff</h3>
+          <p class="pkg__role">Verification &amp; diff engine</p>
+        </div>
+        <p class="pkg__caps">
+          Four canonical normalizers <code>ADR-006</code>, two-tier equivalence combining byte
+          equality with a semantic rubric <code>Story-13</code>, six-step divergence attribution
+          <code>Story-14</code>, and a terminal diff UI that speaks the §20.16 contract language.
+        </p>
+      </article>
+
+      <article class="pkg">
+        <div>
+          <h3 class="pkg__name">@repro/cli</h3>
+          <p class="pkg__role">Developer CLI</p>
+        </div>
+        <p class="pkg__caps">
+          Six developer verbs — <code>list</code>, <code>pull</code>, <code>inspect</code>,
+          <code>replay</code>, <code>diff</code>, <code>verify</code> — plus POSIX permission
+          enforcement <code>SEC-042</code>, Git Guard <code>SEC-043</code>, and the operational
+          commands <code>purge</code> (crypto-shredding, GDPR Art. 17) and <code>keys rotate</code>.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECURITY (dark inset: this is production data) ═══════════ -->
+<section class="band band--dark" id="security">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">Security &amp; privacy</p>
+      <h2 class="display">Capturing production means capturing production data.</h2>
+      <p class="lede muted">
+        That is treated as a first-class design constraint, not a setting. Every guarantee below is
+        implemented and covered by the test suite.
+      </p>
+    </div>
+
+    <div class="sec rv">
+      <article>
+        <h3>Zero-dependency SDK</h3>
+        <p>@repro/node carries no external production dependencies, so the code you install into your production process has no third-party supply chain.</p>
+        <p class="ids"><span>SEC-037</span></p>
+      </article>
+      <article>
+        <h3>Redaction at capture time</h3>
+        <p><code>authorization</code>, <code>cookie</code> and <code>x-api-key</code> headers and sensitive fields such as <code>password</code>, <code>secret</code> and <code>token</code> are scrubbed before storage. Card numbers are format-preserved and Luhn-checked.</p>
+        <p class="ids"><span>SEC-001</span><span>SEC-002</span><span>SEC-005</span></p>
+      </article>
+      <article>
+        <h3>Envelope encryption</h3>
+        <p>AES-256-GCM authenticated encryption with a data encryption key generated from a CSPRNG. The key never travels inside the capsule.</p>
+        <p class="ids"><span>SEC-009…012</span><span>ADR-012</span></p>
+      </article>
+      <article>
+        <h3>Digest before parse</h3>
+        <p>An HMAC-SHA256 digest is verified with <code>timingSafeEqual</code> before a single byte of JSON or tar is parsed — closing off Zip-Slip and decompression bombs at the door.</p>
+        <p class="ids"><span>SEC-027</span><span>THREAT-009</span></p>
+      </article>
+      <article>
+        <h3>Crypto-shredding &amp; zeroization</h3>
+        <p>DEK memory is overwritten with <code>0x00</code> after use, and <code>repro purge</code> permanently deletes the key at Key Custody, which then answers <code>410 Gone / SHREDDED</code>.</p>
+        <p class="ids"><span>SEC-016</span><span>SEC-038</span><span>Story-08</span></p>
+      </article>
+      <article>
+        <h3>Fail-closed write defense</h3>
+        <p><code>L1AstSqlFilter</code> blocks all mutating DML and DDL, <code>HttpVerbGuard</code> blocks non-idempotent verbs, and <code>FallbackGuard</code> enforces Rule E9 — a replay never reaches a live network or database.</p>
+        <p class="ids"><span>ADR-005</span><span>Story-12</span></p>
+      </article>
+      <article>
+        <h3>Permissions &amp; Git Guard</h3>
+        <p>Capsule files are written <code>0600</code> and directories <code>0700</code>. Pulling a capsule into a Git repository is blocked unless the path is explicitly ignored.</p>
+        <p class="ids"><span>SEC-042</span><span>SEC-043</span></p>
+      </article>
+      <article>
+        <h3>Failure-triggered capture</h3>
+        <p>Healthy traffic is never recorded. Capture is triggered by a failure, runs asynchronously off the request path, and is capped at 100 interactions / 64 KB — so the blast radius of any capsule is bounded by design.</p>
+        <p class="ids"><span>ADR-008</span><span>SEC-008</span></p>
+      </article>
+      <article>
+        <h3>Self-hosted by default</h3>
+        <p>The topology is private and self-hosted: capsules and keys stay inside your own infrastructure. No production data is sent to a vendor.</p>
+        <p class="ids"><span>ADR-009</span></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ QUICKSTART ═══════════ -->
+<section class="band band--light" id="start">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">Quickstart</p>
+      <h2 class="display">Two moves: instrument, then replay.</h2>
+      <p class="lede">Requires Node.js 22 or newer.</p>
+    </div>
+
+    <div class="qs">
+      <div class="rv">
+        <div class="qs__step">
+          <span class="qs__num">In your application</span>
+          <p>Install the capture SDK and initialize it in your entry point.</p>
+          <pre class="terminal"><code><span class="c">$</span> npm install <span class="k">@repro/node</span></code></pre>
+        </div>
+
+        <div class="qs__step">
+          <pre class="terminal"><code><span class="k">import</span> repro <span class="k">from</span> <span class="s">'@repro/node'</span>;
+
+repro.<span class="k">init</span>({
+  appName: <span class="s">'checkout-service'</span>,
+  appVersion: <span class="s">'1.0.0'</span>,
+  capture: {
+    postgres: <span class="k">true</span>,
+    httpOutbound: <span class="k">true</span>,
+    clock: <span class="k">true</span>,
+    featureFlags: <span class="k">true</span>,
+  },
+  redaction: {
+    neverStoreHeaders: [<span class="s">'authorization'</span>, <span class="s">'cookie'</span>, <span class="s">'x-api-key'</span>],
+    maskPii: <span class="k">true</span>,
+    luhnValidation: <span class="k">true</span>,
+  },
+  storage: {
+    maxInteractions: <span class="c">100</span>,
+    maxBytes: <span class="c">64</span> * <span class="c">1024</span>,
+  },
+});</code></pre>
+        </div>
+
+        <div class="qs__step">
+          <p>Wrap the handlers you care about, or let uncaught exceptions trigger capsule generation on their own.</p>
+          <pre class="terminal"><code>app.<span class="k">post</span>(<span class="s">'/api/checkout'</span>, repro.<span class="k">wrapHandler</span>(<span class="k">async</span> (req, res) => {
+  <span class="k">return await</span> handleCheckout(req.body);
+}));</code></pre>
+        </div>
+      </div>
+
+      <div class="rv">
+        <div class="qs__step">
+          <span class="qs__num">On your machine</span>
+          <p>Six verbs take you from “a capsule exists” to “the fix holds”.</p>
+          <pre class="terminal"><code><span class="c"># Browse available capsules</span>
+<span class="k">repro</span> list
+
+<span class="c"># Fetch one locally — chmod 0600 + Git Guard</span>
+<span class="k">repro</span> pull cap_1842
+
+<span class="c"># See what was captured</span>
+<span class="k">repro</span> inspect cap_1842
+
+<span class="c"># Replay deterministically against local code</span>
+<span class="k">repro</span> replay cap_1842 <span class="s">--port=3000</span>
+
+<span class="c"># Two-column execution diff</span>
+<span class="k">repro</span> diff cap_1842
+
+<span class="c"># Verify the fix on current code</span>
+<span class="k">repro</span> verify cap_1842
+
+<span class="c"># Crypto-shred keys at custody (GDPR Art. 17)</span>
+<span class="k">repro</span> purge <span class="s">--before=2026-08-01 --hard</span></code></pre>
+        </div>
+
+        <div class="qs__step">
+          <span class="qs__num">The verbs</span>
+          <div class="tablewrap">
+            <table class="verbs">
+              <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+              <tbody>
+                <tr><td>repro list</td><td>Lists capsules available to you.</td></tr>
+                <tr><td>repro pull</td><td>Downloads a capsule and locks down its permissions.</td></tr>
+                <tr><td>repro inspect</td><td>Prints the manifest and the captured boundary, redactions included.</td></tr>
+                <tr><td>repro replay</td><td>Runs your local code against the capsule with a frozen clock.</td></tr>
+                <tr><td>repro diff</td><td>Shows recorded against replayed, side by side, first divergence marked.</td></tr>
+                <tr><td>repro verify</td><td>Answers one question: does the bug still reproduce on this code?</td></tr>
+                <tr><td>repro purge</td><td>Destroys capsule keys at custody. Not reversible.</td></tr>
+                <tr><td>repro keys rotate</td><td>Rotates key material at Key Custody.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VERIFIED ═══════════ -->
+<section class="band band--light" id="verified">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">Testing &amp; fidelity benchmark</p>
+      <h2 class="display">Measured, not asserted.</h2>
+      <p class="lede">
+        The suite runs natively on <code>node:test</code> across unit, integration, security and
+        fidelity tiers. Run it yourself with <code>npm test</code>.
+      </p>
+    </div>
+
+    <div class="metrics rv">
+      <div class="metric">
+        <p class="metric__v">111<span class="u">/111</span></p>
+        <p class="metric__l">Tests passing across <b>24 suites</b> — 0 fail, 0 cancelled, 0 skipped</p>
+      </div>
+      <div class="metric">
+        <p class="metric__v">100<span class="u">%</span></p>
+        <p class="metric__l">N-05 fidelity, <b>R<sub>em</sub></b> across 21 replays (D=7 × K=3) — SLA target ≥ 90%</p>
+      </div>
+      <div class="metric">
+        <p class="metric__v">100<span class="u">%</span></p>
+        <p class="metric__l">Composite gate — SLA target <b>≥ 80%</b></p>
+      </div>
+      <div class="metric">
+        <p class="metric__v">0</p>
+        <p class="metric__l"><b>escaped_side_effects</b> on the T1–T12 matrix, verified against a canary sink</p>
+      </div>
+      <div class="metric">
+        <p class="metric__v">33<span class="u">/33</span></p>
+        <p class="metric__l"><b>SEC MUST-V0.1</b> requirements verified compliant</p>
+      </div>
+      <div class="metric">
+        <p class="metric__v">&lt;400<span class="u">ms</span></p>
+        <p class="metric__l">Full suite wall time on a developer machine</p>
+      </div>
+    </div>
+
+    <p class="muted rv" style="margin-top:1.25rem;font-family:var(--mono);font-size:.75rem">
+      Side-effect matrix T1–T12 asserts that a replay writes nothing outside its own process — no
+      database mutation, no outbound request, no queue publish.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ ROADMAP ═══════════ -->
+<section class="band band--light" id="roadmap">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">Roadmap</p>
+      <h2 class="display">Where this goes next.</h2>
+    </div>
+
+    <div class="road rv">
+      <div class="road__row">
+        <span class="road__v">Phase 0</span>
+        <span class="road__t">Validate the hypothesis</span>
+        <span class="road__c">Technical spike · capture and replay harness · gate decision</span>
+        <span class="road__s s--done">Completed</span>
+      </div>
+      <div class="road__row">
+        <span class="road__v">V0.1</span>
+        <span class="road__t">Core engine</span>
+        <span class="road__c">Monorepo of 5 packages · Node.js SDK · PostgreSQL and HTTP mocking · virtual clock · two-tier diff · CLI · security defense</span>
+        <span class="road__s s--done">Built &amp; verified</span>
+      </div>
+      <div class="road__row">
+        <span class="road__v">V0.2</span>
+        <span class="road__t">Developer workflow</span>
+        <span class="road__c">Regression test generation · GitHub Actions integration · browser replay · Next.js and Fastify support</span>
+        <span class="road__s s--next">Next</span>
+      </div>
+      <div class="road__row">
+        <span class="road__v">V0.3</span>
+        <span class="road__t">Distributed systems</span>
+        <span class="road__c">Python · Go · Redis · Kafka · background jobs · distributed tracing · multi-service replay</span>
+        <span class="road__s s--plan">Planned</span>
+      </div>
+      <div class="road__row">
+        <span class="road__v">Future</span>
+        <span class="road__t">Intelligent debugging</span>
+        <span class="road__c">Minimal database snapshots · race-condition replay · AI root-cause analysis</span>
+        <span class="road__s s--plan">Planned</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DOCS ═══════════ -->
+<section class="band band--light" id="docs">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="tag">Documentation</p>
+      <h2 class="display">Every decision is written down.</h2>
+      <p class="lede">
+        The repository carries the full specification set — charter, requirements, architecture,
+        thirteen accepted ADRs, the threat model, and the complete audit trail of every
+        multi-agent SDLC run that produced them.
+      </p>
+    </div>
+
+    <div class="docs rv">
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/blob/main/docs/000-Index.md">
+        <p class="doc__n">Documentation index</p>
+        <p class="doc__d">Entry point to all specifications.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/blob/main/docs/010-Planning/Charter-Repro.md">
+        <p class="doc__n">Project charter</p>
+        <p class="doc__d">Business case, objectives, gates and stop conditions.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/blob/main/docs/020-Requirements/PRD-Repro.md">
+        <p class="doc__n">Product requirements</p>
+        <p class="doc__d">What V0.1 must do, and what it deliberately does not.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/blob/main/docs/020-Requirements/NFR-Repro.md">
+        <p class="doc__n">Non-functional requirements</p>
+        <p class="doc__d">Constraints and the threshold definitions behind the SLA numbers.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/tree/main/docs/030-Specs/Architecture">
+        <p class="doc__n">SDD + 13 ADRs</p>
+        <p class="doc__d">System design, data flow, and every accepted architectural decision.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/tree/main/docs/030-Specs/Security">
+        <p class="doc__n">Security specifications</p>
+        <p class="doc__d">Threat model, redaction rules and crypto custody.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/tree/main/docs/010-Planning/pm-runs">
+        <p class="doc__n">PM runs audit trail</p>
+        <p class="doc__d">Briefs, run plans, findings and verdicts for every SDLC run.</p>
+      </a>
+      <a class="doc" href="https://github.com/trisjr/bug-reproduce/blob/main/CONTRIBUTING.md">
+        <p class="doc__n">Contributing</p>
+        <p class="doc__d">How to propose a change, and what a good pull request looks like here.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot__thesis">
+      Observability tells you what happened.<br>
+      <span class="keep">Repro lets you replay it.</span>
+    </p>
+
+    <div class="hero__actions" style="margin-top:0">
+      <a class="btn btn--primary" href="https://github.com/trisjr/bug-reproduce">Open the repository</a>
+      <a class="btn btn--ghost" href="https://github.com/trisjr/bug-reproduce/blob/main/docs/000-Index.md">Read the specs</a>
+    </div>
+
+    <div class="foot__grid">
+      <span>MIT © 2026 TrisJr</span>
+      <span class="foot__links">
+        <a href="https://github.com/trisjr/bug-reproduce/blob/main/LICENSE">License</a>
+        <a href="https://github.com/trisjr/bug-reproduce/blob/main/SECURITY.md">Security policy</a>
+        <a href="https://github.com/trisjr/bug-reproduce/blob/main/CODE_OF_CONDUCT.md">Code of conduct</a>
+        <a href="https://github.com/trisjr/bug-reproduce/issues">Issues</a>
+      </span>
+      <span>V0.1 · Core Engine</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reduce.matches || !('IntersectionObserver' in window)) {
+    document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+})();
+</script>
+
+</body>
+</html>

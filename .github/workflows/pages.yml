@@ -28,12 +28,11 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      # enablement:true turns Pages on for the repo on the first run,
-      # so no manual setup is needed in Settings → Pages.
+      # Pages must already be enabled with source "GitHub Actions"
+      # (Settings → Pages). GITHUB_TOKEN cannot enable it — the Pages
+      # creation API needs administration:write, which it is never granted.
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload the site directory
         uses: actions/upload-pages-artifact@v3

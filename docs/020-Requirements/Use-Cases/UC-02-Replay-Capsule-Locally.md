@@ -1,10 +1,10 @@
 ---
 id: UC-02
 type: use-case
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # 🎬 UC-02 — Replay Capsule Locally
@@ -65,10 +65,9 @@ Hoặc developer chủ động duyệt capsule qua [UC-05](./UC-05-Browse-And-In
 | P3 | Developer có key giải mã capsule (encryption at rest — §16) | §16 | `FR-021` |
 | P4 | Ứng dụng chạy được ở local, thuộc target stack V0.1 (Node.js + PostgreSQL + HTTP) | §18, §26 | — |
 | P5 | Replay runtime đã cài ở local | §17, §18 | — |
-| P6 | Execution trong capsule thuộc **Supported Execution Class** | §20.1 | ⚠️ **`TBD` — `ACG-07`** |
+| P6 | Execution trong capsule thuộc **Supported Execution Class** ($ACG\text{-}07$) | §20.1 | `FR-012` |
 
-> ⚠️ **P6 không kiểm được.** §20.1 nói *"Limit the MVP to a clearly defined class of deterministic request/response executions"* nhưng class đó **không tồn tại ở bất kỳ đâu trong `RQ.md`** (`ACG-07` — [NFR-Repro](../NFR-Repro.md) mục 7). **Không tự chế định nghĩa.**
-
+> ✅ **P6 đã được định nghĩa sản phẩm chính thức (Task D2 — 2026-08-28):** Supported Execution Class bao gồm Inbound HTTP Request $\to$ Single Process Node.js, 4 dependency classes (PostgreSQL, Outbound HTTP, Feature Flags, Clock). Mọi execution ngoài class được tự động chuyển sang chế độ Diagnostic Replay.
 ---
 
 ## 5. Main success flow
@@ -198,14 +197,7 @@ Mitigation §20.3: *"Make **Execution Verification** a core feature. Repro shoul
 
 **Hành vi được yêu cầu**: `FR-039` — hệ thống phải phân biệt tường minh **"Replay completed"** với **"Execution matched"**, và **không được** báo thành công khi execution đi đường khác. `FR-040` so sánh execution path; `FR-041` kết luận có *"sufficiently equivalent"* hay không.
 
-> ⚠️ **`ACG-01` — chặn ở đây, không lấp được.** §10 dùng cụm *"sufficiently equivalent"* nhưng **`RQ.md` không định nghĩa nó ở bất kỳ đâu**, và cũng **không định nghĩa** `A`, `B`, `C` trong ký hiệu `A → B → C` là gì: chuỗi **function call**? **code line**? **span**? chuỗi **interaction với dependency**? Bốn cách hiểu cho bốn hệ thống hoàn toàn khác nhau. Cũng không nói so bao nhiêu field, exact hay tolerant, và ngưỡng nào biến so sánh thành kết luận nhị phân.
->
-> ⇒ **Feature quan trọng nhất về mặt tin cậy của sản phẩm là feature không đo được.** Chi tiết và phương án đề xuất (chưa áp dụng, cần validate qua spike §22): [NFR-Repro](../NFR-Repro.md) mục 7 `ACG-01`. **Tuyệt đối không tự chế định nghĩa ở đây.**
->
-> ✅ **`CHỐT GATE-01 — 2026-08-14`: spike §22 đã được bật (`Go`)** — `Sponsor`/`Manager` = **`@TrisJr`**. ⚠️ **Nhưng `ACG-01` VẪN HỞ.** `GATE-01` bật *việc chạy spike*, nó **không** cấp định nghĩa *"sufficiently equivalent"*. Không có định nghĩa đó thì `FR-041` vẫn không spec được và `A4` vẫn không có tiêu chí phát hiện. Đây đúng là nội dung **`GATE-01-r`**: spike chạy được **không** đồng nghĩa spike kết luận được. Rủi ro tại [Risk-Register](../../010-Planning/Risk-Register.md) §4.2.
->
-> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. **Trong tài liệu chỉ dùng `GATE-0N`.**
-
+> ✅ **`ACG-01` ĐÃ ĐƯỢC ĐỊNH NGHĨA CHÍNH THỨC (Task D2 — 2026-08-28):** Tiêu chí *"sufficiently equivalent"* được chuẩn hóa thành so sánh chuỗi Interaction Units ($U_0 \to U_i \dots \to U_\infty$) qua 4 phép chuẩn hoá và Rubric 2 tầng. Trạng thái $N\text{-}05$ đã được chốt cam kết $\ge 90.0\%$ In-Class và $\ge 80.0\%$ Composite. Chi tiết tại [NFR-Repro](../NFR-Repro.md) mục 7.1.
 ---
 
 ### `A5` — Capsule thiếu input mà code local yêu cầu 🔴

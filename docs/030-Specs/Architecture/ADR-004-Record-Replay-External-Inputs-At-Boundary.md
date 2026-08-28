@@ -1,10 +1,10 @@
 ---
 id: ADR-004
 type: adr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # ADR-004: Record/Replay External Inputs At Boundary
@@ -94,14 +94,12 @@ Quyết định `E1` đã chốt: **Redis không thuộc V0.1 capture** — §18
 
 ## Open items (TBD)
 
-| ID | Unknown | Phương án đề xuất (nhãn) | Nó chặn cái gì |
-|---|---|---|---|
-| **`U-03`** | **Cơ chế intercept HTTP — cả *outbound* VÀ *inbound*.** RQ.md không nêu cơ chế ở bất kỳ đâu; §20.14 chỉ hàm ý in-process SDK (`npm install @repro/node` + `repro.init()`). Và RQ.md gộp hai bài toán **khác nhau về bản chất** vào một dòng §18 *"HTTP request replay"*: **outbound** phải *chặn và trả lời* (đứng ở vị trí client), còn **inbound** phải *tiêm một request đã ghi vào server của ứng dụng* — việc này phụ thuộc framework (`http.Server`, Express, Fastify, và Next.js mà §26 đưa vào V0.2). | Outbound: chặn ở tầng HTTP client của runtime. Inbound: tiêm ở tầng thấp nhất chung cho các framework thay vì viết adapter cho từng framework. Cả hai *cần validate*; cơ chế cụ thể thuộc [ADR-007](./ADR-007-In-Process-SDK-Interception.md). | Chặn phạm vi của ADR-007 và ma trận tương thích (§21 "Compatibility matrix", MVP = Yes); chặn quyết định replay runtime là *thư viện* hay *process wrapper*; chặn việc replay có dùng lại HTTP listener thật của ứng dụng hay không. |
-| **`U-14`** | **Feature flag surface.** RQ.md nhắc feature flag ở §5, §6, §9, §18, §22 nhưng **không nói ứng dụng đọc flag bằng cách nào**: biến môi trường, SDK của provider, file cấu hình, hay bảng trong DB. Mỗi lối đọc có một điểm chặn khác nhau, và "flag state" có hình dạng khác nhau (giá trị boolean đã đánh giá vs targeting rule vs toàn bộ ruleset). | V0.1 ghi **giá trị đã đánh giá** cho từng flag mà execution đó thực sự đọc (khớp với cách §9 hiển thị), không ghi ruleset. *cần validate*. | Chặn schema của `feature-flags.json` trong capsule format v1 (ADR-002 — thay đổi sau là breaking change); chặn cách trình bày mục 3 của Execution Diff (§9); chặn quyết định có cần adapter cho từng provider hay không. |
-| — | **Định danh interaction HTTP để match lúc replay** (song sinh của `U-02`). RQ.md không có quy tắc; §6 chỉ đặt tên theo dependency. | Khoá tổ hợp: method + URL đã chuẩn hoá + hash của body + chỉ số lần xuất hiện; hạ cấp có báo. *cần validate*. | Chặn hình dạng thư mục `network/` trong format v1; chặn hành vi với retry và với nhiều lần gọi cùng một endpoint. |
-| — | **Dependency không được hỗ trợ thì làm gì.** §20.10 chỉ phủ *"supported"*; RQ.md không nói phần còn lại xử lý ra sao. | Phát hiện được thì chặn + báo `incomplete capture`; không phát hiện được thì đây chính là §20.1 — không thể hứa. Xem lưới an toàn ở [ADR-005](./ADR-005-Default-Deny-Write-Side-Effects.md). | Chặn tính trung thực của kết quả replay: nếu im lặng bỏ qua, sản phẩm rơi vào đúng §20.3 (false equivalence, Critical). |
-| — | **Thời điểm/độ trễ của recorded response** có được tái hiện không (§20.2 non-determinism). | TBD. | Chặn khả năng tái tạo bug phụ thuộc timeout/thời gian; liên quan [ADR-010](./ADR-010-Bounded-Determinism-Scope.md). |
-
+| ID | Unknown | Giải pháp Chốt Chính Thức tại Phase P1 (2026-08-28) | Trạng thái |
+|---|---|---|:---:|
+| **`U-03`** | Cơ chế intercept HTTP (Inbound & Outbound) | **Outbound**: Monkey-patching `http.request` / `https.request` và global `fetch`; **Inbound**: Middleware/listener wrapper ở tầng `http.Server` cơ sở. | ✅ **Đã đóng** |
+| **`U-14`** | Feature flag capture | Capture giá trị boolean/string đã đánh giá tại thời điểm thực thi ($U_i$), không capture ruleset phức tạp. | ✅ **Đã đóng** |
+| Interaction ID | Định danh interaction HTTP lúc replay | Khóa tổ hợp: `Method + Normalized URL Template + Canonical Body Hash + Sequence Index`. | ✅ **Đã đóng** |
+| Unrecorded Dependency | Dependency ngoài danh sách hỗ trợ | Kích hoạt $ACG\text{-}07$ Out-of-class behavior: ghi nhận capsule kèm nhãn `out_of_scope`, chuyển sang Diagnostic Replay. | ✅ **Đã đóng** |
 ### Mâu thuẫn M1 — ✅ ĐÃ CHỐT 2026-08-14
 
 > Bối cảnh hai phía bên dưới **được giữ nguyên có chủ đích**. `RQ.md` vẫn tự nói ngược ở chính những section được trích; quyết định của người có thẩm quyền chỉ nói **ta chọn phía nào**, nó không làm mâu thuẫn ở nguồn biến mất.

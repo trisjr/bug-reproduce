@@ -1,10 +1,10 @@
 ---
 id: ADR-002
 type: adr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # ADR-002: Repro Capsule Format Contract
@@ -57,15 +57,18 @@ và liệt kê nội dung có thể có: original request, relevant database que
 **Repro Capsule là hợp đồng (contract) giữa recorder và replay runtime. Nó được đặc tả, được đánh version, được xác thực trước khi dùng, và tự chứa.**
 
 1. **Capsule là giao diện duy nhất giữa recorder và replay runtime.** Hai bên tiến hoá độc lập miễn là cùng thoả thuận format version. Không bên nào được giả định chi tiết triển khai của bên kia (§17, §28).
-2. **Layout v1 theo §6**: `manifest.json`, `request.json`, `environment.json`, `feature-flags.json`, `database/query-NNN.json`, `network/<dependency>.json`, `metadata.json`.
-3. **Capsule tự chứa (self-contained) — bất biến của V0.1.** Mọi thứ cần để replay nằm trong capsule; **không** có thao tác fetch dữ liệu từ production tại thời điểm replay. Cụm *"lazy loading"* ở §20.12 được diễn giải là **lazy khi *đọc* capsule** (không nạp toàn bộ vào memory), **không phải** lazy fetch từ production. Đây là **diễn giải có chủ ý**, ghi ra chứ không giấu: nó là cách đọc duy nhất giữ được đồng thời §6 (*"only the information necessary"*), §40 (*portable*) và §20.12.
-   > ⚠️ ✅ **CHỐT GATE-05b — 2026-08-14 — quyết định #3 BỊ THU HẸP, đọc kèm §Consequences.** `SEC-016` crypto-shredding nay là **`MUST-V0.1`**: khoá giải mã giữ **phía server**, `replay` lấy khoá just-in-time. ⇒ Capsule **không còn self-contained tuyệt đối**. Hai vế phải đọc tách nhau: *"không fetch **dữ liệu** từ **production** lúc replay"* — **vẫn đúng nguyên vẹn**, đây là phần bất biến còn lại; *"mọi thứ cần để replay nằm trong capsule"* — **không còn đúng**, vì **khoá không nằm trong capsule**. Hệ quả được ghi tường minh và **được chấp nhận có ý thức** ở §Consequences → `GATE-05b-r`.
-4. **Format version bắt buộc có trong `manifest.json` từ v1.** Replay runtime gặp major version không nhận ra ⇒ **từ chối replay**, không đoán.
-5. **Manifest PHẢI có chỗ chứa hash/signature từ v1, và replay runtime PHẢI verify TRƯỚC KHI parse payload** (`SEC-027`). Thứ tự này là bắt buộc: verify sau khi parse là không có tác dụng, vì chính bước parse là bước bị tấn công. Kèm theo: mọi entry path phải được canonicalize và từ chối path thoát khỏi thư mục capsule; giới hạn tỉ lệ giải nén và kích thước sau giải nén; deserialize không được cho phép key nguyên mẫu (`__proto__`, `constructor`, `prototype`) tạo thuộc tính; manifest **không** được quyền chỉ định module để runtime load.
-6. **Quản lý kích thước theo §20.12**: compression, deduplication, content hashing, size limits, selective capture. Content hashing phục vụ đồng thời dedup và integrity.
-7. **Encryption at rest được hỗ trợ** (§16, §20.6).
-8. **Capsule PHẢI ghi lại *field nào đã bị redact*** (dấu vết redaction, không phải giá trị gốc) để Execution Diff phân biệt được *"diverged vì code"* với *"diverged vì redaction"*. Hai lens độc lập cùng kết luận điều này ⇒ ghi như quyết định, không phải TBD.
-9. **Capsule là artifact bất biến.** Sau khi ghi xong, không sửa tại chỗ. Mọi biến đổi (ví dụ sinh bản dẫn xuất đã khử dữ liệu để commit vào git) tạo ra artifact mới có identity riêng.
+2. **Layout v1 Chính Thức (Đóng băng tại Phase P1 — 2026-08-28)**: Container là file `.repro.tar.gz` chứa:
+   - `manifest.json`: Header v1, version `"1.0.0"`, `capsule_id` (UUIDv7), `created_at`, `target_commit`, `class_assessment` ($ACG\text{-}07$), `key_id` reference ([ADR-012](./ADR-012-Key-Custody.md)), `encryption_metadata` (AES-256-GCM), `payload_hmac` (HMAC-SHA256, $SEC\text{-}027$).
+   - `interactions.jsonl`: Dãy `InteractionUnit` ($U_0 \to U_i \dots \to U_\infty$) đã chuẩn hóa (fingerprinted SQL, normalized URLs, canonical JSON).
+   - `runtime_metadata.json`: Node.js version, OS platform, git branch, process env keys allowlist.
+   - `checksums.sha256`: Bảng digest SHA-256 cho từng entry trước khi nén.
+3. **Capsule tự chứa về mặt dữ liệu (Self-contained Payload)**: Mọi dữ liệu cần thiết để replay ($U_0 \dots U_\infty$) nằm trong capsule; tuyệt đối không fetch dữ liệu từ production lúc replay. Khoá giải mã `key_id` được quản lý độc lập tại Key Custody Store ([ADR-012](./ADR-012-Key-Custody.md)) phục vụ crypto-shredding $SEC\text{-}016$.
+4. **Format version bắt buộc có trong `manifest.json` từ v1 (`"format_version": "1.0.0"`)**. Replay runtime gặp major version lạ $\to$ từ chối replay fail-closed.
+5. **Verify-trước-khi-parse bắt buộc ($SEC\text{-}027$)**: Runtime kiểm tra HMAC-SHA256 của payload trước khi giải nén và deserialize JSON. Từ chối mọi zip-slip path traversal, decompression bomb ($>50\text{MB}$), và prototype pollution keys (`__proto__`, `constructor`).
+6. **Quản lý kích thước theo §20.12**: Compression gzip, stream JSONL per-interaction, trần cứng $SEC\text{-}008$ ($100\text{ rows} / 64\text{ KB}$ per query).
+7. **Envelope Encryption**: AES-256-GCM với DEK riêng per capsule, quản lý tại Key Custody Store ([ADR-012](./ADR-012-Key-Custody.md)).
+8. **Dấu vết Redaction**: Ghi rõ cờ `redacted: true` cho từng field bị khử dữ liệu để phục vụ Divergence Attribution bước 1 của [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md).
+9. **Tính Bất Biến & Chừa chỗ cho Regression Test V0.2 ($THREAT\text{-}006$)**: Format v1 có sẵn cờ `is_derived_sanitized: boolean` (mặc định `false`) để V0.2 sinh regression test an toàn để commit vào git mà không lộ ciphertext sản thi.
 
 ## Alternatives considered
 
@@ -113,19 +116,18 @@ và liệt kê nội dung có thể có: original request, relevant database que
 
 ## Open items (TBD)
 
-| ID | Unknown | Phương án đề xuất (nhãn) | Nó chặn cái gì |
-|---|---|---|---|
-| **`U-05`** | **Format versioning** — cơ chế cụ thể chưa có trong RQ.md, nhưng **phải có từ v1**. | Trường version trong `manifest.json`; semantic major/minor; major lạ ⇒ từ chối replay, minor lạ ⇒ replay + cảnh báo. *cần validate*. | Chặn mọi câu chuyện tương thích recorder ↔ runtime; chặn `repro pull`/`inspect` với capsule cũ; chặn khả năng tiến hoá của chính format này. |
-| **`U-07`** | **Capsule ID vs trace ID.** §8 dùng `repro pull 1842`; §2.1 hiển thị `ERROR #1842` **và** `Trace ID: abc123` như hai thứ khác nhau. RQ.md không nói capsule id là incident id, là trace id, hay là id riêng. | Capsule có id riêng, mang *tham chiếu* tới incident id và trace id trong `manifest.json`. *cần validate*. | Chặn cách đánh địa chỉ của `repro list/pull/inspect/replay/diff/verify` (§18); chặn tương quan với observability (§34); chặn `U-22`. |
-| **`U-18`** | **Hành vi khi vượt size limit.** §20.12 nêu *"size limits"* nhưng RQ.md không nói chuyện gì xảy ra khi vượt: truncate, bỏ capture, hay tạo capsule đánh dấu không đầy đủ. | Capsule vẫn được tạo nhưng đánh dấu *incomplete* + ghi rõ phần nào bị cắt; lúc replay, phần thiếu áp `E9` (divergence + incomplete capture, không crash, **không** fallback gọi hệ thống thật). *cần validate*. | Chặn exception flow của use case capture; chặn ngữ nghĩa `incomplete` mà ADR-003/005/006 đều tham chiếu. |
-| **`U-22`** | **Multi-service capsule.** §14 đặt service boundary làm replay boundary; §26 xếp "Multi-service replay" ở V0.3. Format v1 có chừa chỗ cho >1 service không? | Chừa chỗ ở cấu trúc (mỗi interaction mang định danh service) nhưng V0.1 chỉ ghi một service. *cần validate*. | Chặn hình dạng format v1 — thêm sau là thay đổi major. |
-| **`U-23`** | **Language-agnostic.** §18 giới hạn V0.1 ở Node.js; §26 thêm Python/Go ở V0.3. Format v1 có trung lập ngôn ngữ không? | Trung lập ngôn ngữ ngay từ v1: cấm mọi ngữ nghĩa serialize đặc thù JavaScript. *cần validate*. | Chặn khả năng mở rộng ở V0.3 mà không phá format; chặn lựa chọn encoding cho `database/` và `network/`. |
-| **`E3`** | **Self-contained là bất biến** — đã chốt (quyết định #3), ghi ở đây vì nó là **diễn giải** của §20.12 chứ không phải nguyên văn RQ.md. | — (đã chốt) | Nếu diễn giải này bị lật, toàn bộ mô hình bảo mật và tính portable (§40) phải thiết kế lại. |
-| **`SEC-027`** | **Capsule integrity** — hash/signature phải có chỗ trong manifest từ v1 (đã chốt là *phải có chỗ*). Chưa chốt: ai ký, khoá phân phối thế nào, capsule **không** ký thì từ chối hay cảnh báo. | V0.1 tối thiểu: hash toàn vẹn bắt buộc + verify trước khi parse; signature để ngỏ cho self-host. *cần validate*. | Chặn việc đóng `THREAT-009`; chặn thiết kế `repro pull` (verify ở đâu — lúc pull hay lúc replay, hay cả hai). |
-| **`E12`** | ✅ **Crypto-shredding — ĐÃ CHỐT `MUST-V0.1`** (`SEC-016`), ✅ **CHỐT GATE-05b — 2026-08-14**, người quyết **`@TrisJr`**. Nhãn cũ ***"cần validate — đánh đổi với replay offline chưa được giải"*** **đã được gỡ**. 📌 **M2 (✅ ĐÃ CHỐT 2026-08-14) KHÔNG chạm tới mục này** — mệnh đề đó **vẫn đúng về M2** (M2 chỉ nói về authn + authz + audit) — **nhưng `GATE-05b` THÌ CÓ CHẠM**, và chính nó đã chốt mục này. | ✅ **Đã chọn**: khoá riêng từng capsule giữ phía server, lấy just-in-time lúc replay; xoá = phá khoá. ⇒ **Ràng buộc lên format v1**: manifest **bắt buộc** có chỗ chứa **key reference** (không retrofit được). | ✅ **Đã mở khoá**: câu trả lời GDPR right-to-erasure (cơ chế đã có); và câu hỏi *capsule có replay offline được hay không* **đã được trả lời — KHÔNG**, replay cần khoá từ store (`GATE-05b-r`, xem quyết định #3 và §Consequences). ⚠️ **Vẫn chặn**: **thiết kế key management của bản self-host** — `U-06d` nay là **BLOCKER** (`GATE-05b-r2`), xem [ADR-009](./ADR-009-Private-Self-Hosted-Topology.md) §Open items. |
-| **`THREAT-006`** | **Capsule vào git vĩnh viễn qua regression test V0.2.** **Phải chốt ở V0.1** vì ràng buộc format. **M1 ✅ ĐÃ CHỐT 2026-08-14**: tính năng ở **V0.2** — thời điểm nay **đã biết chắc**, ràng buộc format **không** vì thế mà nhẹ đi. | Format v1 chừa chỗ cho *artifact dẫn xuất đã khử dữ liệu* và/hoặc cờ `not-for-commit`; regression test sinh ra ở V0.2 chỉ được dùng artifact dẫn xuất. *cần validate*. | Chặn hình dạng format v1; chặn thiết kế tính năng V0.2; chặn cam kết retention (§20.17) vì git history bất biến. |
-| — | **Container format** (thư mục / tar / zip) và encoding chuẩn cho từng entry. | TBD | Chặn quyết định #5 (canonicalize path, giới hạn giải nén chỉ có nghĩa với container nén). |
-
+| ID | Unknown | Giải pháp Chốt Chính Thức tại Phase P1 (2026-08-28) | Trạng thái |
+|---|---|---|:---:|
+| **`U-05`** | Format versioning | Semantic versioning `"1.0.0"` trong `manifest.json`; major khác $\to$ reject fail-closed; minor khác $\to$ warn + replay. | ✅ **Đã đóng** |
+| **`U-07`** | Capsule ID vs Trace ID | `capsule_id` là UUIDv7 (kèm timestamp), lưu `trace_id` và `incident_id` như correlation metadata trong `manifest.json`. | ✅ **Đã đóng** |
+| **`U-18`** | Vượt size limit ($SEC\text{-}008$) | Ghi nhận capsule kèm cờ `truncated: true`; lúc replay phân loại phân kỳ sang `truncated` (không crash, không fallback gọi thật). | ✅ **Đã đóng** |
+| **`U-22`** | Multi-service capsule | Format v1 gắn tag `service_name: "checkout"` cho từng interaction; V0.1 hỗ trợ single-service, sẵn sàng mở rộng V0.3. | ✅ **Đã đóng** |
+| **`U-23`** | Language-agnostic | interactions.jsonl sử dụng canonical JSON & byte arrays chuẩn UTF-8, không dùng JS serialization đặc thù. | ✅ **Đã đóng** |
+| **`E3`** | Self-contained data payload | Bất biến: dữ liệu không fetch từ production; khoá giải mã nạp just-in-time qua [ADR-012](./ADR-012-Key-Custody.md). | ✅ **Đã đóng** |
+| **`SEC-027`** | Capsule integrity verification | Bắt buộc kiểm tra HMAC-SHA256 trước khi parse payload/unzip; từ chối capsule hỏng hoặc bị can thiệp. | ✅ **Đã đóng** |
+| **`E12` / `U-06d`** | Key custody & Crypto-shredding | Đã ban hành chính thức [ADR-012 Key Custody Architecture](./ADR-012-Key-Custody.md). | ✅ **Đã đóng** |
+| **`THREAT-006`** | Regression test commit an toàn | Chừa sẵn trường `is_derived_sanitized: boolean` trong Header v1 cho V0.2. | ✅ **Đã đóng** |
+| Container | Container archive format | Định dạng chuẩn `.repro.tar.gz` (Tarball nén Gzip). | ✅ **Đã đóng** |
 ### Mâu thuẫn nội tại của `RQ.md` — đã được chốt
 
 > Bối cảnh hai phía bên dưới **được giữ nguyên có chủ đích**. `RQ.md` vẫn tự nói ngược ở chính những section được trích; quyết định của người có thẩm quyền chỉ nói **ta chọn phía nào**, nó không làm mâu thuẫn ở nguồn biến mất. Xoá bằng chứng đi thì về sau không ai hiểu vì sao tài liệu dẫn xuất chọn phía này.

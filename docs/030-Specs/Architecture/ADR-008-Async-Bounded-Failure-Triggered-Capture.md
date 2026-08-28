@@ -1,10 +1,10 @@
 ---
 id: ADR-008
 type: adr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # ADR-008: Async, Bounded, Sampled, Failure-Triggered Capture
@@ -107,14 +107,13 @@ Khi capsule sinh ra thiếu input và điều đó lộ ra lúc replay, hành vi
 
 ## Open items (TBD)
 
-| ID | Unknown | RQ.md nói gì | Nó chặn cái gì |
-|---|---|---|---|
-| `U-09` | **Nghịch lý capture trigger — chưa giải.** Chi phí thật của việc buffer 100% execution để chỉ giữ lại phần lỗi là bao nhiêu? Có cấu trúc nào (ví dụ chỉ giữ tham chiếu, hoãn sao chép giá trị) làm phần buffer đủ rẻ không? | §20.7 nêu mitigation nhưng **không thừa nhận** rằng trạng thái failed chỉ biết được sau khi kết thúc. §24 đặt `< 5%` mà không nói áp cho traffic nào. | Chặn: mọi NFR về overhead (không phát biểu được nếu chưa tách hai thành phần chi phí); chặn thiết kế buffer; chặn việc §24 có ý nghĩa hay không. **Là câu hỏi số một của technical spike §22.** |
-| `U-09b` | **Định nghĩa "failed" ở V0.1**: uncaught exception? HTTP 5xx? cả 4xx? lỗi do ứng dụng tự phân loại? Ai phát tín hiệu — SDK tự phát hiện hay ứng dụng khai báo? | §20.7 dùng từ `failed`; §37 nói `failed production execution`; §38 Q5 hỏi có nên chỉ hỗ trợ failed. **Không chỗ nào định nghĩa.** | Chặn: hiện thực trigger; chặn phát biểu phạm vi *"lớp bug nào Repro bắt được"* — vốn là điều §39 nói phải làm rõ trước khi vào MVP; chặn mẫu số của tỉ lệ ở §23. |
-| `U-09c` | **Giá trị mặc định của các tham số**: sampling rate, trần buffer theo execution, trần toàn cục, số dòng/byte tối đa giữ cho một kết quả query. | §20.7 nói `configurable capture limits`; §20.12 nói `size limits`. **Không con số nào.** §24 chỉ có `< 10 MB average` — là giả thuyết spike, và §23 đòi đo cả P95 mà §24 **không** đặt ngưỡng P95. | Chặn: cấu hình mặc định của SDK; chặn hợp đồng hành vi khi chạm trần. Lens `security-auditor` cũng để ngỏ ngưỡng row/byte cap với cùng lý do: **cần số liệu từ spike §22**, không được bịa. |
-| `U-09d` | **Hành vi khi buffer chạm trần**: drop cả execution, hay giữ một phần và đánh dấu incomplete? | RQ.md nêu `selective capture` (§20.12) nhưng không nói tiêu chí chọn. | Chặn: trường khai báo `incomplete` trong capsule manifest ([ADR-002](./ADR-002-Repro-Capsule-Format-Contract.md)); chặn việc **E9** có phân biệt được "thiếu vì bị cắt" với "thiếu vì code local gọi thứ không có trong capsule" — hai nguyên nhân khác nhau cần hai thông điệp khác nhau. |
-| `U-09e` | **Sampling quyết định ở đâu**: đầu execution (rẻ, nhưng phải quyết khi chưa biết gì) hay có thể nâng cấp giữa chừng khi thấy tín hiệu bất thường? | RQ.md chỉ nêu từ `sampling`. | Chặn: điểm cân bằng giữa hai hệ quả tiêu cực nêu trên; nếu quyết ở đầu thì xung đột sampling ↔ bắt-được-bug-hiếm là **không giảm nhẹ được**. |
-
+| ID | Unknown | Giải pháp Chốt Chính Thức tại Phase P1 (2026-08-28) | Trạng thái |
+|---|---|---|:---:|
+| **`U-09`** | Chi phí buffer 100% execution | Thực nghiệm Phase 0 chứng minh Overhead đường buffer-discard chỉ $+1.62\%$ latency (overall $+1.77\% < 5.0\%$). | ✅ **Đã đóng** |
+| **`U-09b`** | Định nghĩa "failed" tại V0.1 | Uncaught Exception, Unhandled Promise Rejection, HTTP Response Status Code $\ge 500$, hoặc gọi `repro.captureException(err)`. | ✅ **Đã đóng** |
+| **`U-09c`** | Giá trị tham số mặc định | Sampling rate $100\%$, Max buffer $50\text{ MB}$, $SEC\text{-}008$ Row/Byte Cap: $100\text{ rows} / 64\text{ KB}$ per query result. | ✅ **Đã đóng** |
+| **`U-09d`** | Hành vi khi chạm trần | Giữ phần đã capture, gắn cờ `truncated: true` trong `manifest.json`, Replay chuyển sang phân loại `truncated`. | ✅ **Đã đóng** |
+| **`U-09e`** | Điểm quyết định sampling | Quyết định tại Inbound Request Initiation ($U_0$). | ✅ **Đã đóng** |
 > ✅ **CHỐT GATE-01 — 2026-08-14** — `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Điều này chạm trực tiếp ba mục đầu bảng: `U-09` được ghi là ***"câu hỏi số một của technical spike §22"*** ⇒ nay đã có nơi trả lời; `U-09c` được ghi là ***"cần số liệu từ spike §22, không được bịa"*** ⇒ nay đã có nguồn số liệu được cấp phép.
 >
 > ⚠️ **`U-09`, `U-09b`, `U-09c` (và `U-09d`, `U-09e`) VẪN `TBD`.** `GATE-01` cấp **phương tiện đo**, không cấp **câu trả lời**: chi phí thật của buffer 100% vẫn chưa biết, *"failed"* vẫn **chưa có định nghĩa** ở bất kỳ đâu trong RQ.md, và **không một giá trị mặc định nào** được chốt ở đây — không bịa số. Nghịch lý capture trigger nêu ở §Context (*trạng thái "failed" chỉ biết được **sau khi** execution kết thúc*) **vẫn nguyên**. Thêm nữa `Go` không tự làm spike đo được: thiếu denominator và thiếu tiêu chí chọn test case (`ACG-01`/`ACG-02`/`ACG-03`/`ACG-07`) thì kết quả đo `U-09` vẫn **không quy được về pass/fail**. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.

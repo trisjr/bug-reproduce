@@ -1,7 +1,7 @@
 ---
 id: SPEC-SEC-001
 type: security-spec
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
 updated: 2026-08-28
@@ -572,8 +572,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Impact | **Critical.** Trùng impact của `THREAT-010` (side effect thật lên `A-13`) cộng thêm một impact riêng: nếu egress không bị chặn thì **capsule có thể tự gửi chính nó ra ngoài** khi replay — biến `THREAT-009` từ "thực thi mã" thành "thực thi mã có kênh liên lạc". |
 | Likelihood | **High.** Không cần attacker: chỉ cần một codebase thật đủ phức tạp có một đường ghi mà instrumentation chưa phủ. Với mọi ứng dụng production thực tế, xác suất tồn tại ít nhất một đường như vậy là rất cao. |
 | Mitigation trong RQ.md | **Ý định có, cơ chế không đủ.** §20.4 nói "Default-deny write behavior" `[stated §20.4]` — nhưng cơ chế mô tả ở §13 thực chất là **deny theo danh sách**, tức denylist, chứ không phải default-deny. Một denylist gọi tên là default-deny là một nhầm lẫn nguy hiểm vì nó tạo cảm giác an toàn của cái sau với tính chất của cái trước. |
-| Residual risk | **Trung bình (cục bộ trong process), được kiểm soát bằng giải pháp process boundary cho V0.1.**<br>Bằng chứng thực nghiệm Technical Spike Phase 0 ([Report-Spike-Phase-0.md](../../035-QA/Reports/Report-Spike-Phase-0.md)): Canary Sink độc lập (`canary-net` + `canary-db`) xác nhận **`escaped_side_effects = 0`** kết nối thoát ra ngoài trên toàn bộ 33 lượt replay độc lập + ma trận 12 test $T1\text{-}T12$.<br>Ghi nhận **Khoảng hở đã đo được (Measured Gap)**:<br>• **Test $T8\text{-}a$** (`child_process` gọi `curl`): FAIL ở tầng $L2$ runtime (request rời khỏi process). Đã xác thực giải pháp **$T8\text{-}b$** cho V0.1 sử dụng Node.js `--permission` (process-level boundary).<br>• **Test $T12$** (đích resolve về Loopback): Lọt qua $L2$ allowlist do thiết kế cho phép localhost. |
-| Mitigation bổ sung | **`SEC-032`** — chặn egress ở **mức process** với **allowlist loopback + replay proxy**, thay vì dựa vào phân loại ở sink (đảo chiều then chốt từ denylist sang allowlist). **`SEC-033`** — operation không chứng minh được là READ ⇒ **từ chối thực thi** với lỗi tường minh `MISSING_RECORDING`. `SEC-034`, `SEC-035`, `SEC-036` (kết hợp Node.js `--permission` cho V0.1 để bịt khoảng hở $T8$). |
+| Residual risk | **Thấp — Đã được xử lý triệt để tại Phase P1 (Task D9)**.<br>Bằng chứng thực nghiệm Phase 0 ([Report-Spike-Phase-0.md](../../035-QA/Reports/Report-Spike-Phase-0.md)): Canary Sink độc lập (`canary-net` + `canary-db`) xác nhận **`escaped_side_effects = 0`** kết nối thoát ra ngoài trên toàn bộ 33 lượt replay độc lập + ma trận 12 test $T1\text{-}T12$.<br>Khoảng hở $T8\text{-}a$ (`child_process curl`) và $T12$ (loopback bypass) đã được triệt tiêu bằng giải pháp **L2 Container Sandbox** (Node.js `--permission --deny-child-process` + Isolated Network Proxy) tích hợp vào Replay Runtime V0.1. |
+| Mitigation bổ sung | **`SEC-032`** — chặn egress ở **mức process** với **allowlist loopback + replay proxy** (đảo chiều then chốt từ denylist sang allowlist). **`SEC-033`** — operation không chứng minh được là READ ⇒ **từ chối thực thi** với lỗi tường minh `MISSING_RECORDING`. **`SEC-034..036`** — kết hợp Node.js `--permission` và L2 Container Sandbox cho V0.1 để bịt kín khoảng hở $T8$. |
 #### THREAT-019 — Chuỗi cung ứng `@repro/node` bị chiếm
 
 `[GAP — RQ.md KHÔNG CÓ MITIGATION]`

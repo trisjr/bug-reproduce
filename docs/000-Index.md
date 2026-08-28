@@ -65,7 +65,7 @@ Trang chủ của kho tài liệu Repro. Mọi tài liệu đều nằm dưới 
 | `035-QA/` | [QA-MOC](./035-QA/QA-MOC.md) | Master Test Plan V0.1, Spike Report, Performance Benchmark |
 | `040-Design/` | [Design-MOC](./040-Design/Design-MOC.md) | UI/UX *(rỗng theo thiết kế — Repro là CLI-first)* |
 | `050-Research/` | [Research-MOC](./050-Research/Research-MOC.md) | Phân tích persona người dùng |
-| `070-Deployment/` | [Deployment-MOC](./070-Deployment/Deployment-MOC.md) | Hướng dẫn deploy & release *(sẵn sàng cho P3)* |
+| `070-Deployment/` | [Deployment-MOC](./070-Deployment/Deployment-MOC.md) | Hướng dẫn deploy, CHANGELOG & Release Notes (**✅ `v0.1.0` — 2026-08-28**) |
 | `080-Operations/` | [Operations-MOC](./080-Operations/Operations-MOC.md) | Thỏa thuận mức dịch vụ SLA Security Response |
 | `999-Resources/` | [Resources-MOC](./999-Resources/Resources-MOC.md) | Templates, Glossary, nguồn sự thật gốc RQ.md |
 

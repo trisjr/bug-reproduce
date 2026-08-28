@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-10 (Race condition)",
+  "scenario_id": "SC-10",
+  "name": "Race condition",
+  "in_class": false,
+  "category": "race-condition",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Không capture Redis.",
+      "predicted_effect": "none",
+      "rationale": "Redis không tham gia vào race condition giữa các concurrent request.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Không có lock file hay filesystem interaction.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata.",
+      "predicted_effect": "none",
+      "rationale": "Biến môi trường không điều khiển inter-request concurrency scheduling.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state (Inter-request concurrency interleaving)",
+      "group": "process-memory",
+      "reason_omitted": "Multi-request concurrency interleaving và database transaction race được xếp loại Critical but Out of Scope (§20.13, §19).",
+      "predicted_effect": "divergence",
+      "rationale": "Thứ tự thực thi xen kẽ giữa 2 concurrent checkout requests của cùng customer không được cố định trong single-execution capture.",
+      "attribution_tag": "out-of-scope-determinism"
+    },
+    {
+      "input": "OS behavior (Thread/process context switching & socket contention)",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Kernel scheduling tranh chấp socket giữa các connection đồng thời.",
+      "predicted_effect": "divergence",
+      "rationale": "Tranh chấp tài nguyên làm thay đổi thứ tự đến của interaction tại DB layer.",
+      "attribution_tag": "out-of-scope-determinism"
+    }
+  ]
+}

@@ -153,7 +153,7 @@ async function resetOrders(poolOrFn) {
  * }>}
  */
 async function runBenchmark(options = {}) {
-  const config = options.config || loadBenchConfig(options);
+  const config = loadBenchConfig(options.config || options);
   const resetOrdersFn = options.resetOrdersFn || (config.pool ? () => resetOrders(config.pool) : null);
   const setRecorderStateFn = options.setRecorderStateFn;
   const requestFn = options.requestFn;

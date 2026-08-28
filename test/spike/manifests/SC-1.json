@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-1 (Database state)",
+  "scenario_id": "SC-1",
+  "name": "Database state",
+  "in_class": true,
+  "category": "database",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Redis không nằm trong 8 nhóm capture V0.1 (§18); interaction Redis bị loại trừ khỏi class (ACG-07 ii-b).",
+      "predicted_effect": "none",
+      "rationale": "SC-1 không lấy Redis làm tác nhân gây lỗi; bất biến hạ dòng R2 đảm bảo cache-miss không ảnh hưởng kết cục.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không liệt kê filesystem trong 8 nhóm capture của V0.1 core replay.",
+      "predicted_effect": "none",
+      "rationale": "Endpoint /checkout trong SC-1 không đọc/ghi trực tiếp local filesystem trong luồng nghiệp vụ.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Environment variables được nạp tại boot-time và capture ở tầng runtime metadata, không capture delta per-request.",
+      "predicted_effect": "none",
+      "rationale": "Biến môi trường trong môi trường replay local được cấu hình tương thích với môi trường capture.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state",
+      "group": "process-memory",
+      "reason_omitted": "Process memory (module-level cache, connection pool warmth, GC state) nằm trong process và không được capture theo SDD §3.",
+      "predicted_effect": "none",
+      "rationale": "SC-1 không phụ thuộc vào trạng thái ấm của connection pool hay bộ nhớ tiến trình để quyết định kết cục.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "OS behavior",
+      "group": "kernel-scheduling",
+      "reason_omitted": "OS thread scheduling, socket buffer timing, monotonic clock precision không được capture (§20.1 Hidden Inputs).",
+      "predicted_effect": "none",
+      "rationale": "Replay runtime sử dụng clock adapter tuần tự hoá chuỗi sự kiện, loại bỏ độ lệch từ kernel scheduler.",
+      "attribution_tag": "none"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-6 (Dependency/version difference)",
+  "scenario_id": "SC-6",
+  "name": "Dependency/version difference",
+  "in_class": true,
+  "category": "version-drift",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Không capture Redis.",
+      "predicted_effect": "none",
+      "rationale": "SC-6 kiểm tra xử lý version drift theo hypothesis U-16 (Spec §3.9) — drift là warning, không fatal.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Version metadata được đối chiếu qua trường metadata.runtimeVersion và gitCommit.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata.",
+      "predicted_effect": "none",
+      "rationale": "Cờ drift được gắn có cấu trúc vào kết quả replay nhưng không chặn rubric nhị phân.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state",
+      "group": "process-memory",
+      "reason_omitted": "In-process memory state.",
+      "predicted_effect": "none",
+      "rationale": "Không có module caching nào làm thay đổi kết cục nghiệp vụ.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "OS behavior",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Kernel scheduling, network stack timing ngoài phạm vi determinism (§20.1).",
+      "predicted_effect": "none",
+      "rationale": "Replay hoàn tất thành công theo nhánh (A) đã khai trước tại Spec §4.3.1.",
+      "attribution_tag": "none"
+    }
+  ]
+}

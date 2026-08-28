@@ -3,7 +3,7 @@ id: MOC-SPECS
 type: moc
 status: draft
 created: 2026-08-14
-updated: 2026-08-15
+updated: 2026-08-28
 ---
 
 # 📂 030-Specs Map of Content (MOC)
@@ -31,7 +31,7 @@ updated: 2026-08-15
 > - **Bốn nhóm hidden input không có cơ chế phát hiện nào**: environment variables · filesystem state · **process state** · OS behavior. Class loại trừ chúng **bằng lời khai, không bằng phép kiểm**.
 > - Rubric thừa hưởng toàn bộ độ giòn của **`U-02`** — thứ [SDD §8.3](./Architecture/SDD-Repro.md) gọi là *"rủi ro hiện thực cao nhất"*.
 
-**Đo bằng gì**: [MTP-Spike-Phase-0](../035-QA/Test-Plans/MTP-Spike-Phase-0.md) · **Báo cáo bằng khuôn nào**: [Template-Spike-Report](../999-Resources/Templates/Template-Spike-Report.md)
+**Đo bằng gì**: [MTP-Spike-Phase-0](../035-QA/Test-Plans/MTP-Spike-Phase-0.md) · **Kết quả thực nghiệm**: [Report-Spike-Phase-0](../035-QA/Reports/Report-Spike-Phase-0.md) & [Perf-Spike-Phase-0](../035-QA/Performance/Perf-Spike-Phase-0.md)
 
 ---
 
@@ -72,6 +72,7 @@ updated: 2026-08-15
 ## 🛡️ Security
 
 - [Spec-Security-Repro-Threat-Model](./Security/Spec-Security-Repro-Threat-Model.md) — Threat model của thiết kế: 13 asset, 6 trust boundary trên 4 zone, 19 threat theo STRIDE per-boundary, 43 requirement `SEC-*` dạng given/then, ràng buộc tuân thủ (GDPR / HIPAA / PCI DSS / SOC 2)
+  - **Phân bố thực nghiệm `SEC-008` (mục 11.b)**: Đã cập nhật phân bố và kết quả Thí nghiệm Cắt Offline từ Bảng T5 của Spike Report, gắn nhãn `HYPOTHESIS`.
   - **11 trong 19 threat được đánh dấu `[GAP — RQ.md KHÔNG CÓ MITIGATION]`** — chúng được theo dõi tại [Risk-Register §3](../010-Planning/Risk-Register.md).
   - Kết luận **không được làm mềm** ở mục 7: *redaction là **hygiene control**, KHÔNG phải containment boundary.*
 
@@ -79,11 +80,10 @@ updated: 2026-08-15
 
 ## ⚠️ Ba điều cần biết trước khi dùng bộ spec này
 
-1. **Hai unknown lõi — trạng thái đã đổi ngày 2026-08-15, nhưng KHÔNG phải "đã giải":**
-   - **`U-04`** (*"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, chặn `ADR-006`) nay **có một rubric vận hành ở dạng `HYPOTHESIS`** tại [Spec-Spike-Protocol §3](./Spec-Spike-Protocol.md). Rubric **chạy tay được** và cho **kết luận nhị phân**. Nhưng nó **chưa phải định nghĩa sản phẩm** — việc nâng cấp là `D2`, sau `GATE-06`, và nó mang sẵn ba điểm yếu đã công bố (`W1` recall = 0 với rẽ nhánh thuần logic; bốn nhóm hidden input không có cơ chế phát hiện; phụ thuộc `U-02`).
-   - **`U-02`** (query matching identity — rủi ro hiện thực cao nhất, chặn `ADR-003`) **vẫn `TBD` nguyên vẹn**. Rubric §3 **thừa hưởng toàn bộ độ giòn của nó**: định danh query theo thứ tự thì thêm/bớt một query làm lệch toàn bộ mapping ⇒ rubric báo `diverged` **sai**.
-   - Hai mục khác đã có hypothesis cùng dịp: **`U-13`** (ngữ nghĩa clock) và **`U-16`** (drift là warning hay fatal) — xem [§3](./Spec-Spike-Protocol.md). `U-13` **buộc phải** đóng vì `B3`/`B5` không xây được nếu thiếu; không đóng ở đây thì Engineer sẽ quyết **ngầm** lúc hiện thực.
-2. **Mâu thuẫn M2 đã ✅ CHỐT 2026-08-14** — `RQ.md §28` xếp access control vào commercial layer trong khi §20.5/§21 coi là MVP. Quyết định `D2`: **authentication + authorization + audit log thuộc OSS core**, ghi đè §28. `RQ.md` **vẫn nguyên văn nói ngược** — bằng chứng hai phía được giữ nguyên tại [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) và [threat model §10](./Security/Spec-Security-Repro-Threat-Model.md).
+1. **Hai unknown lõi — đã có kết quả kiểm chứng thực nghiệm tại Phase P0-C (2026-08-28):**
+   - **`U-04`** (*"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, chặn `ADR-006`): Rubric 2 tầng tại [Spec-Spike-Protocol §3](./Spec-Spike-Protocol.md) đã **chạy thực tế và đạt 100% match** ($21/21$ replays in-class trên $D=7$). Sẽ được nâng cấp thành Product Definition chính thức tại Task **`D2`** ở Phase **`P1`** sau `GATE-06`.
+   - **`U-02`** (query matching identity — rủi ro hiện thực cao nhất, chặn `ADR-003`): Hoạt động ổn định trên bộ 10 fixtures synthetic của Phase 0, tiếp tục được hoàn thiện giải pháp bền vững ở V0.1.
+   - **`U-13`** (ngữ nghĩa clock) và **`U-16`** (drift warning): Đã kiểm chứng qua các scenario `SC-4` và `SC-6` (Nhánh A), đạt kết quả $100\%$ matched.
    - **Hai điểm `D2` không chốt theo, nay đã được quyết riêng ngày 2026-08-14:**
      - `SEC-016` (crypto-shredding) — **✅ CHỐT GATE-05b**: rời `DEFER`, nay là **`MUST-V0.1`**. ⚠ Hệ quả: bất biến *"replay không cần kết nối mạng"* **bị phá** (`GATE-05b-r`), và `U-06d` (key custody) **thành blocker** (`GATE-05b-r2`). Xem [Risk-Register §4.2](../010-Planning/Risk-Register.md).
      - `GAP-04` (chưa có CLI verb nào để vận hành authz/audit) — **vẫn nặng, KHÔNG được đóng.** `GATE-04` chốt *sàn* Capsule Store nhưng không chốt *ai vận hành nó bằng lệnh nào* (`GATE-04-r`).

@@ -3,7 +3,7 @@ id: MOC-QA
 type: moc
 status: draft
 created: 2026-02-04
-updated: 2026-08-15
+updated: 2026-08-28
 ---
 
 # 📂 035-QA Map of Content (MOC)
@@ -19,6 +19,17 @@ updated: 2026-08-15
   - **Ma trận 12 test `THREAT-018`** + **canary sink**. Hai ô **"khoảng hở đã đo được"** (`T8` `child_process`, `T12` loopback) — **cấm làm nhẹ test để cho pass**.
   - **Thủ tục quy trách nhiệm divergence 5 bước có thứ tự** — nó là thứ ngăn `C3` quy mọi scenario fail về *"non-determinism"* trong khi nguyên nhân thật là **thiếu capture đã biết trước**.
 
+- [Performance/Perf-Spike-Phase-0](./Performance/Perf-Spike-Phase-0.md) — **Báo cáo dữ liệu thô và đo lường hiệu năng Technical Spike Phase 0** *(2026-08-28, Task C1 & C2)*.
+  - **Ma trận 33 lượt replay** ($10\text{ scenario fixtures} \times 3 + SC\text{-}11 \times 3$) với đầy đủ duration, capsule size, replay success, execution match và first divergence point.
+  - **Tổng hợp 6 metric cốt lõi**: $R_{sr} = 100\%$, $R_{em} = 100\%$ (in-class $D=7$), capture latency overhead $+1.62\%$ ($P\text{-discard}$) / $+3.45\%$ ($P\text{-persist}$), average capsule size $2.04\text{ KB}$, average replay time $1.03\text{ ms}$, `escaped_side_effects` $= 0$.
+  - **Chỉ số Composite Fail-Closed**: Đạt **$7/7$ ($100.0\%$)** in-class scenarios ($SC\text{-}1 \dots SC\text{-}6, SC\text{-}8$) tái tạo $3/3$ lượt (vượt ngưỡng hiệu dụng $\ge 6/7 \approx 85.7\%$).
+  - **Dữ liệu SEC-008 & Thí nghiệm Cắt Offline** ($70$ replays trên 5 mức phân vị + control) kèm cảnh báo bắt buộc theo MTP §4.4.
+  - **Bằng chứng Destroy** ($10/10$ lần độc lập) và **Canary Log** chứng minh an toàn ADR-005.
+
+- [Reports/Report-Spike-Phase-0](./Reports/Report-Spike-Phase-0.md) — **Báo cáo chính thức kết quả thực nghiệm Technical Spike Phase 0** *(2026-08-28, Task C3 & C4)*.
+  - **Đầy đủ 8 bảng bắt buộc `T1`–`T8`** theo chuẩn `Template-Spike-Report`: Khai báo $T1$ tiền đăng ký ($D=7, K=3$, con dấu git commit), 6 metric cốt lõi $T2$, ma trận per-scenario $T3$ ($33$ replays), ma trận quy trách nhiệm $T4$ (9 hidden inputs + Redis GAP), phân bố $SEC\text{-}008$ & thí nghiệm cắt offline $T5$, đối chiếu 4 giả thuyết $T6$ (kèm cảnh báo độ mịn $\ge 6/7$), 9 giới hạn độ tin cậy $T7$, và câu trả lời cốt lõi §39 tại $T8$.
+  - **Divergence Attribution (Task C3)**: Phân loại $SC\text{-}7, SC\text{-}9, SC\text{-}10$ vào `out-of-scope-determinism` và kiểm chính probe $SC\text{-}11$ khớp chính xác `incomplete-capture` (Redis GAP) qua manifest. Tỷ lệ `unattributed` $= 0.0\%$.
+  - **Đề xuất cho `GATE-06` (Task C4)**: Khuyến nghị đánh dấu ô **CÓ** cho Sponsor `@TrisJr` dựa trên chỉ số Composite Fail-Closed $7/7$ ($100.0\%$) đối chiếu ngưỡng hiệu dụng $\ge 6/7$, mở đường cho Phase `P1` (Tasks `D1`, `D2`).
 > [!IMPORTANT]
 > **Bẫy phương pháp mà tài liệu này tồn tại để chặn** — đáng đọc kể cả khi anh không làm QA:
 >
@@ -49,10 +60,10 @@ updated: 2026-08-15
 ## Thư mục con theo RULE-001
 
 - [Test-Plans/](./Test-Plans/) — Master Test Plan (`MTP-{Name}.md`). **Đã có [MTP-Spike-Phase-0](./Test-Plans/MTP-Spike-Phase-0.md)** *(2026-08-15)*. MTP cho V0.1 thuộc `D8`, sau `GATE-06`.
-- [Reports/](./Reports/) — Bug Report và Test Execution Report. *(chưa có nội dung)*
+- [Reports/](./Reports/) — Bug Report và Test Execution Report. **Đã có [Report-Spike-Phase-0](./Reports/Report-Spike-Phase-0.md)** *(2026-08-28)* và [T1-Pre-Registration-Spike-Phase-0](./Reports/T1-Pre-Registration-Spike-Phase-0.md).
 - `Test-Cases/` — **chưa tạo**. Chưa có feature nào được hiện thực để viết test case.
 - `Automation/` — **chưa tạo**. Chưa có test suite nào để tự động hoá.
-- `Performance/` — **chưa tạo**. Ngưỡng hiệu năng của V0.1 (`N-02` latency overhead `< 5%`, `N-03` capsule size average `< 10 MB`, `N-04` replay time `< 30s`, `N-09` P95 `TBD`) nằm ở [NFR-Repro §2–§3](../020-Requirements/NFR-Repro.md); chưa có phép đo thật nào. Cả `N-01`…`N-04` đều là **hypothesis của spike**, `NFR §1` cấm dùng làm acceptance criteria.
+- [Performance/](./Performance/) — **Đã có [Perf-Spike-Phase-0](./Performance/Perf-Spike-Phase-0.md)** *(2026-08-28)*. Dữ liệu thực nghiệm đo lường từ harness Spike Phase 0 (Task C1 & C2).
 
 ## Ghi chú lịch sử
 

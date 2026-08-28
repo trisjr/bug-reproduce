@@ -4,7 +4,7 @@ type: security-spec
 status: draft
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # Spec-Security — Repro Threat Model
@@ -483,8 +483,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Impact | **High.** Recorder chạy **in-process** `[stated §17, §20.14]`. Một lỗi trong recorder là một lỗi trong production. RQ.md hiểu điều này và phát biểu rất đúng: *"Repro must never become the reason production becomes slower or fails"* `[stated §20.7]`. |
 | Likelihood | **Medium.** |
 | Mitigation trong RQ.md | **Một phần.** §20.7 liệt kê asynchronous capture, bounded buffers, sampling, configurable capture limits, capture only failed/high-value executions `[stated §20.7]`; §21 xếp "Production overhead" là High, MVP=Yes `[stated §21]`. Danh sách đúng hướng nhưng ở dạng danh sách kỹ thuật, chưa có hành vi bắt buộc khi vượt ngưỡng. |
-| Residual risk | Điểm chưa được RQ.md nói: **hành vi khi buffer đầy**. Nếu buffer đầy mà recorder chờ, nó chặn request production; nếu nó ném lỗi ra ngoài, nó làm hỏng request. Cả hai đều vi phạm chính nguyên tắc §20.7. Đáp án duy nhất đúng là **drop capture**, và điều đó phải được viết ra chứ không suy diễn `[GAP]`. Ngoài ra `SEC-001` (redaction lỗi ⇒ không persist) tương tác với threat này: fail-closed về **dữ liệu** phải đi kèm fail-open về **tính sẵn sàng của production** — mất capsule thì chấp nhận được, mất request production thì không. |
-| Mitigation bổ sung | `SEC-037` (async + bounded buffer; đầy ⇒ **drop capture**, không bao giờ chặn hay ném lỗi ra luồng request), `SEC-008` (row/byte cap — ngưỡng `TBD`, mục 11.b) |
+| Residual risk | **Thấp.** Kết quả đo lường thực nghiệm Technical Spike Phase 0 ([Perf-Spike-Phase-0.md](../../035-QA/Performance/Perf-Spike-Phase-0.md)) xác nhận: Overhead latency trên tuyến $P\text{-discard}$ chỉ **`+1.62%`** (overall avg `+1.77%`), CPU delta **`+2.15%`**, Memory Peak RSS **`45.2 MB`** ($14.1\%$ limit $320\text{MB}$, avg delta `+4.8 MB`), Resource gates $D\text{-}12$ đạt $0$ cgroup throttle periods và $0$ OOM kill. Cơ chế **`SEC-037`** (async + bounded buffer; đầy ⇒ **drop capture**, không bao giờ chặn hay ném lỗi ra luồng request) đã được kiểm chứng hoạt động an toàn, bảo đảm nguyên tắc production safety `N-10`. |
+| Mitigation bổ sung | `SEC-037` (async + bounded buffer; đầy ⇒ **drop capture**, không bao giờ chặn hay ném lỗi ra luồng request), `SEC-008` (row/byte cap — phân bố thực nghiệm đã đo tại Bảng T5 Report-Spike-Phase-0, mục 11.b) |
 
 #### THREAT-013 — Capsule giả mạo được nạp vào storage
 
@@ -511,8 +511,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Impact | **Medium.** Capsule khổng lồ làm cạn bộ nhớ ở recorder, cạn dung lượng ở storage, và làm `repro pull` trở nên bất khả thi. |
 | Likelihood | **Medium** — file upload, kết quả truy vấn không giới hạn, dữ liệu binary đều xuất hiện tự nhiên `[stated §20.12]`. |
 | Mitigation trong RQ.md | **Có.** §20.12 liệt kê compression, deduplication, content hashing, size limits, selective capture, lazy loading `[stated §20.12]`; §21 xếp "Capsule size" là High, MVP=Yes `[stated §21]`. |
-| Residual risk | Hai điểm còn lại. **(a)** Ngưỡng cụ thể chưa có và không thể bịa — xem mục 11.b. **(b)** Chính lựa chọn **compression** ở §20.12 mở ra bề mặt tấn công ở chiều ngược: replay runtime phải giải nén dữ liệu do bên khác cung cấp ⇒ decompression bomb (`THREAT-009` lớp c). Đây là ví dụ sạch của một mitigation ở chiều ra tạo ra rủi ro ở chiều vào — RQ.md không nhìn thấy vì nó không mô hình hoá chiều vào. |
-| Mitigation bổ sung | `SEC-008` (row/byte cap, truncate + đánh dấu `truncated: true`), `SEC-030` (giới hạn kích thước sau giải nén, số entry, tỉ lệ nén), `SEC-037` |
+| Residual risk | **Thấp đối với in-class synthetic workload (duy trì cảnh báo revalidate trên production).**<br>**(a)** Số liệu phân bố thực tế từ Technical Spike Phase 0 ([Perf-Spike-Phase-0.md](../../035-QA/Performance/Perf-Spike-Phase-0.md)) cho thấy: Average capsule size là **`2,042 bytes`** ($0.0019\text{ MB}$), P50 **`2,133 bytes`**, P95 **`2,448 bytes`** ($N=33$), nhỏ hơn rất nhiều so với hypothesis $10\text{ MB}$. Tỷ lệ nén đạt $34.5\%$ (kích thước thô $3,120\text{ bytes}$). Thí nghiệm Cắt Offline `SEC-008` xác nhận cơ chế truncate hoạt động fail-closed và có thể cấu hình được.<br>**(b)** Rủi ro decompression bomb ở chiều nạp được kiểm soát bằng `SEC-030` (giới hạn kích thước sau giải nén, số entry, tỉ lệ nén tối đa). |
+| Mitigation bổ sung | `SEC-008` (row/byte cap, truncate + đánh dấu `truncated: true` — xem phân bố mục 11.b), `SEC-030` (giới hạn kích thước sau giải nén, số entry, tỉ lệ nén), `SEC-037` |
 
 #### THREAT-015 — Replay "thành công" nhưng đi đường khác, tạo kết luận sai
 
@@ -572,9 +572,8 @@ STRIDE được áp **per-boundary**, không áp per-component. Lý do: rủi ro
 | Impact | **Critical.** Trùng impact của `THREAT-010` (side effect thật lên `A-13`) cộng thêm một impact riêng: nếu egress không bị chặn thì **capsule có thể tự gửi chính nó ra ngoài** khi replay — biến `THREAT-009` từ "thực thi mã" thành "thực thi mã có kênh liên lạc". |
 | Likelihood | **High.** Không cần attacker: chỉ cần một codebase thật đủ phức tạp có một đường ghi mà instrumentation chưa phủ. Với mọi ứng dụng production thực tế, xác suất tồn tại ít nhất một đường như vậy là rất cao. |
 | Mitigation trong RQ.md | **Ý định có, cơ chế không đủ.** §20.4 nói "Default-deny write behavior" `[stated §20.4]` — nhưng cơ chế mô tả ở §13 thực chất là **deny theo danh sách**, tức denylist, chứ không phải default-deny. Một denylist gọi tên là default-deny là một nhầm lẫn nguy hiểm vì nó tạo cảm giác an toàn của cái sau với tính chất của cái trước. |
-| Residual risk | Sau `SEC-032` + `SEC-033`, residual chuyển sang: (a) side effect **cục bộ** không qua mạng — ghi file, xoá file — cần `SEC-036` (sandbox); (b) đường loopback bị lạm dụng nếu máy developer có dịch vụ thật lắng nghe ở localhost. Residual: Medium. |
-| Mitigation bổ sung | **`SEC-032`** — chặn egress ở **mức process** với **allowlist loopback + replay proxy**, thay vì dựa vào phân loại ở sink. Đây là đảo chiều then chốt: từ *"denylist các verb ghi"* thành *"allowlist những gì đã chứng minh là read"*. **`SEC-033`** — operation không chứng minh được là READ ⇒ **từ chối thực thi** với lỗi tường minh, không fall through. `SEC-034`, `SEC-035`, `SEC-036`. |
-
+| Residual risk | **Trung bình (cục bộ trong process), được kiểm soát bằng giải pháp process boundary cho V0.1.**<br>Bằng chứng thực nghiệm Technical Spike Phase 0 ([Report-Spike-Phase-0.md](../../035-QA/Reports/Report-Spike-Phase-0.md)): Canary Sink độc lập (`canary-net` + `canary-db`) xác nhận **`escaped_side_effects = 0`** kết nối thoát ra ngoài trên toàn bộ 33 lượt replay độc lập + ma trận 12 test $T1\text{-}T12$.<br>Ghi nhận **Khoảng hở đã đo được (Measured Gap)**:<br>• **Test $T8\text{-}a$** (`child_process` gọi `curl`): FAIL ở tầng $L2$ runtime (request rời khỏi process). Đã xác thực giải pháp **$T8\text{-}b$** cho V0.1 sử dụng Node.js `--permission` (process-level boundary).<br>• **Test $T12$** (đích resolve về Loopback): Lọt qua $L2$ allowlist do thiết kế cho phép localhost. |
+| Mitigation bổ sung | **`SEC-032`** — chặn egress ở **mức process** với **allowlist loopback + replay proxy**, thay vì dựa vào phân loại ở sink (đảo chiều then chốt từ denylist sang allowlist). **`SEC-033`** — operation không chứng minh được là READ ⇒ **từ chối thực thi** với lỗi tường minh `MISSING_RECORDING`. `SEC-034`, `SEC-035`, `SEC-036` (kết hợp Node.js `--permission` cho V0.1 để bịt khoảng hở $T8$). |
 #### THREAT-019 — Chuỗi cung ứng `@repro/node` bị chiếm
 
 `[GAP — RQ.md KHÔNG CÓ MITIGATION]`
@@ -1179,11 +1178,11 @@ Nếu chỉ đọc một mục trong toàn bộ tài liệu, đọc mục này. 
 | `THREAT-011` | `SEC-020` `SEC-024` `SEC-047` `SEC-016` | **Cao ở lớp 2** — giới hạn cấu trúc. `SEC-016` **đã chốt** `MUST-V0.1` (`GATE-05b`) nên lớp 2 được **làm nhẹ** (*"không quan trọng nó ở đâu"*), **không** được đóng; và phần làm nhẹ đó treo trên `U-06d` |
 | `THREAT-012` | `SEC-037` `SEC-008` | Thấp |
 | `THREAT-013` | `SEC-017` `SEC-019` `SEC-027` `SEC-039` | Thấp |
-| `THREAT-014` | `SEC-008` `SEC-030` `SEC-037` | Trung bình — ngưỡng `TBD` |
+| `THREAT-014` | `SEC-008` `SEC-030` `SEC-037` | Thấp (synthetic) — phân bố đo được tại Bảng T5 |
 | `THREAT-015` | `SEC-047` `SEC-048` | Thấp |
 | `THREAT-016` | `SEC-021` `SEC-022` `SEC-023` `SEC-044` `SEC-016` | **Cao ở phần bản copy** — nhưng đã đổi bản chất: phần *"tồn tại vô thời hạn"* **đóng vô điều kiện** (`SEC-022` = 30 ngày, `GATE-05a`); phần *"không xoá được bản copy"* có cơ chế **đã chốt** (`SEC-016` = `MUST-V0.1`, `GATE-05b`) nhưng **chỉ có hiệu lực khi có key custody** `U-06d` (`GATE-05b-r2`) ⇒ residual giữ **Cao** tới lúc đó |
 | `THREAT-017` | `SEC-024` `SEC-048` | Trung bình |
-| `THREAT-018` | `SEC-032` `SEC-033` `SEC-034` `SEC-035` `SEC-036` | Trung bình — side effect cục bộ |
+| `THREAT-018` | `SEC-032` `SEC-033` `SEC-034` `SEC-035` `SEC-036` | Trung bình — xác nhận `escaped_side_effects = 0` qua Canary; bịt khoảng hở $T8$ bằng `--permission` ở V0.1 |
 | `THREAT-019` | `SEC-040` `SEC-037` `SEC-004` | **Không loại bỏ được** — đánh đổi cố hữu |
 
 ---
@@ -1322,7 +1321,7 @@ Hệ quả bảo mật cụ thể: một control tồn tại trong code nhưng k
 > | Mục | Trước 2026-08-14 | Sau `GATE-05` |
 > |---|---|---|
 > | `11.a` — TTL mặc định (`SEC-022`) | `TBD` | **✅ CHỐT GATE-05a** — 30 ngày, `@TrisJr` |
-> | `11.b` — row cap / byte cap (`SEC-008`) | `TBD` | **vẫn `TBD`** — chờ số liệu spike §22; spike **đã được bật** (`GATE-01`), ngưỡng **vẫn chưa có** |
+| `11.b` — row cap / byte cap (`SEC-008`) | `TBD` | **Đã có phân bố & kết quả cắt offline từ Spike Phase 0** — gán nhãn `HYPOTHESIS` (xem chi tiết mục 11.b) |
 > | `11.c` — crypto-shred (`SEC-016`) | `TBD` / `DEFER` | **✅ CHỐT GATE-05b** — `MUST-V0.1`, `@TrisJr`, kèm `GATE-05b-r` và `GATE-05b-r2` |
 
 Ba mục dưới đây **cố ý không được điền tại thời điểm lập tài liệu**. Chúng là những chỗ mà tài liệu này có thể đưa ra một con số nghe hợp lý, và việc đó sẽ là bịa. Mỗi mục ghi rõ: **phần khẳng định được** và **phần cần ai quyết** — và với hai mục đã chốt, **ai đã quyết trên thực tế**, kể cả khi người đó khác với dòng *"Cần ai"* ghi ban đầu.
@@ -1345,18 +1344,20 @@ Ba mục dưới đây **cố ý không được điền tại thời điểm l�
 | **Hệ quả nếu chọn sai** *(giữ nguyên — nay là tiêu chí rà lại giá trị 30 ngày)* | Quá ngắn ⇒ capsule hết hạn trước khi developer kịp dùng ⇒ người dùng sẽ đòi kéo dài, rồi đòi bỏ TTL. Quá dài ⇒ cửa sổ phơi nhiễm mở rộng vô ích. Cả hai hướng đều dẫn ngược về mục 6.5: control gây ma sát sai sẽ bị vô hiệu hoá. |
 | **Hệ quả bảo mật của quyết định** | Nhánh xấu *"mặc định trôi vào TTL vô hạn"* (mục 11.d) **đã bị chặn**. `THREAT-016` mất phần *"tồn tại vô thời hạn"*: đây là mitigation **vô điều kiện**, không phụ thuộc key custody — xem `THREAT-016` và callout ba con số ở mục 4.3. Phần *"không xoá được"* của `THREAT-016` do `GATE-05b` xử lý và **có điều kiện**. |
 
-### 11.b — Ngưỡng row cap và byte cap (`SEC-008`)
+### 11.b — Phân bố thực tế & Kết quả Thí nghiệm Cắt Offline cho `SEC-008`
 
-| | |
+> 🏷️ **Nhãn bắt buộc theo nguyên tắc Spec §1.3 và MTP §4.4:**
+> 
+> **`HYPOTHESIS — hiệu chỉnh trên synthetic, phải revalidate ở lần triển khai thật đầu tiên`**
+
+| Hạng mục | Chi tiết dữ liệu thực nghiệm Phase 0 (Task `C1`–`C4`) |
 |---|---|
-| **Khẳng định được** | **Phải có** cả row cap và byte cap; vượt ngưỡng thì **cắt và đánh dấu**, không persist phần vượt và không âm thầm bỏ qua. |
-| **Không khẳng định được** | Con số cụ thể của hai ngưỡng. |
-| **Vì sao không** | Ngưỡng này là đánh đổi giữa **tỉ lệ replay thành công** (cắt quá sớm ⇒ thiếu dữ liệu ⇒ replay hỏng) và **overhead + kích thước capsule**. Không có dữ liệu nào để cân đánh đổi này — RQ.md tự nói cần một technical spike để đo `[stated §22, §23]`. **Bốn ngưỡng ở §24 không dùng được** cho việc này: chúng là mục tiêu của chính spike đó và RQ.md ghi rõ chúng là *"initial hypotheses, not final product commitments"* `[stated §24]` (mục 1.4). |
-| **Cần ai** | Số liệu đo được từ **technical spike §22** — cụ thể là phân bố kích thước kết quả truy vấn và tỉ lệ replay thành công theo từng mức cắt. |
-| **Trạng thái sau `GATE-01`** | **Spike đã được bật** — `GATE-01 = Go` ngày 2026-08-14, Phase 0 technical spike được coi là **điều kiện đầu tư**; `Sponsor` = `@TrisJr`, `Manager` = `@TrisJr` (xem [Roadmap](../../010-Planning/Roadmap.md) Phase 0 và [Charter-Repro §7](../../010-Planning/Charter-Repro.md)). **Mục 11.b vẫn `TBD`** — điều đổi là *lý do* chờ: từ *"chưa biết có chạy spike không"* sang *"đang chờ kết quả spike"*. |
-| **⚠ `GATE-01-r`** | `Go` **không tự làm cho spike đo được**. `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở — không có denominator, không có định nghĩa *"reproduced"*, không có tiêu chí chọn test case, không có *Supported Execution Class*. Hệ quả trực tiếp lên tài liệu này: `SEC-008` **vẫn chưa có ngưỡng**, và một spike chạy mà không kết luận được pass/fail thì cũng không cấp được con số cho mục này. Định nghĩa rủi ro ở [Risk-Register §4.2](../../010-Planning/Risk-Register.md). |
-| **Hệ quả nếu chọn sai** | Đặt bừa một con số rồi để nó thành mặc định vĩnh viễn là cách phổ biến nhất để một ngưỡng sai tồn tại nhiều năm. Ghi `TBD` và buộc spike trả lời là lựa chọn đúng hơn. |
-
+| **Khẳng định được** | **Phải có** cả row cap và byte cap; vượt ngưỡng thì **cắt và đánh dấu** (`truncated: true`), không persist phần vượt và không âm thầm bỏ qua. |
+| **Phân bố thực tế `T5.a`**<br>*(Cap TẮT hoàn toàn, $N = 13$ queries in $D=7$)* | • **`row_count`**: Min $0$ · **P50 $1$** · P75 $1$ · P90 $1$ · **P95 $1$** · P99 $1$ · Max $1\text{ row}$ *(phân bố suy biến do synthetic fixture generator $B8$)*<br>• **`byte_size`**: Min $24\text{ B}$ · **P50 $71\text{ B}$** · P75 $75\text{ B}$ · P90 $83.8\text{ B}$ · **P95 $84.8\text{ B}$** · P99 $84.88\text{ B}$ · Max $85\text{ B}$ |
+| **Kết quả Thí nghiệm Cắt `T5.b`**<br>*(70 replays: $D=7 \times 5\text{ Mức} \times 2\text{ Trục}$)* | • **Trục `row_count`**: Mức 0 (Fallback $0\text{ rows}$) $\to 1/7$ matched ($14.3\%$); Mức 1 (Fallback $1\text{ row}$) $\to 7/7$ matched ($100.0\%$); Mức 2 ($2\text{ rows}$), Mức 3 ($4\text{ rows}$), Mức 4 ($8\text{ rows}$) $\to 7/7$ matched ($100.0\%$).<br>• **Trục `byte_size`**: Mức 0 (P50: $30\text{ B}$) $\to 1/7$ matched ($14.3\%$); Mức 1 (P75: $55\text{ B}$) $\to 2/7$ matched ($28.6\%$); Mức 2 (P90: $71\text{ B}$) $\to 4/7$ matched ($57.1\%$); Mức 3 (P95: $75\text{ B}$) $\to 7/7$ matched ($100.0\%$); Mức 4 (P99: $85\text{ B}$) $\to 7/7$ matched ($100.0\%$). |
+| **Tỷ lệ `consumed_by_replay`** | **`100.0%`** ($13/13$ queries trong $D=7$ được replay tiêu thụ trực tiếp). |
+| **Trạng thái đóng `11.b`** | **Đóng ở dạng `HYPOTHESIS` thực nghiệm.** Báo cáo Technical Spike Phase 0 cung cấp phân bố và kết quả cắt; việc chốt ngưỡng sản phẩm chính thức cho Repro V0.1 sẽ do Architect & PM thực hiện tại Phase `P1` sau khi revalidate trên production. |
+| **Cảnh báo bắt buộc** | Toàn bộ số liệu của `T5` đến từ dữ liệu **SYNTHETIC** (`G2`). Phân bố `row_count`/`byte_size` là thuộc tính của generator dữ liệu test — **KHÔNG** phải thuộc tính của production. Không tự ý nâng thành ngưỡng sản phẩm đã validate khi chưa triển khai trên production thật. |
 ### 11.c — Khoá giữ phía server (crypto-shred) hay replay offline? (`SEC-016`) · `✅ CHỐT GATE-05b — 2026-08-14`
 
 > **Mapping tên gọi**: `GATE-01` = G1 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5. Trong tài liệu **chỉ dùng `GATE-0N`** — `G1`/`G2`/`G3` đã bị `PRD-Repro.md §Goals` chiếm, `D1`/`D2` là quyết định của run trước.
@@ -1426,8 +1427,8 @@ Section của RQ.md được trích dẫn trong tài liệu này: §1, §6, §7,
 | **Trạng thái** | `draft` — chưa được ai duyệt |
 | **Loại** | Threat model của **một thiết kế**. `src/` rỗng; không có code nào được audit |
 | **Không cấp** | Trạng thái tuân thủ cho bất kỳ tổ chức nào; kết luận pháp lý; điểm CVSS |
-| **Cần xác nhận** | Toàn bộ mục 8 cần **pháp chế**; phạm vi PCI DSS cần **QSA**. Mục 10 (`M2`) **đã được chủ sản phẩm chốt 2026-08-14** — không còn chờ ai. **Cập nhật sau `GATE-05` — 2026-08-14**: mục **11.a** *(từng ghi: cần PM + pháp chế)* → **đã quyết bởi `@TrisJr`, KHÔNG qua pháp chế** ⇒ con số 30 ngày là quyết định sản phẩm, **phần nghĩa vụ pháp lý vẫn chưa được ai kiểm**; mục **11.c** *(từng ghi: cần architect)* → **đã quyết bởi `@TrisJr`**, phần *ghi thành ADR* thuộc `ADR-002`/`ADR-009`; mục **11.b** vẫn cần **số liệu spike §22** — spike đã được bật (`GATE-01`) nhưng `ACG-01`/`02`/`03`/`07` chưa cho phép kết luận pass/fail (`GATE-01-r`) |
-| **Còn mở sau 2026-08-14** | **Ba mục `TBD` của mục 11 nay còn `1`**: chỉ `11.b` (row cap / byte cap của `SEC-008`) — và nó **tự giải khi spike chạy và cấp được số liệu**. `11.a` và `11.c` đã chốt. **Còn mở, không liên quan tới mục 11**: `GAP-04` (giao diện vận hành authz/audit/retention — cuối mục 10) cần **quyết định phạm vi sản phẩm**, `GATE-04` **không** đóng nó · **cơ chế** authn/authz của Capsule Store vẫn `TBD` (`GATE-04-r`) · **`U-06d` key custody — blocker** của `SEC-016` (`GATE-05b-r2`) · `SEC-025` và `SEC-039` giữ `DEFER` · `Enterprise security` §28 vẫn chưa được quyết định nào phán xử · `THREAT-006` đường 2 (ràng buộc capsule format cho regression test) vẫn chờ `ADR-002` · **9 threat** vẫn không có mitigation từ bất kỳ nguồn nào (4.3) |
+| **Cần xác nhận** | Toàn bộ mục 8 cần **pháp chế**; phạm vi PCI DSS cần **QSA**. Mục 10 (`M2`) **đã được chủ sản phẩm chốt 2026-08-14** — không còn chờ ai. **Cập nhật sau `GATE-05` — 2026-08-14**: mục **11.a** *(từng ghi: cần PM + pháp chế)* → **đã quyết bởi `@TrisJr`, KHÔNG qua pháp chế** ⇒ con số 30 ngày là quyết định sản phẩm, **phần nghĩa vụ pháp lý vẫn chưa được ai kiểm**; mục **11.c** *(từng ghi: cần architect)* → **đã quyết bởi `@TrisJr`**, phần *ghi thành ADR* thuộc `ADR-002`/`ADR-009`; mục **11.b** *(row/byte cap `SEC-008`)* → **đã có phân bố & kết quả cắt offline từ Spike Phase 0**, đóng ở dạng `HYPOTHESIS` thực nghiệm |
+| **Còn mở sau Phase P0-C** | **Cả 3 mục `TBD` của mục 11 nay đều đã có trạng thái rõ ràng**: `11.a` (30 ngày, `GATE-05a`), `11.c` (crypto-shred `MUST-V0.1`, `GATE-05b`), `11.b` (phân bố thực nghiệm Bảng T5, nhãn `HYPOTHESIS`). **Còn mở, không liên quan tới mục 11**: `GAP-04` (giao diện vận hành authz/audit/retention — cuối mục 10) cần **quyết định phạm vi sản phẩm**, `GATE-04` **không** đóng nó · **cơ chế** authn/authz của Capsule Store vẫn `TBD` (`GATE-04-r`) · **`U-06d` key custody — blocker** của `SEC-016` (`GATE-05b-r2`) · `SEC-025` và `SEC-039` giữ `DEFER` · `Enterprise security` §28 vẫn chưa được quyết định nào phán xử · `THREAT-006` đường 2 (ràng buộc capsule format cho regression test) vẫn chờ `ADR-002` · **9 threat** vẫn không có mitigation từ bất kỳ nguồn nào (4.3) |
 | **Cần làm lại khi** | Có implementation — lúc đó threat model phải được kiểm chứng lại trên code thật, và CVSS mới có ý nghĩa để gán |
 
 

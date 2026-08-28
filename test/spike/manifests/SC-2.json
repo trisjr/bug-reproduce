@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-2 (External API response)",
+  "scenario_id": "SC-2",
+  "name": "External API response",
+  "in_class": true,
+  "category": "external-api",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Không capture Redis ở V0.1; không thêm hook Redis (R1).",
+      "predicted_effect": "none",
+      "rationale": "SC-2 gây lỗi thanh toán 402 qua response từ external payment stub; Redis không can thiệp.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Không có I/O filesystem trong luồng nghiệp vụ thanh toán.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata; không capture động per-request.",
+      "predicted_effect": "none",
+      "rationale": "Cấu hình URL của payment stub được cố định đồng nhất giữa capture và replay.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state",
+      "group": "process-memory",
+      "reason_omitted": "In-process memory state không thuộc boundary capture.",
+      "predicted_effect": "none",
+      "rationale": "Không có module-level state nào ảnh hưởng tới quyết định decline thanh toán.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "OS behavior",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Kernel scheduling, network stack timing ngoài phạm vi determinism (§20.1).",
+      "predicted_effect": "none",
+      "rationale": "HTTP replay adapter hoàn trả recorded 402 response trực tiếp từ FIFO queue, triệt tiêu độ trễ mạng.",
+      "attribution_tag": "none"
+    }
+  ]
+}

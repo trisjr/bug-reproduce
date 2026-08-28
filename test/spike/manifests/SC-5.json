@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-5 (Missing data)",
+  "scenario_id": "SC-5",
+  "name": "Missing data",
+  "in_class": true,
+  "category": "missing-data",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Không capture Redis.",
+      "predicted_effect": "none",
+      "rationale": "SC-5 kiểm tra trường hợp customer/sku không tồn tại -> DB trả về 0 rows -> HTTP 404.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Không có I/O filesystem trong luồng 404 Not Found.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata; không capture động per-request.",
+      "predicted_effect": "none",
+      "rationale": "Không có biến môi trường nào ảnh hưởng tới query 0-row.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state",
+      "group": "process-memory",
+      "reason_omitted": "In-process memory state không thuộc boundary capture.",
+      "predicted_effect": "none",
+      "rationale": "ReplaySession trả về 0-row query result chính xác từ capsule.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "OS behavior",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Kernel scheduling, network stack timing ngoài phạm vi determinism (§20.1).",
+      "predicted_effect": "none",
+      "rationale": "Luồng 404 kết thúc sớm ở neo U_infinity (status:404).",
+      "attribution_tag": "none"
+    }
+  ]
+}

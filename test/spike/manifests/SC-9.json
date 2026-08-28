@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-9 (Async behavior)",
+  "scenario_id": "SC-9",
+  "name": "Async behavior",
+  "in_class": false,
+  "category": "async-behavior",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Không capture Redis.",
+      "predicted_effect": "none",
+      "rationale": "Redis không liên quan tới async tail task.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Không có I/O filesystem trong background async tail.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata.",
+      "predicted_effect": "none",
+      "rationale": "Không có biến môi trường nào điều khiển lifecycle của async task.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state (Event loop microtask queue & unclosed tails)",
+      "group": "process-memory",
+      "reason_omitted": "Node.js Event Loop microtask queue, unclosed promises sau khi HTTP response đã flush nằm ngoài boundary capture (§20.1 Hidden Inputs, U-20).",
+      "predicted_effect": "divergence",
+      "rationale": "Async tail task chạy ngoài ranh giới request -> bị cắt ngắn hoặc không hoàn tất trước khi process replay dừng -> thiếu interaction.",
+      "attribution_tag": "out-of-scope-determinism"
+    },
+    {
+      "input": "OS behavior (Async I/O tick timing)",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Libuv threadpool schedule & epoll/kqueue event firing timing ngoài phạm vi determinism.",
+      "predicted_effect": "divergence",
+      "rationale": "Thứ tự resolve của async tail không tất định.",
+      "attribution_tag": "out-of-scope-determinism"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-4 (Time-dependent)",
+  "scenario_id": "SC-4",
+  "name": "Time-dependent",
+  "in_class": true,
+  "category": "time-dependent",
+  "created_at": "2026-08-28",
+  "rule": "MTP §6.2 / D-4 (Pre-registration): All 5 mandatory baseline missing inputs must be declared with predicted effect before execution",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c): Không capture Redis.",
+      "predicted_effect": "none",
+      "rationale": "SC-4 phụ thuộc cửa sổ ban đêm (22:00-06:00 UTC) kích hoạt phụ phí đêm; Redis không tham gia.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Không có I/O filesystem trong kịch bản thời gian.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata; không capture động per-request.",
+      "predicted_effect": "none",
+      "rationale": "Timezone TZ=UTC được cố định thống nhất.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state",
+      "group": "process-memory",
+      "reason_omitted": "In-process memory state không thuộc boundary capture.",
+      "predicted_effect": "none",
+      "rationale": "Clock state được tiêm qua ClockReplayAdapter theo hypothesis U-13 (Spec §3.8).",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "OS behavior",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Monotonic timer drift, kernel clock tick rate (§20.1).",
+      "predicted_effect": "none",
+      "rationale": "U-13 phát lại dãy timestamp đã ghi tuần tự theo FIFO queue, loại bỏ sai lệch đồng hồ hệ điều hành.",
+      "attribution_tag": "none"
+    }
+  ]
+}

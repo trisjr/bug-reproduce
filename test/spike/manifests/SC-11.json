@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Known-Missing-Input Manifest — SC-11 (Redis state dependency probe)",
+  "scenario_id": "SC-11",
+  "name": "Redis state dependency probe",
+  "in_class": false,
+  "category": "cache-probe",
+  "created_at": "2026-08-28",
+  "rule": "Spec §2.5 / D-5 (Pre-registration): SC-11 probe to test attribution engine (must yield diverged + incomplete-capture)",
+  "missing_inputs": [
+    {
+      "input": "Redis / cache state",
+      "group": "cache-state",
+      "reason_omitted": "Quyết định G1 (phương án c) & ACG-07 (ii-b): Redis không nằm trong 8 nhóm capture V0.1; execution phụ thuộc cache state nằm NGOÀI class.",
+      "predicted_effect": "divergence",
+      "rationale": "SC-11 cố tình tạo execution phụ thuộc cache state tại local -> sau destroy Redis không còn dữ liệu -> thiếu interaction trong capsule -> phân kỳ.",
+      "attribution_tag": "incomplete-capture"
+    },
+    {
+      "input": "Filesystem state",
+      "group": "filesystem",
+      "reason_omitted": "§18 không capture filesystem.",
+      "predicted_effect": "none",
+      "rationale": "Không có I/O filesystem trong probe SC-11.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Environment variables",
+      "group": "runtime-metadata",
+      "reason_omitted": "Static runtime metadata.",
+      "predicted_effect": "none",
+      "rationale": "Biến môi trường được cố định đồng nhất.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "Process state",
+      "group": "process-memory",
+      "reason_omitted": "In-process memory state không thuộc boundary capture.",
+      "predicted_effect": "none",
+      "rationale": "Lỗi phân kỳ đến từ cache state bên ngoài, không phải từ memory tiến trình.",
+      "attribution_tag": "none"
+    },
+    {
+      "input": "OS behavior",
+      "group": "kernel-scheduling",
+      "reason_omitted": "Kernel scheduling ngoài phạm vi determinism.",
+      "predicted_effect": "none",
+      "rationale": "Egress allowlist của L2 chặn kết nối ra Redis sau destroy, tạo lỗi ổn định ở mọi lần replay.",
+      "attribution_tag": "none"
+    }
+  ]
+}

@@ -24,11 +24,11 @@ Quy trình này được thiết kế để tối ưu hóa sự cộng tác gi�
 
 | Bước  | Tên bước                      | Công cụ/Workflow gợi ý | Kết quả đầu ra (Output)            |
 | :---- | :---------------------------- | :--------------------- | :--------------------------------- |
-| **1** | **Discovery** (Khám phá)      | `/opsx-explore`        | Hiểu rõ vấn đề, rủi ro, bối cảnh   |
-| **2** | **Solution** (Giải pháp)      | `/opsx-new`            | Tài liệu Proposal, Design Spec     |
+| **1** | **Discovery** (Khám phá)      | `/opsx:explore`        | Hiểu rõ vấn đề, rủi ro, bối cảnh   |
+| **2** | **Solution** (Giải pháp)      | `/opsx:new`            | Tài liệu Proposal, Design Spec     |
 | **3** | **Plan** (Lập kế hoạch)       | `/writing-plans`       | Implementation Plan (Step-by-step) |
-| **4** | **Implementation** (Thực thi) | `/opsx-apply`          | Mã nguồn hoàn thiện, đúng Spec     |
-| **5** | **Verification** (Xác minh)   | `/opsx-verify`         | Unit Test pass, AC được đáp ứng    |
+| **4** | **Implementation** (Thực thi) | `/opsx:apply`          | Mã nguồn hoàn thiện, đúng Spec     |
+| **5** | **Verification** (Xác minh)   | `/opsx:verify`         | Unit Test pass, AC được đáp ứng    |
 | **6** | **Retro** (Đúc kết)           | `/memo`                | Role Memory được cập nhật          |
 
 ---

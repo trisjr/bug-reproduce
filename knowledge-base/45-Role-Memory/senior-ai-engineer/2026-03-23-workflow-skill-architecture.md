@@ -8,7 +8,7 @@ created: 2026-03-23
 # 🧠 Kinh Nghiệm Thiết Kế Workflow + Skill Architecture
 
 ## 📌 1. Tóm tắt (Summary)
-Đúc kết từ phiên thiết kế workflow `/opsx-ingest` — một workflow phức tạp kết hợp nhiều capability (URL parsing, AI triage, document generation, bug report, impact analysis). Bài học chính: khi nào nên tách thành Skill riêng, cách tối ưu token budget, và các pitfall khi viết workflow instruction.
+Đúc kết từ phiên thiết kế workflow `/opsx:ingest` — một workflow phức tạp kết hợp nhiều capability (URL parsing, AI triage, document generation, bug report, impact analysis). Bài học chính: khi nào nên tách thành Skill riêng, cách tối ưu token budget, và các pitfall khi viết workflow instruction.
 
 ## 🧩 2. Mẫu hình & Giải pháp (Patterns & Solutions)
 
@@ -40,7 +40,7 @@ created: 2026-03-23
 - **Cách phòng ngừa:** **BẮT BUỘC** đọc `knowledge-base/99-Templates/Documents-Template.md` trước khi viết bất kỳ workflow nào tạo file trong `docs/`. Đặc biệt kiểm tra: (1) đường dẫn sub-directory, (2) naming convention, (3) frontmatter fields
 
 ### Pitfall 2: Thiếu Edge Case cho Input rỗng
-- **Lỗi đã gặp:** Workflow không xử lý khi User gõ `/opsx-ingest` không kèm URL
+- **Lỗi đã gặp:** Workflow không xử lý khi User gõ `/opsx:ingest` không kèm URL
 - **Nguyên nhân:** Tập trung vào happy path
 - **Cách phòng ngừa:** Mọi workflow đều cần **Bước 0: Validate Input** — kiểm tra input tồn tại và hợp lệ trước khi bắt đầu xử lý
 
@@ -50,11 +50,11 @@ created: 2026-03-23
 
 ## 🎯 4. Ưu tiên của người dùng (User Preferences)
 - **Token efficiency là ưu tiên hàng đầu**: User luôn hỏi "có cách tối ưu hơn không?" — cần chủ động đề xuất surgical fetching, static lookup, và adaptive confirmation
-- **Thiết kế trước, implement sau**: User luôn dùng `/opsx-explore` trước khi code — tôn trọng quy trình Explore → Design → Implement
+- **Thiết kế trước, implement sau**: User luôn dùng `/opsx:explore` trước khi code — tôn trọng quy trình Explore → Design → Implement
 - **Self-review trước khi deliver**: User expect workflow/skill phải được tự review và sửa lỗi trước khi trình bày kết quả cuối cùng
 
 ## 🔗 5. Tài liệu liên quan (Related Artifacts)
-- [opsx-ingest.md](../../../.agent/workflows/opsx-ingest.md) — Workflow chính
+- [opsx:ingest.md](../../../.agent/workflows/opsx:ingest.md) — Workflow chính
 - [requirement-impact SKILL.md](../../../.agent/skills/requirement-impact/SKILL.md) — Skill tách riêng
 - [Documents-Template.md](../../99-Templates/Documents-Template.md) — Source of Truth cho cấu trúc docs/
 

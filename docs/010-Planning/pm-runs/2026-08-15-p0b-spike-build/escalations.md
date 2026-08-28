@@ -44,7 +44,7 @@ Phiên mới **KHÔNG** làm lại Bước 1–4. Trạng thái đã bền vữn
 | 1 Intake & Triage | ✅ xong — `T2` (2/4), có điều kiện escalate | `brief.md` |
 | 2 Analysis fan-out | ✅ xong — 3 lens read-only | `findings/*.md` |
 | 3 GATE | ✅ **DUYỆT** — 4 quyết định `G-1`…`G-4`, 3 nợ `DEBT-1`…`DEBT-3` | `run-plan.md §6` |
-| 4 Planning artifacts | ✅ xong — không dùng `/opsx-ff` (T2 lane spike, lý do ở `brief.md`) | `run-plan.md`, `tasks.md` |
+| 4 Planning artifacts | ✅ xong — không dùng `/opsx:ff` (T2 lane spike, lý do ở `brief.md`) | `run-plan.md`, `tasks.md` |
 | 5 Implementation | ⛔ **CHƯA CHẠY** — chưa dòng code nào | `tasks.md §W1.1` |
 | 6 Verify & Close | ⛔ chưa | — |
 

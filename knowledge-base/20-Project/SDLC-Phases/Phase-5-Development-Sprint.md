@@ -57,18 +57,18 @@ updated: 2026-03-20
 ## 4. Quy trình Dev với OpenSpec
 
 ```
-1. /opsx-explore    → Phân tích impact, tư duy giải pháp (nếu cần)
-2. /opsx-new        → Tạo change mới cho Story (hoặc /opsx-ff cho fast-forward)
-3. /opsx-continue   → Tạo artifacts tuần tự (delta specs, plan)
-4. /opsx-apply      → Thực thi code theo plan đã duyệt
-5. /opsx-verify     → Verify code khớp với specs trước khi commit
+1. /opsx:explore    → Phân tích impact, tư duy giải pháp (nếu cần)
+2. /opsx:new        → Tạo change mới cho Story (hoặc /opsx:ff cho fast-forward)
+3. /opsx:continue   → Tạo artifacts tuần tự (delta specs, plan)
+4. /opsx:apply      → Thực thi code theo plan đã duyệt
+5. /opsx:verify     → Verify code khớp với specs trước khi commit
 6. /submit-pr       → Tạo branch, commit, push, tạo PR
-7. /opsx-sync       → Sync delta specs vào main specs (sau khi merge)
-8. /opsx-archive    → Archive change đã hoàn thành
+7. /opsx:sync       → Sync delta specs vào main specs (sau khi merge)
+8. /opsx:archive    → Archive change đã hoàn thành
 ```
 
 > [!TIP]
-> **Fast-forward:** Dùng `/opsx-ff` để gộp bước 2-4 thành một lần duy nhất cho các Story đơn giản.
+> **Fast-forward:** Dùng `/opsx:ff` để gộp bước 2-4 thành một lần duy nhất cho các Story đơn giản.
 
 ---
 
@@ -89,7 +89,7 @@ Cho features nhạy cảm (Auth, Payment, PII...):
 "Dùng vai trò Engineer để implement Story-Login
  dựa trên @Endpoint-Auth.md và @Proto-Login.md."
 
-"/opsx-ff" → Fast-forward: tạo change + implement trong 1 lần
+"/opsx:ff" → Fast-forward: tạo change + implement trong 1 lần
 ```
 
 ---
@@ -98,7 +98,7 @@ Cho features nhạy cảm (Auth, Payment, PII...):
 
 - [ ] Code pass lint + build
 - [ ] Unit tests > 80% coverage cho logic mới
-- [ ] `/opsx-verify` pass — code khớp với specs
+- [ ] `/opsx:verify` pass — code khớp với specs
 - [ ] PR đã tạo theo chuẩn `/submit-pr`
 - [ ] Code đã review (hoặc self-review qua skill `code-reviewer`)
 - [ ] Security review pass (nếu feature nhạy cảm)

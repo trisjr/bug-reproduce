@@ -15,14 +15,14 @@ Append-only. Không sửa entry cũ.
 
 - **Tầng**: 2 (PM tự quyết)
 - **Thời điểm**: Bước 4 (Planning artifacts), trước dispatch
-- **Vấn đề**: `pm-code` Bước 4 bắt `T3` chạy `/opsx-ff` + delta specs trong `openspec/changes/<name>/specs/` + `design.md`. Nhưng **chính guardrail lane code** của nó nói: *"Tier T3 cần các lệnh `openspec archive|sync|validate` nằm trong allowlist của `.claude/settings.local.json`. Thiếu là run sẽ treo ở permission prompt giữa chừng."*
+- **Vấn đề**: `pm-code` Bước 4 bắt `T3` chạy `/opsx:ff` + delta specs trong `openspec/changes/<name>/specs/` + `design.md`. Nhưng **chính guardrail lane code** của nó nói: *"Tier T3 cần các lệnh `openspec archive|sync|validate` nằm trong allowlist của `.claude/settings.local.json`. Thiếu là run sẽ treo ở permission prompt giữa chừng."*
 - **Đo được**:
   - `openspec/changes/` — **rỗng**, mtime `Aug 11 15:26`. Repo **chưa từng** dùng đường này.
   - `grep openspec .claude/settings.local.json` → **0 hit**. Điều kiện tiên quyết **không thoả**.
   - `P0-A` (`T3`, đã đóng) và `P0-B` Wave 1 (`T2`, đã đóng) đều dùng `run-plan.md` + `tasks.md` làm planning artifact, không dùng `openspec`.
 - **Quyết định**: **Đi tiếp bằng `run-plan.md` + `tasks.md`**, không scaffold `openspec`.
 - **Lý do**, ba cái, xếp theo sức nặng:
-  1. **Điều kiện tiên quyết không thoả.** Chạy `/opsx-ff` bây giờ là **cố tình đâm vào chế độ hỏng mà chính guardrail cảnh báo** — treo giữa chừng, sau khi đã dispatch worker.
+  1. **Điều kiện tiên quyết không thoả.** Chạy `/opsx:ff` bây giờ là **cố tình đâm vào chế độ hỏng mà chính guardrail cảnh báo** — treo giữa chừng, sau khi đã dispatch worker.
   2. **Code phase này là `throwaway`** (`Spec §0.3`, `Timeline §4`). Một delta spec được archive cho code mà tài liệu **cấm** tiến hoá thành V0.1 là nghi thức rỗng.
   3. **Nhất quán với tiền lệ.** Hai run đã đóng của `P0-A`/`P0-B` dùng cùng bộ artifact; đổi đường ở run thứ ba làm mất khả năng so sánh run-state.
 - **Cái giá đã cân nhắc**: mất `openspec validate` như một lớp kiểm hình thức. Bù lại bằng verify của `context-auditor` ở `W2.v` — kiểm nội dung, không kiểm schema.

@@ -50,10 +50,6 @@ dev/
 data/
 .agent/.DS_Store
 
-.opencode
-/.antigravitycli/
-.claude
-
 # Spike P0-B — artifact do recorder/replay sinh ra.
 # Lý do: recorder B3 chạy KHÔNG CAP và không có redaction engine (shortcut ledger
 # Spec-Spike-Protocol §5.2), capsule là plaintext (SEC-015 bỏ qua). Một artifact lọt

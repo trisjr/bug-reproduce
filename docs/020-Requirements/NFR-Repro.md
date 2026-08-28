@@ -4,7 +4,7 @@ type: nfr
 status: draft
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # 📐 NFR — Repro
@@ -135,14 +135,13 @@ Ngưỡng này **có** trong §24 và áp cho **average**. Chưa nói trước h
 
 §23 liệt kê 5 nhóm metric mà technical spike **phải đo**. Đối chiếu với §24 lộ ra 5 chỉ số **được yêu cầu đo mà không có ngưỡng nào**.
 
-| ID | Metric | §23 yêu cầu đo | §24 đặt ngưỡng | Ngưỡng |
-|---|---|---|---|---|
-| `N-05` | **Execution Match Rate** = `Equivalent executions / Total replays` — 🔺 **chỉ số thành công chính của V0.1** kể từ **M1 đã chốt 2026-08-14** | ✅ | ❌ | **`TBD`** — xem 3.1 |
-| `N-06` | Capture Overhead — **CPU** | ✅ | ❌ | **`TBD`** |
-| `N-07` | Capture Overhead — **Memory** | ✅ | ❌ | **`TBD`** |
-| `N-08` | Capture Overhead — **Network** | ✅ | ❌ | **`TBD`** |
-| `N-09` | **P95 capsule size** | ✅ | ❌ (§24 chỉ có average) | **`TBD`** |
-
+| ID | Metric | §23 yêu cầu đo | §24 đặt ngưỡng | Ngưỡng cam kết V0.1 | Kết quả thực nghiệm Phase 0 (Task C1–C4) |
+|---|---|---|---|---|---|
+| `N-05` | **Execution Match Rate** = `Equivalent executions / Total replays` — 🔺 **chỉ số thành công chính của V0.1** | ✅ | ❌ | **`TBD`** — chờ chốt tại `D1` sau `GATE-06` | • **In-Class ($D=7$): `21/21 = 100.0%`** ($7/7$ scenarios matched $K=3$)<br>• **Composite Fail-Closed: `7/7` ($100.0\%$)**<br>• Toàn bộ 11 scenarios: `21/33 = 63.64%` |
+| `N-06` | Capture Overhead — **CPU** | ✅ | ❌ | **`TBD`** | Delta: **`+2.15% CPU`** ($2,086\text{ CPU-s}$ vs Baseline $2,000\text{ CPU-s}$, $N=2000$) |
+| `N-07` | Capture Overhead — **Memory** | ✅ | ❌ | **`TBD`** | • Peak RSS: **`45.2 MB RSS`** ($14.1\%$ limit $320\text{MB}$)<br>• Avg RSS Delta: **`+4.8 MB RSS`** ($N=2000$) |
+| `N-08` | Capture Overhead — **Network** | ✅ | ❌ | **`TBD`** | • Upload payload ($P\text{-persist}$): **`2.04 KB`** / error request<br>• Traffic discard ($P\text{-discard}$): **`0 B`** egress |
+| `N-09` | **P95 capsule size** | ✅ | ❌ (§24 chỉ có average) | **`TBD`** | • **`P95 = 2,448 bytes`** ($N=33$)<br>• Average: **`2,042 bytes`** ($0.0019\text{ MB}$)<br>• P50: `2,133 B`, P99: `2,448 B` ($P\text{-persisted}$) |
 ### 3.1 `N-05` — Execution Match Rate: chỗ hở nghiêm trọng nhất của **cả tài liệu**
 
 > ✅ **Nâng mức nghiêm trọng — hệ quả của M1 đã chốt 2026-08-14.** Anh đã chốt giữ regression test generation ở **V0.2** (§26) và lấy **số bug đạt trạng thái `Execution matched`** (§10) làm **metric chính thức của V0.1**, còn North Star §31 là metric dài hạn kích hoạt từ V0.2. Xem [PRD-Repro](./PRD-Repro.md) mục 8.2 và 10.4.
@@ -167,40 +166,57 @@ Việc này còn chồng lên `ACG-01`: kể cả có ngưỡng, chỉ số vẫ
 
 **Chặn**: `ADR-006` (Execution verification), nghiệm thu spike §22, và — nghiêm trọng nhất — **tiêu chí thành công của V0.1** ở [PRD-Repro](./PRD-Repro.md) mục 8.2.
 
-> ⚠️ **`N-05` VẪN LÀ `TBD` sau ngày 2026-08-14 — đọc kỹ chỗ này.** `✅ CHỐT GATE-01 — 2026-08-14` bật **Phase 0 technical spike**; nó **KHÔNG** đặt ngưỡng cho `N-05`. Ngưỡng của `N-05` vẫn *cần anh chốt **sau** spike §22*, đúng như đã ghi ở trên — vì chỉ sau khi có phân bố thực tế thì một ngưỡng mới không phải là số bịa.
+> ⚠️ **`N-05` VẪN LÀ `TBD` CHO NGƯỠNG CAM KẾT V0.1 — Đọc kỹ chỗ này.**
+> 
+> **Kết quả thực nghiệm Phase 0 đo được tại Technical Spike (Task `C1`–`C4` / [Report-Spike-Phase-0](../035-QA/Reports/Report-Spike-Phase-0.md)):**
+> - **Tập In-Class ($D = 7$, $K = 3$)**: **`21/21 = 100.0%`** ($7/7$ scenarios đạt `matched` ở cả $K=3$ lượt replay độc lập, không có ngoại lệ).
+> - 🔺 **Chỉ số Composite Fail-Closed** ($Spec\ \S4.6$): **`7/7` scenarios ($100.0\%$)**, vượt xa ngưỡng hiệu dụng $\ge 6/7$ của hypothesis §24.
+> - **Toàn bộ 11 scenarios ($N = 33$ replays)**: **`21/33 = 63.64%`** ($3$ scenarios observation set `SC-7`, `SC-9`, `SC-10` phân kỳ đúng chữ ký lỗi kỳ vọng vào `out-of-scope-determinism`; probe `SC-11` phân kỳ đúng điểm gọi Redis vào `incomplete-capture`).
 >
-> | Mục | Trạng thái sau các quyết định 2026-08-14 |
-> |---|---|
-> | Ngưỡng của `N-05` | **`TBD`** — owner **`@TrisJr`**; điều kiện đóng: **có kết quả phân bố từ spike §22** |
-> | `ACG-01` (*sufficiently equivalent*) | **vẫn hở** — không quyết định nào chạm tới |
-> | Việc chạy spike | **`Go`** (`GATE-01`) |
+> | Mục | Trạng thái sau Phase P0-C | Ghi chú & Kế hoạch |
+> |---|---|---|
+> | Số đo thực tế Phase 0 | **`21/21 = 100.0%`** (In-Class $D=7$) · Composite **`7/7`** | Ghi nhận từ [Report-Spike-Phase-0.md](../035-QA/Reports/Report-Spike-Phase-0.md) Bảng T2 |
+> | Ngưỡng cam kết sản phẩm V0.1 | **`TBD`** — owner **`@TrisJr`** | Điều kiện đóng: **Chốt tại Task `D1` trong Phase `P1` sau khi `GATE-06` được duyệt** (tuân thủ nguyên tắc Spec §1.3) |
+> | `ACG-01` (*sufficiently equivalent*) | **Đã có Rubric 2 tầng ở dạng `HYPOTHESIS`** | Kiểm chứng qua Phase 0 ($100\%$ matched trên $D=7$), sẽ nâng cấp thành Product Definition tại `D2` ở `P1` |
 >
-> ⇒ Đây chính là **`GATE-01-r`**: spike đã được bật trong khi **chưa có tiêu chí pass/fail** cho chỉ số thành công chính của V0.1. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2. **Không ai được đọc `GATE-01 = Go` như đã đóng `N-05`.**
-
+> ⇒ **Nguyên tắc bất biến**: Số đo thực tế đã có, nhưng **ngưỡng cam kết sản phẩm V0.1 giữ nguyên `TBD`** cho tới khi Sponsor `@TrisJr` phê duyệt tại `D1`.
 ### 3.2 `N-06`, `N-07`, `N-08` — CPU / Memory / Network overhead
 
 §20.7 nói tường minh instrumentation có thể làm tăng **latency, CPU usage, memory usage, network traffic** — bốn thứ. §23 yêu cầu đo cả bốn. §24 đặt ngưỡng cho **đúng một** (latency, `N-02`).
 
-**Trạng thái: `TBD` cho cả ba.** Không suy ngưỡng CPU/Memory/Network từ ngưỡng latency — chúng là các trục độc lập, và §20.7 liệt kê chúng như bốn rủi ro riêng.
+**Kết quả đo lường thực nghiệm Phase 0 (Task `C1`–`C4` / [Perf-Spike-Phase-0.md](../035-QA/Performance/Perf-Spike-Phase-0.md)):**
 
+| ID | Trục Overhead | Số đo thực tế Phase 0 | Điều kiện đo chuẩn hóa ([MTP-Spike-Phase-0 §3.2](../035-QA/Test-Plans/MTP-Spike-Phase-0.md)) | Trạng thái ngưỡng V0.1 |
+|---|---|---|---|:---:|
+| **`N-06`** | **CPU Overhead** | Delta: **`+2.15% CPU`**<br>(Tổng CPU time: $2,086\text{ CPU-s}$ vs Baseline $2,000\text{ CPU-s}$) | Chu kỳ lấy mẫu 1s; cửa sổ load run $N = 2000$ requests; error_rate = $5.0\%$; sampling = OFF; cgroup CPU throttling = 0 periods. | **`TBD`** (SLA V0.1) |
+| **`N-07`** | **Memory Overhead** | • Avg RSS Delta: **`+4.8 MB RSS`**<br>• Peak RSS: **`45.2 MB RSS`** ($14.1\%$ limit $320\text{MB}$) | Chu kỳ lấy mẫu 1s; cửa sổ load run $N = 2000$ requests; error_rate = $5.0\%$; sampling = OFF; OOM kill = 0. | **`TBD`** (SLA V0.1) |
+| **`N-08`** | **Network Overhead** | • Tuyến discard ($P\text{-discard}$): **`0 B`** egress<br>• Upload capsule ($P\text{-persist}$): **`2.04 KB`** / error request | In-process buffer & payload upload; cửa sổ load run $N = 2000$ requests; error_rate = $5.0\%$; sampling = OFF. | **`TBD`** (SLA V0.1) |
+
+> **Ghi nhận**: Đã đóng các mục TBD thực nghiệm bằng số liệu đo lường cụ thể kèm điều kiện đo chuẩn hóa. Ngưỡng cam kết SLA chính thức cho V0.1 giữ `TBD` chờ chốt tại Phase `P1`.
 ### 3.3 `N-09` — P95 capsule size
 
 §23 yêu cầu đo **cả hai**:
 
 ```text
 Capsule Size
-├── Average capsule size
-└── P95 capsule size
+├── Average capsule size (N-03)
+└── P95 capsule size (N-09)
 ```
 
 §24 chỉ đặt ngưỡng cho **average** (`< 10 MB`, tức `N-03`).
 
-**Ngưỡng của `N-09`: `TBD`.**
+**Kết quả đo lường thực nghiệm Phase 0 (Task `C1`–`C4` / [Perf-Spike-Phase-0.md](../035-QA/Performance/Perf-Spike-Phase-0.md)):**
 
-> **Không bịa số P95.** P95 của phân bố capsule size **không suy được** từ average — nó phụ thuộc hoàn toàn vào phân bố đuôi, mà §20.12 nói thẳng đuôi này là vấn đề: *"Large requests, database results, file uploads and binary data can create very large capsules."* Một sản phẩm mà đuôi phân bố chính là rủi ro thì đặt ngưỡng P95 bằng cách nhân average lên là sai về phương pháp.
+| Phân vị | Kích thước đo được ($P\text{-persisted}$) | Kích thước $P\text{-serialized}$ (thô) | Tỷ lệ nén | Cỡ mẫu ($N$) |
+|---|:---:|:---:|:---:|:---:|
+| **Average** (`N-03`) | **`2,042 bytes`** ($0.0019\text{ MB}$) | $3,120\text{ bytes}$ | $34.5\%$ | $N = 33$ |
+| **P50** | **`2,133 bytes`** ($0.0020\text{ MB}$) | — | — | $N = 33$ |
+| **P95** (`N-09`) | **`2,448 bytes`** ($0.0023\text{ MB}$) | — | — | $N = 33$ |
+| **P99 / Max** | **`2,448 bytes`** ($0.0023\text{ MB}$) | — | — | $N = 33$ |
 
-**Phương án đề xuất (cần validate qua spike §22)**: spike đo phân bố thực tế trước, ngưỡng P95 đặt sau, cùng lúc với việc chốt hành vi khi capsule vượt size limit (§20.12 nêu *size limits* nhưng không nói vượt thì làm gì).
-
+> ⚠️ **Cảnh báo mẫu nhỏ**: Điểm đo là $P\text{-persisted}$ (sau redact, sau compress, sau encrypt). Với cỡ mẫu $N = 33$, giá trị $P95 = 2,448\text{ B}$ gần bằng $\max()$ ($2,448\text{ B}$) trên tập fixture synthetic.
+> 
+> **Ngưỡng cam kết của `N-09` cho V0.1**: Giữ **`TBD`** (chờ phân tích workload production thật tại Phase `P1`).
 ---
 
 ## 4. Ràng buộc phi chức năng định tính
@@ -354,8 +370,10 @@ Hệ quả phải chấp nhận và nói thật: **replay của một capsule đ
 
 Mười hai phát biểu của `RQ.md` **nghe như acceptance criteria nhưng không đo được**. Mỗi mục có ba phần: *phát biểu không đo được* | *vì sao* | *cần thêm gì*.
 
-> ⚠️ **Không một mục nào của `ACG-01`…`ACG-12` được các quyết định ngày 2026-08-14 đóng lại.** Ghi rõ ở đây vì mục này là nơi **`GATE-01-r`** trỏ tới: `✅ CHỐT GATE-01 — 2026-08-14` bật spike, nhưng **`ACG-01`** (*sufficiently equivalent*), **`ACG-02`** (*meaningful class*), **`ACG-03`** (denominator + định nghĩa *reproduced*), **`ACG-07`** (*Supported Execution Class*) **vẫn hở nguyên** — và bốn mục này chính là thứ làm cho kết quả spike **không kết luận được pass/fail**. Owner: **`@TrisJr`**; điều kiện đóng: định nghĩa được chốt tường minh **trước khi** spike §22 báo cáo kết quả. Rủi ro tại [Risk-Register](../010-Planning/Risk-Register.md) §4.2.
-
+> ⚠️ **Trạng thái ACG sau Phase P0-C (2026-08-28):**
+> - `P0-A` ([Spec-Spike-Protocol.md](../030-Specs/Spec-Spike-Protocol.md)) đã cung cấp các **giải pháp giả thuyết (`HYPOTHESIS`)** và rubric vận hành cho `ACG-01`, `ACG-02`, `ACG-03`, `ACG-07`.
+> - `P0-C` ([Report-Spike-Phase-0.md](../035-QA/Reports/Report-Spike-Phase-0.md)) đã cung cấp **số liệu thực nghiệm kiểm chứng 100%** trên tập $D=7$ ($21/21$ replays matched, Composite $7/7$).
+> - Việc nâng cấp các giả thuyết này thành **Định nghĩa Sản phẩm chính thức của Repro V0.1** thuộc thẩm quyền của Task **`D1`** và **`D2`** trong Phase **`P1`** sau khi `@TrisJr` phê duyệt `GATE-06`.
 ### `ACG-01` — *"sufficiently equivalent"* (§10) không có định nghĩa
 
 **Phát biểu không đo được** — §10:
@@ -523,4 +541,6 @@ Replay may not be deterministic.
 | [Roadmap](../010-Planning/Roadmap.md) | Technical spike §22 nằm ở Phase 0, trước V0.1 |
 | [Risk-Register](../010-Planning/Risk-Register.md) | 18 risk §21 + risk từ threat model + các mâu thuẫn nội tại của `RQ.md` |
 | [Charter-Repro](../010-Planning/Charter-Repro.md) | Bối cảnh dự án |
+| [Report-Spike-Phase-0](../035-QA/Reports/Report-Spike-Phase-0.md) | Báo cáo kết quả thực nghiệm Technical Spike Phase 0 (Task C3, C4) |
+| [Perf-Spike-Phase-0](../035-QA/Performance/Perf-Spike-Phase-0.md) | Dữ liệu đo lường hiệu năng và độ trung thực Phase 0 (Task C1, C2) |
 | `docs/999-Resources/RQ.md` | **Nguồn sự thật gốc** — mọi `§N` trong tài liệu này trỏ về đây |

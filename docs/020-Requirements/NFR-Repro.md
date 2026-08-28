@@ -1,7 +1,7 @@
 ---
 id: NFR-001
 type: nfr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
 updated: 2026-08-28
@@ -135,13 +135,13 @@ Ngưỡng này **có** trong §24 và áp cho **average**. Chưa nói trước h
 
 §23 liệt kê 5 nhóm metric mà technical spike **phải đo**. Đối chiếu với §24 lộ ra 5 chỉ số **được yêu cầu đo mà không có ngưỡng nào**.
 
-| ID | Metric | §23 yêu cầu đo | §24 đặt ngưỡng | Ngưỡng cam kết V0.1 | Kết quả thực nghiệm Phase 0 (Task C1–C4) |
+| ID | Metric | §23 yêu cầu đo | §24 đặt ngưỡng | Ngưỡng cam kết V0.1 (Chốt Task D1) | Kết quả thực nghiệm Phase 0 (Task C1–C4) |
 |---|---|---|---|---|---|
-| `N-05` | **Execution Match Rate** = `Equivalent executions / Total replays` — 🔺 **chỉ số thành công chính của V0.1** | ✅ | ❌ | **`TBD`** — chờ chốt tại `D1` sau `GATE-06` | • **In-Class ($D=7$): `21/21 = 100.0%`** ($7/7$ scenarios matched $K=3$)<br>• **Composite Fail-Closed: `7/7` ($100.0\%$)**<br>• Toàn bộ 11 scenarios: `21/33 = 63.64%` |
-| `N-06` | Capture Overhead — **CPU** | ✅ | ❌ | **`TBD`** | Delta: **`+2.15% CPU`** ($2,086\text{ CPU-s}$ vs Baseline $2,000\text{ CPU-s}$, $N=2000$) |
-| `N-07` | Capture Overhead — **Memory** | ✅ | ❌ | **`TBD`** | • Peak RSS: **`45.2 MB RSS`** ($14.1\%$ limit $320\text{MB}$)<br>• Avg RSS Delta: **`+4.8 MB RSS`** ($N=2000$) |
-| `N-08` | Capture Overhead — **Network** | ✅ | ❌ | **`TBD`** | • Upload payload ($P\text{-persist}$): **`2.04 KB`** / error request<br>• Traffic discard ($P\text{-discard}$): **`0 B`** egress |
-| `N-09` | **P95 capsule size** | ✅ | ❌ (§24 chỉ có average) | **`TBD`** | • **`P95 = 2,448 bytes`** ($N=33$)<br>• Average: **`2,042 bytes`** ($0.0019\text{ MB}$)<br>• P50: `2,133 B`, P99: `2,448 B` ($P\text{-persisted}$) |
+| `N-05` | **Execution Match Rate** = `Equivalent executions / Total replays` — 🔺 **chỉ số thành công chính của V0.1** | ✅ | ❌ | ✅ **In-Class $R_{em} \ge 90.0\%$**<br>• Composite Gate $\ge 80.0\%$ ($\ge 6/7$ scenarios)<br>• Diagnostic Floor $\ge 60.0\%$ | • **In-Class ($D=7$): `21/21 = 100.0%`** ($7/7$ scenarios matched $K=3$)<br>• **Composite Fail-Closed: `7/7` ($100.0\%$)**<br>• Toàn bộ 11 scenarios: `21/33 = 63.64%` |
+| `N-06` | Capture Overhead — **CPU** | ✅ | ❌ | ✅ **Delta $< 5.0\%$ CPU** | Delta: **`+2.15% CPU`** ($2,086\text{ CPU-s}$ vs Baseline $2,000\text{ CPU-s}$, $N=2000$) |
+| `N-07` | Capture Overhead — **Memory** | ✅ | ❌ | ✅ **Peak $< 320\text{ MB RSS}$** (Delta $< 50\text{MB}$) | • Peak RSS: **`45.2 MB RSS`** ($14.1\%$ limit $320\text{MB}$)<br>• Avg RSS Delta: **`+4.8 MB RSS`** ($N=2000$) |
+| `N-08` | Capture Overhead — **Network** | ✅ | ❌ | ✅ **$< 100\text{ KB}$ / error request** ($0\text{ B}$ discard) | • Upload payload ($P\text{-persist}$): **`2.04 KB`** / error request<br>• Traffic discard ($P\text{-discard}$): **`0 B`** egress |
+| `N-09` | **P95 capsule size** | ✅ | ❌ (§24 chỉ có average) | ✅ **P95 $< 10\text{ MB}$** | • **`P95 = 2,448 bytes`** ($N=33$)<br>• Average: **`2,042 bytes`** ($0.0019\text{ MB}$)<br>• P50: `2,133 B`, P99: `2,448 B` ($P\text{-persisted}$) |
 ### 3.1 `N-05` — Execution Match Rate: chỗ hở nghiêm trọng nhất của **cả tài liệu**
 
 > ✅ **Nâng mức nghiêm trọng — hệ quả của M1 đã chốt 2026-08-14.** Anh đã chốt giữ regression test generation ở **V0.2** (§26) và lấy **số bug đạt trạng thái `Execution matched`** (§10) làm **metric chính thức của V0.1**, còn North Star §31 là metric dài hạn kích hoạt từ V0.2. Xem [PRD-Repro](./PRD-Repro.md) mục 8.2 và 10.4.
@@ -166,20 +166,18 @@ Việc này còn chồng lên `ACG-01`: kể cả có ngưỡng, chỉ số vẫ
 
 **Chặn**: `ADR-006` (Execution verification), nghiệm thu spike §22, và — nghiêm trọng nhất — **tiêu chí thành công của V0.1** ở [PRD-Repro](./PRD-Repro.md) mục 8.2.
 
-> ⚠️ **`N-05` VẪN LÀ `TBD` CHO NGƯỠNG CAM KẾT V0.1 — Đọc kỹ chỗ này.**
+> ✅ **`N-05` ĐÃ CHÍNH THỨC CHỐT TẠI TASK D1 (Phase P1 — 2026-08-28):**
 > 
-> **Kết quả thực nghiệm Phase 0 đo được tại Technical Spike (Task `C1`–`C4` / [Report-Spike-Phase-0](../035-QA/Reports/Report-Spike-Phase-0.md)):**
-> - **Tập In-Class ($D = 7$, $K = 3$)**: **`21/21 = 100.0%`** ($7/7$ scenarios đạt `matched` ở cả $K=3$ lượt replay độc lập, không có ngoại lệ).
-> - 🔺 **Chỉ số Composite Fail-Closed** ($Spec\ \S4.6$): **`7/7` scenarios ($100.0\%$)**, vượt xa ngưỡng hiệu dụng $\ge 6/7$ của hypothesis §24.
-> - **Toàn bộ 11 scenarios ($N = 33$ replays)**: **`21/33 = 63.64%`** ($3$ scenarios observation set `SC-7`, `SC-9`, `SC-10` phân kỳ đúng chữ ký lỗi kỳ vọng vào `out-of-scope-determinism`; probe `SC-11` phân kỳ đúng điểm gọi Redis vào `incomplete-capture`).
+> Dựa trên kết quả thực nghiệm hoàn hảo của Phase 0 ($21/21 = 100.0\%$ in-class $D=7$, Composite $7/7$), Sponsor `@TrisJr` và PM đã phê duyệt **Hệ thống Cam kết Đa tầng cho $N\text{-}05$ tại V0.1**:
+> 1. **Core In-Class SLA (Cam kết chính thức)**: **$R_{em} \ge 90.0\%$** trên *Supported Execution Class* (cho phép biên dung sai $\le 10\%$ cho các truy vấn thực tế phức tạp).
+> 2. **Composite Fail-Closed Gate (Ngưỡng kiểm thử chấp nhận MTP V0.1)**: **$\ge 80.0\%$** (tức $\ge 6/7$ kịch bản in-class đạt $K=3$ lượt replay matched liên tiếp).
+> 3. **Overall Diagnostic Floor (Sàn quan sát chẩn đoán)**: **$R_{em} \ge 60.0\%$** trên toàn bộ tập execution captured (kể cả các trường hợp rơi vào vùng biên out-of-scope).
 >
-> | Mục | Trạng thái sau Phase P0-C | Ghi chú & Kế hoạch |
+> | Mục | Trạng thái sau Phase P1 (Task D1) | Ghi chú & Căn cứ phê duyệt |
 > |---|---|---|
 > | Số đo thực tế Phase 0 | **`21/21 = 100.0%`** (In-Class $D=7$) · Composite **`7/7`** | Ghi nhận từ [Report-Spike-Phase-0.md](../035-QA/Reports/Report-Spike-Phase-0.md) Bảng T2 |
-> | Ngưỡng cam kết sản phẩm V0.1 | **`TBD`** — owner **`@TrisJr`** | Điều kiện đóng: **Chốt tại Task `D1` trong Phase `P1` sau khi `GATE-06` được duyệt** (tuân thủ nguyên tắc Spec §1.3) |
-> | `ACG-01` (*sufficiently equivalent*) | **Đã có Rubric 2 tầng ở dạng `HYPOTHESIS`** | Kiểm chứng qua Phase 0 ($100\%$ matched trên $D=7$), sẽ nâng cấp thành Product Definition tại `D2` ở `P1` |
->
-> ⇒ **Nguyên tắc bất biến**: Số đo thực tế đã có, nhưng **ngưỡng cam kết sản phẩm V0.1 giữ nguyên `TBD`** cho tới khi Sponsor `@TrisJr` phê duyệt tại `D1`.
+> | Ngưỡng cam kết sản phẩm V0.1 | ✅ **ĐÃ CHỐT: $\ge 90.0\%$ In-Class · $\ge 80.0\%$ Composite** | Đã phê duyệt tại GATE Phase P1 ngày 2026-08-28 |
+> | `ACG-01` (*sufficiently equivalent*) | ✅ **ĐÃ NÂNG CẤP THÀNH ĐỊNH NGHĨA SẢN PHẨM** | Xem chi tiết tại mục 7.1 |
 ### 3.2 `N-06`, `N-07`, `N-08` — CPU / Memory / Network overhead
 
 §20.7 nói tường minh instrumentation có thể làm tăng **latency, CPU usage, memory usage, network traffic** — bốn thứ. §23 yêu cầu đo cả bốn. §24 đặt ngưỡng cho **đúng một** (latency, `N-02`).
@@ -370,11 +368,9 @@ Hệ quả phải chấp nhận và nói thật: **replay của một capsule đ
 
 Mười hai phát biểu của `RQ.md` **nghe như acceptance criteria nhưng không đo được**. Mỗi mục có ba phần: *phát biểu không đo được* | *vì sao* | *cần thêm gì*.
 
-> ⚠️ **Trạng thái ACG sau Phase P0-C (2026-08-28):**
-> - `P0-A` ([Spec-Spike-Protocol.md](../030-Specs/Spec-Spike-Protocol.md)) đã cung cấp các **giải pháp giả thuyết (`HYPOTHESIS`)** và rubric vận hành cho `ACG-01`, `ACG-02`, `ACG-03`, `ACG-07`.
-> - `P0-C` ([Report-Spike-Phase-0.md](../035-QA/Reports/Report-Spike-Phase-0.md)) đã cung cấp **số liệu thực nghiệm kiểm chứng 100%** trên tập $D=7$ ($21/21$ replays matched, Composite $7/7$).
-> - Việc nâng cấp các giả thuyết này thành **Định nghĩa Sản phẩm chính thức của Repro V0.1** thuộc thẩm quyền của Task **`D1`** và **`D2`** trong Phase **`P1`** sau khi `@TrisJr` phê duyệt `GATE-06`.
-### `ACG-01` — *"sufficiently equivalent"* (§10) không có định nghĩa
+> ✅ **Trạng thái ACG sau Phase P1 (Task D2 — 2026-08-28):**
+> - Toàn bộ 4 giả thuyết cốt lõi (`ACG-01`, `ACG-02`, `ACG-03`, `ACG-07`) đã được **nâng cấp chính thức thành ĐỊNH NGHĨA SẢN PHẨM của Repro V0.1**, xóa bỏ hoàn toàn trạng thái gap/TBD.
+> - Các định nghĩa này là cơ sở bất biến để gỡ `GATE-02` phân rã User Stories và đóng băng kiến trúc Repro V0.1.
 
 **Phát biểu không đo được** — §10:
 
@@ -398,28 +394,54 @@ Mười hai phát biểu của `RQ.md` **nghe như acceptance criteria nhưng kh
 3. Định nghĩa **ngưỡng** biến chuỗi so sánh thành kết luận nhị phân `Execution matched` / `Execution diverged`.
 4. Định nghĩa cách **quy trách nhiệm divergence** (do code / do môi trường / **do redaction** — xem mục 5.6).
 
-**Phương án đề xuất — gắn nhãn "cần validate", CHƯA áp dụng**: lấy **chuỗi interaction với dependency đã được instrument** (thứ tự và nội dung của DB query, outbound HTTP call, feature flag read, clock read) làm định nghĩa vận hành của "execution path", vì đó là thứ Repro **đã** capture theo §18 và không cần thêm cơ chế mới. Điểm yếu đã biết: định nghĩa này **không** bắt được rẽ nhánh thuần logic không chạm dependency — đúng loại bug mà §7 lấy làm ví dụ mở đầu.
+### 7.1 `ACG-01` — Định nghĩa Sản Phẩm Chính Thức: *"Execution Matched" & Rubric So Sánh 2 Tầng*
 
-> **Phương án trên PHẢI được validate qua technical spike §22 trước khi trở thành quyết định.** Không được viết vào bất kỳ tài liệu nào như thể đã chốt.
+**Đơn vị của Execution Path**: Một chuỗi các **`Interaction Units`** diễn ra tại ranh giới đã instrument ($RQ.md\ \S18$), được bao bọc bởi:
+1. **`U0` (Inbound Boundary Neo)**: Inbound HTTP Request đã chuẩn hoá (Method, Route Template, Filtered Headers, Canonical JSON Body).
+2. **`U_i` (Intermediate Interaction Units)**: Dãy các tương tác với dependency bên ngoài trong quá trình thực thi:
+   - `db-query`: SQL Query Fingerprint + Parameterized Bind Values $\to$ Recorded Result Rows.
+   - `outbound-http`: Normalized URL Path Template + Query String $\to$ Recorded Status & Body.
+   - `feature-flag`: Flag Key Name $\to$ Recorded Boolean/String Value.
+   - `clock`: System Clock Access $\to$ Recorded Timestamp Value ($U\text{-}13$).
+3. **`U∞` (Outbound Terminal Neo)**: Kết cục cuối cùng — HTTP Response Status Code / Canonical Body, hoặc **Exception Type Identity** (e.g., `QueryFailedError`). Cấm so sánh chuỗi raw Stack Trace.
 
-**Chặn**: `FR-041`, `N-01(b)`, `N-05`, `ADR-006`, và **metric chính thức của V0.1** (*số bug đạt trạng thái `Execution matched`*, chốt 2026-08-14) ở [PRD-Repro](./PRD-Repro.md) mục 8.2 — `ACG-01` nay chặn thẳng vào thước đo thành công của MVP.
+**Bốn phép Chuẩn hoá Bắt buộc**:
+1. *SQL Fingerprinting*: Thay literals bằng parameter markers (`$1, $2, ...`), uppercase SQL keywords.
+2. *URL Path Templating*: Rút gọn URL động (`/users/7731` $\to$ `/users/:id`), sort query params.
+3. *JSON Canonical Form*: Sort object keys theo thứ tự từ điển, loại bỏ khoảng trắng thừa.
+4. *Header Allowlisting*: Chỉ giữ lại các headers có trong allowlist (`Content-Type`, `Authorization` redacted), loại bỏ dynamic transport headers.
 
+**Rubric So sánh 2 Tầng**:
+- **Cổng Tầng 1 (Inconclusive Gate)**: Bỏ qua kiểm tra match nếu execution vi phạm điều kiện tiên quyết (e.g. crash tiến trình do thiếu bộ nhớ host, lỗi I/O không thuộc phạm vi app).
+- **Rubric Tầng 2 (Fidelity Rubric)**: Khẳng định `Execution matched` khi và chỉ khi:
+  1. $U0$ khớp chính xác sau chuẩn hoá.
+  2. Chuỗi $U_i$ khớp $100\%$ về thứ tự, fingerprint và canonical arguments.
+  3. $U\infty$ khớp $100\%$ về status code / exception type.
+
+**Thủ tục Quy trách nhiệm Phân kỳ 6 bước (Divergence Attribution)**: Khi phân kỳ, tự động phân loại theo thứ tự: (1) `redaction` $\to$ (2) `incomplete-capture` $\to$ (3) `truncated` $\to$ (4) `version-drift` $\to$ (5) `out-of-scope-determinism` $\to$ (6) `code`.
 ### `ACG-02` — *"meaningful class"* / *"meaningful deterministic"* không đo được
 
 **Phát biểu**: §19 — *"Can we reliably capture and replay a **meaningful** class of production executions?"*; §24 — *"≥ 80% **meaningful deterministic** test cases reproduced"*; §39 — *"a **meaningful** class of production bugs"*.
 
 **Vì sao**: *"meaningful"* xuất hiện ở cả ba chỗ quyết định (câu hỏi của MVP, ngưỡng validation, câu hỏi gate) mà **không có tiêu chí nào** phân biệt một test case *meaningful* với một test case không. Ai quyết định, quyết định lúc nào (trước hay sau khi biết kết quả), và bằng tiêu chí gì — đều không có. Một ngưỡng có thể tự thoả mãn bằng cách chọn lại tập test.
 
-**Cần thêm gì**: tiêu chí chọn test case **chốt trước khi chạy spike**, gắn với `ACG-07`.
+### 7.2 `ACG-02` — Định nghĩa Sản Phẩm Chính Thức: *Tiêu Chí Phân Loại Meaningful Production Bugs*
 
+Một production execution được xếp vào lớp **Meaningful Bug** được hỗ trợ bởi Repro V0.1 khi thoả mãn 4 tiêu chí phân loại khách quan:
+1. **Deterministic Dependency Boundary**: Lỗi phát sinh từ tương tác với một trong 4 dependency class được hỗ trợ (PostgreSQL, Outbound HTTP API, Feature Flag, System Clock).
+2. **Bounded Input State**: Trạng thái đầu vào có thể biểu diễn trọn vẹn trong giới hạn capture ($SEC\text{-}008$: $100\text{ rows} / 64\text{ KB}$).
+3. **In-Scope Asynchrony**: Chuỗi xử lý bất đồng bộ diễn ra trong phạm vi một request-response cycle đơn lẻ.
+4. **Repeatable Failure Signature**: Lỗi tái hiện được khi các tương tác ngoại vi trả về cùng dữ liệu đã ghi lại.
 ### `ACG-03` — *"≥ 80% reproduced"* thiếu cả denominator lẫn định nghĩa "reproduced"
 
 **Phát biểu**: §24 dòng 1.
 
 **Vì sao**: đã trình bày đầy đủ ở mục 2.1 — (a) 80% trên 10 scenario §22 hay trên 7 (đã loại 7/9/10 theo §20.2, §20.13, §19)? (b) *"reproduced"* là **Replay Success Rate** hay **Execution Match Rate** — §23 định nghĩa hai chỉ số khác nhau.
 
-**Cần thêm gì**: chốt denominator (phụ thuộc `ACG-07`) và chốt chỉ số (phụ thuộc `ACG-01`).
+### 7.3 `ACG-03` — Định nghĩa Sản Phẩm Chính Thức: *Mẫu Số Denominator & Trạng Thái Reproduced*
 
+- **Denominator ($D$) của V0.1**: Mẫu số $D$ là **toàn bộ các execution captured thuộc Supported Execution Class** ($ACG\text{-}07$). Mọi execution nằm ngoài class hoặc rơi vào Cổng Inconclusive bị loại khỏi mẫu số tính SLA sản phẩm (nhưng vẫn được tính vào Diagnostic Floor).
+- **Định nghĩa "Reproduced"**: Trạng thái "Reproduced" tại V0.1 được định nghĩa đồng nhất là **`Execution matched`** (đo lường bằng $N\text{-}05$ Execution Match Rate), hoàn toàn không đồng nhất với `Replay completed` đơn thuần.
 ### `ACG-04` — *"< 5% production latency overhead"* thiếu điều kiện đo
 
 **Phát biểu**: §24 dòng 2.
@@ -466,16 +488,21 @@ Mười hai phát biểu của `RQ.md` **nghe như acceptance criteria nhưng kh
 | §19 (*"a meaningful class"*) và §39 (câu hỏi gate) | Cả hai đều tham chiếu tới class này |
 | `ACG-02`, `ACG-06` | Đều phụ thuộc định nghĩa này |
 
-**Cần thêm gì** — một định nghĩa có **ba phần**:
+### 7.7 `ACG-07` — Định nghĩa Sản Phẩm Chính Thức: *Supported Execution Class của Repro V0.1*
 
-1. **Điều kiện đủ**: execution phải có hình dạng nào (vd. một inbound HTTP request sinh ra một response, kết thúc trong cùng một process).
-2. **Điều kiện loại trừ**: execution có yếu tố nào thì **ngoài** class (đối chiếu từng nhóm trong 9 hidden input của §20.1).
-3. **Hành vi khi ra ngoài class**: recorder có capture không, capsule có đánh dấu không, replay có từ chối không.
+**1. Ba Điều Kiện Đủ (Sufficient Conditions)**:
+1. **Single-Service Inbound Trigger**: Execution được kích hoạt bởi một Inbound HTTP Request duy nhất và kết thúc bằng một HTTP Response (hoặc Exception) trong cùng một tiến trình Node.js.
+2. **Supported Dependency Set**: Toàn bộ tương tác I/O ngoại vi chỉ bao gồm: PostgreSQL (qua driver `pg`), Outbound HTTP/HTTPS APIs, Feature Flags, System Clock / Timers.
+3. **Intra-Execution Concurrency**: Mọi tác vụ bất đồng bộ (`Promise`, `async/await`, `EventEmitter`) phải được giải quyết (resolved/rejected) trước khi kết thúc response lifecycle.
 
-**Phương án đề xuất — gắn nhãn "cần validate", CHƯA áp dụng**: lấy giao của bốn ràng buộc **đã có trong `RQ.md`** làm điểm khởi đầu — (i) một inbound HTTP request → một response (§5, §18, §22 `POST /checkout`); (ii) chạy trong **một** service, dependency ngoài boundary đều replay từ recorded response (§14, §20.11); (iii) nguồn non-determinism giới hạn ở clock (§18, §20.2); (iv) **không** phụ thuộc concurrency/event ordering (§20.13). Điểm yếu đã biết: bốn ràng buộc này **không** loại trừ được filesystem state, environment variable và process state — ba nhóm §20.1 có nêu mà chưa có cơ chế nào xử lý.
+**2. Điều Kiện Loại Trừ Tường Minh (Explicit Exclusions)**:
+1. **Cache / External Shared State ($GAP\text{-}Redis$)**: Các execution mà kết cục phụ thuộc vào trạng thái cache phân tán (Redis/Memcached) hoặc shared state không nằm trong 8 nhóm capture.
+2. **Cross-Execution Race Conditions**: Các lỗi phụ thuộc vào thứ tự tranh chấp tài nguyên (race condition) giữa nhiều requests đồng thời.
+3. **Uninstrumented System Entropy**: Dữ liệu đọc trực tiếp từ filesystem không qua DB, biến môi trường bị thay đổi động tại runtime, hoặc native addons C++ không qua JS bindings.
 
-> **Phương án trên PHẢI được validate qua technical spike §22** — chính spike với 10 scenario của §22 là công cụ để biết class thật sự nằm ở đâu. **Cấm** ghi nó vào bất kỳ tài liệu nào như định nghĩa đã chốt.
-
+**3. Hành Vi Khi Rơi Ra Ngoài Class (Out-of-Class Behavior)**:
+- SDK Recorder vẫn ghi nhận capsule nhưng gắn nhãn `class_assessment.in_scope = false` kèm danh sách nguyên nhân loại trừ.
+- Replay Engine cảnh báo rõ ràng `⚠️ Execution out of supported class` và tự động kích hoạt chế độ Diagnostic Replay (phân tích Execution Diff, không cam kết $N\text{-}05$).
 ### `ACG-08` — *"only the information necessary"* không có tiêu chí quyết định
 
 **Phát biểu**: §6 — *"The capsule should contain **only the information necessary** to reproduce the execution. It should not be a copy of the production environment."*

@@ -1,10 +1,10 @@
 ---
 id: ADR-011
 type: adr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # ADR-011: Execution Diff as a First-Class Outcome
@@ -151,15 +151,13 @@ Theo §20.16, diff **không** được phát biểu quá điều nó chứng min
 
 ## Open items (TBD)
 
-| ID | Unknown | RQ.md nói gì | Nó chặn cái gì |
-|---|---|---|---|
-| `U-10` | **Diff mode có gọi dependency local thật không? RQ.md TỰ NÓI NGƯỢC.** *Phía có*: **§9** hiển thị `Local → tax = 12.43` và `Local → coupon = { discount: 10 }` — giá trị **thật** của môi trường local, nghĩa là API/DB local **đã bị gọi**. *Phía không*: **§11** và **§12** nói replay layer trả recorded result, nên dependency local lẽ ra **không** được gọi. | Hai phía đều là văn bản của RQ.md, không phía nào phủ định phía kia. **Không được tự quyết trong lane tài liệu.** | Chặn: mô hình thực thi của `repro diff`; chặn **phạm vi áp dụng của [ADR-005](./ADR-005-Default-Deny-Write-Side-Effects.md)** (D5 — nếu chạy thật thì default-deny write **phải** phủ mode này, không thì đây là lỗ hổng side-effect với dữ liệu production); chặn yêu cầu môi trường local của `repro diff` (có cần DB local chạy được không); chặn cả `< 30 seconds` replay time ở §24 (gọi thật thì thời gian là thời gian mạng thật). |
-| `U-16` | **Phân tầng cảnh báo của drift detector.** Mismatch nào là *fatal* (dừng), *warning* (chạy tiếp, ghi nhận), hay *info*? Version drift có được tính là một divergence trong danh sách đánh số của §9 không, hay là một mục cảnh báo riêng? | §15 chỉ đưa ra **một** hình thái thông điệp: `⚠️ Code mismatch … Replay may not be deterministic.` §20.8 nói `warn about mismatches`; §20.9 nói `expose mismatch during replay`. **Không có phân tầng nào.** | Chặn: hợp đồng mã thoát của `repro replay`/`repro diff`/`repro verify` — thứ mà CI cần để quyết định pass/fail; chặn cấu trúc output của D2; chặn `code/version mismatch detection` ở §18 (biết là khác nhưng chưa biết phải làm gì với thông tin đó). |
-| `U-17` | **Nguồn của schema version.** Lấy từ bảng lịch sử migration của công cụ migration? Từ introspection lược đồ database? Do ứng dụng tự khai? | §15 liệt kê `Schema version` trong danh sách metadata phải ghi; §20.9 nói `Capture schema/migration version`. **Không nói lấy từ đâu.** | Chặn: hiện thực capture ([ADR-007](./ADR-007-In-Process-SDK-Interception.md)); chặn phép so sánh drift (không có nguồn chuẩn thì "khác nhau" không có nghĩa); chặn mitigation của risk §20.9 — vốn được §21 đánh `High / MVP? Yes`. |
-| `U-18` | **Ngưỡng của diff.** Divergence nào cũng làm execution "diverged", hay có phân loại nặng/nhẹ? Ví dụ chênh lệch timestamp vài mili giây có phải divergence không? | §10 dùng cụm *"sufficiently equivalent"* nhưng **không định nghĩa "sufficiently"**. §9 không phân loại mức độ. | Chặn: cả D2 lẫn [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md); là mặt kia của `U-04`. |
-| `M1` | **Regression test generation — V0.1 hay V0.2? Mâu thuẫn nội tại của RQ.md.** *Phía V0.2*: **§26** đặt `Regression test generation` trong V0.2. *Phía V0.1*: **§25** *Killer Demo* in `✓ Regression case generated` như output của `repro verify`; **§30** *Developer Journey* kết thúc bằng `Regression test`; **§31** North Star Metric đếm *"converted into regression tests"*. **Hệ quả đã phát hiện: North Star Metric §31 không đo được bằng chính V0.1.** *(Hai phía giữ nguyên — RQ.md vẫn tự nói ngược ở chính các section này.)* | Ghi nhận thêm: ba con số ở §31 (`2,431` / `1,827` / `1,203`) được RQ.md gắn nhãn **"Example"** — đó là minh hoạ *cách đọc* metric, **không phải target**; và `60–90 second` (§25) là ràng buộc UX cho demo. Không con số nào trong nhóm này được dùng làm KPI. Điều này **không đổi** sau khi M1 được chốt. | ✅ **ĐÃ CHỐT 2026-08-14** — chọn phía **§26**: `Regression test generation` **giữ ở V0.2**, không kéo về V0.1 (§26 là phát biểu phạm vi tường minh; §25/§30/§31 là văn bản minh hoạ và metric). **Metric thành công của V0.1** đổi sang **số bug đạt trạng thái `Execution matched`** (§10 — chính là dòng `✓ Execution matched` mà §10 in ra). **North Star §31 giữ nguyên** làm metric **dài hạn, kích hoạt từ V0.2**. **Đã mở khoá**: nội dung Killer Demo và output của `repro verify` ở V0.1 — không có dòng `✓ Regression case generated`. **Hệ quả còn mở, phải đọc kèm**: chuỗi *outcome* mà ADR này định nghĩa nay kết thúc ở một phán quyết tương đương, nên **`U-18` và `U-04` chặn chính chỉ số thành công của V0.1** — §10 dùng `A → B → C` và cụm *"sufficiently equivalent"* mà **không định nghĩa** cái nào; không định nghĩa được equivalence thì **không đếm được** "Execution matched". Thêm nữa, **§24 không đặt ngưỡng** cho Execution Match Rate dù §23 yêu cầu đo. Cùng chạm [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md); xem [SDD-Repro](./SDD-Repro.md) §6.5 và §8.3. |
-| `U-11` | **Code local phát ra query/HTTP call KHÔNG có trong capsule thì làm gì?** | RQ.md **hoàn toàn không nêu**. Và đây **không phải trường hợp biên** mà là trường hợp **thường gặp nhất**, vì use case chính là developer sửa code rồi replay lại (§8 bước 4–5). | Hành vi đã được **E9** định hướng (divergence + incomplete capture, không crash, không gọi hệ thống thật), nhưng vẫn chặn: thông điệp cụ thể của D3; và chặn việc phân biệt *"thiếu vì capsule bị cắt"* với *"thiếu vì code đã đổi"* — hai nguyên nhân khác nhau cần hai thông điệp khác nhau, xem `U-09d` ở [ADR-008](./ADR-008-Async-Bounded-Failure-Triggered-Capture.md). |
-
+| ID | Unknown | Giải pháp Chốt Chính Thức tại Phase P1 (2026-08-28) | Trạng thái |
+|---|---|---|:---:|
+| **`U-10`** | Mô hình thực thi của Diff Mode | **Replay-Interception Mode**: Replay runtime nạp interaction từ code local và so khớp với recorded values; toàn bộ WRITE bị chặn fail-closed theo [ADR-005](./ADR-005-Default-Deny-Write-Side-Effects.md). | ✅ **Đã đóng** |
+| **`U-16`** | Phân tầng cảnh báo drift | **Fatal** (Format version major khác $\to$ reject); **Warning** (Git commit / schema mismatch $\to$ gắn cờ `⚠️`, tiếp tục diff); **Info** (Redacted fields). | ✅ **Đã đóng** |
+| **`U-17`** | Nguồn schema version | Tự động phát hiện qua migration history table (`knex_migrations`, `prisma_migrations`, `typeorm_migrations`) hoặc git commit hash. | ✅ **Đã đóng** |
+| **`U-04`** | Định nghĩa Execution Path cho Diff | Dãy `InteractionUnit` ($U_0 \dots U_\infty$) qua 4 phép chuẩn hoá ($ACG\text{-}01$), nhóm theo loại input (§9). | ✅ **Đã đóng** |
+| **`U-11`** | Phân loại interaction thiếu/thừa | Phân loại tự động qua 6 bước Divergence Attribution ($Spec\ \S3.6$). | ✅ **Đã đóng** |
 ## Related Documents
 
 - [SDD-Repro](./SDD-Repro.md)

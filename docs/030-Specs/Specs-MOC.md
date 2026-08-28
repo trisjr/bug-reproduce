@@ -1,7 +1,9 @@
 ---
 id: MOC-SPECS
 type: moc
-status: draft
+status: approved
+project: repro
+owner: "@architect"
 created: 2026-08-14
 updated: 2026-08-28
 ---
@@ -10,87 +12,54 @@ updated: 2026-08-28
 
 Đặc tả kỹ thuật: thiết kế hệ thống, quyết định kiến trúc, và bảo mật. Xem thêm [Documentation Master Index](../000-Index.md).
 
-> [!IMPORTANT]
-> **Toàn bộ tài liệu trong thư mục này là thiết kế TRƯỚC KHI hiện thực.** `src/` và `test/` của repo còn rỗng. Không tài liệu nào ở đây mô tả code đang tồn tại.
-
 ---
 
 ## 🔬 Technical Spec
 
-- [Spec-Spike-Protocol](./Spec-Spike-Protocol.md) — **Spike Protocol cho Phase 0** *(2026-08-15)*. Tài liệu làm cho technical spike **cho ra được pass/fail**. Đóng **bốn `ACG`** ở dạng **hypothesis có nhãn**:
-  - **§2 `ACG-07`** — *Supported Execution Class*, khái niệm mà §20.1 lấy làm mitigation cho risk 🔴 `R-01` nhưng **không tồn tại ở đâu trong `RQ.md`**. Loại trừ trên **hai trục**: 9 hidden input §20.1 **và** dependency ngoài 8 nhóm capture §18.
-  - **§3 `ACG-01`** — định nghĩa **vận hành** của *execution path* + rubric `matched`/`diverged`. Đây là `U-04`, *"unknown lớn nhất của cả tài liệu"*. Kèm **`U-13`** (ngữ nghĩa clock) và **`U-16`** (drift warn hay fatal) — hai open item của ADR nay đã có hypothesis.
-  - **§4 `ACG-02` + `ACG-03`** — tiêu chí *"meaningful"*, **denominator = 7**, ngưỡng hiệu dụng **`≥6/7`**.
-  - **§5 Shortcut ledger** — control cho `TL-r4`, ghi mỗi `SEC-*` bị cố ý bỏ qua trong code spike.
-
-> [!WARNING]
-> **Toàn bộ nội dung `Spec-Spike-Protocol.md` mang nhãn `HYPOTHESIS`, KHÔNG phải định nghĩa sản phẩm.** Việc nâng lên định nghĩa là task `D2`, thuộc `P1`, **sau `GATE-06`**. Tài liệu hạ nguồn **cấm** trích dẫn mục của nó như định nghĩa đã chốt.
->
-> **Ba điểm yếu đã công bố, không phải phát hiện muộn:**
-> - **`W1`** — rubric §3 có **recall = 0** với rẽ nhánh thuần logic: hai nhánh khác nhau, không chạm dependency nào, cùng kết cục ⇒ rubric kết luận `matched` **trong khi execution thực sự đã khác**. Phát biểu trung thực nhất rubric hỗ trợ được là *"không quan sát được phân kỳ nào tại boundary đã instrument và tại kết cục"* — **không phải** *"execution giống nhau"*.
-> - **Bốn nhóm hidden input không có cơ chế phát hiện nào**: environment variables · filesystem state · **process state** · OS behavior. Class loại trừ chúng **bằng lời khai, không bằng phép kiểm**.
-> - Rubric thừa hưởng toàn bộ độ giòn của **`U-02`** — thứ [SDD §8.3](./Architecture/SDD-Repro.md) gọi là *"rủi ro hiện thực cao nhất"*.
-
-**Đo bằng gì**: [MTP-Spike-Phase-0](../035-QA/Test-Plans/MTP-Spike-Phase-0.md) · **Kết quả thực nghiệm**: [Report-Spike-Phase-0](../035-QA/Reports/Report-Spike-Phase-0.md) & [Perf-Spike-Phase-0](../035-QA/Performance/Perf-Spike-Phase-0.md)
+- [Spec-Spike-Protocol](./Spec-Spike-Protocol.md) — **Spike Protocol cho Phase 0** (2026-08-15). Làm cho technical spike cho ra được pass/fail.
+- [MTP-Spike-Phase-0](../035-QA/Test-Plans/MTP-Spike-Phase-0.md) — Kế hoạch đo lường thực nghiệm Phase 0.
+- [Report-Spike-Phase-0](../035-QA/Reports/Report-Spike-Phase-0.md) & [Perf-Spike-Phase-0](../035-QA/Performance/Perf-Spike-Phase-0.md) — Báo cáo kết quả thực nghiệm hoàn tất 100% Phase 0.
 
 ---
 
 ## 🏛️ Architecture
 
 ### System Design
+- [SDD-Repro](./Architecture/SDD-Repro.md) — **System Design Document**: Kiến trúc hệ thống, format v1, authn/authz, 25 technical unknowns (đã đóng toàn bộ các blocker cốt lõi tại Phase P1).
 
-- [SDD-Repro](./Architecture/SDD-Repro.md) — System Design Document: kiến trúc, component design, **capsule format**, CLI/SDK contract, deployment, security constraints
-  - **§8.3 — TBD Register**: 25 technical unknown (`U-01`…`U-25`), mỗi mục ghi rõ *nó chặn cái gì* và disposition. Đây là nơi tài liệu khai báo **những gì chưa biết** — đọc mục này trước khi ước lượng bất cứ thứ gì.
+### Architecture Decision Records (13 ADRs)
 
-### Architecture Decision Records
+Toàn bộ **13 ADRs** đã được phê duyệt chính thức (`status: approved`):
 
-**✅ CHỐT GATE-03 — 2026-08-14: tất cả 11 ADR đã được duyệt, `Decision status: Accepted`.** Người duyệt: **`@TrisJr`**.
-
-> `GATE-01` = G1 · `GATE-02` = G2 · `GATE-03` = G3 · `GATE-04` = G4 · `GATE-05a`/`GATE-05b` = G5.
-
-> [!WARNING]
-> **`Accepted` KHÔNG có nghĩa mọi thứ trong ADR đã chốt.** Nó xác nhận **hướng quyết định**; mục `Open items` của các ADR vẫn giữ **6 unknown chưa giải**: `U-01` (cơ chế chặn driver `pg`), `U-02` (query matching identity — *rủi ro hiện thực cao nhất*), `U-03`, **`U-04`** (*unknown lớn nhất của cả tài liệu*), `U-13`, `U-20`. Bốn trong số đó có disposition `SPIKE`, tức là **chỉ trả lời được sau khi technical spike chạy**.
->
-> Rủi ro *"hạ nguồn đọc `Accepted` như đã chốt hết"* được ghi thành **`GATE-03-r`** tại [Risk-Register §4.2](../010-Planning/Risk-Register.md). Mỗi ADR mang một callout tường minh về điều này — đó là mitigation.
->
-> Lưu ý thêm: `GATE-03` đổi **`Decision status`** của ADR. Trường **`status:` trong frontmatter vẫn là `draft`** ở cả 11 file. Hai trường khác nhau.
-
-| ADR | Quyết định |
-|---|---|
-| [ADR-001](./Architecture/ADR-001-Replay-Execution-Not-Environment.md) | Replay **execution**, không phải environment |
-| [ADR-002](./Architecture/ADR-002-Repro-Capsule-Format-Contract.md) | Repro Capsule là artifact portable và là **format contract** |
-| [ADR-003](./Architecture/ADR-003-Database-Record-Replay-Not-Snapshot.md) | Record/replay **kết quả query**, không snapshot database |
-| [ADR-004](./Architecture/ADR-004-Record-Replay-External-Inputs-At-Boundary.md) | Record/replay input ngoài tại **dependency boundary** |
-| [ADR-005](./Architecture/ADR-005-Default-Deny-Write-Side-Effects.md) | **Default-deny** mọi write side effect khi replay |
-| [ADR-006](./Architecture/ADR-006-Execution-Verification-By-Equivalence.md) | Verification bằng **execution equivalence** |
-| [ADR-007](./Architecture/ADR-007-In-Process-SDK-Interception.md) | **In-process SDK**, không proxy / sidecar / container runtime |
-| [ADR-008](./Architecture/ADR-008-Async-Bounded-Failure-Triggered-Capture.md) | Capture **async, bounded, sampled, failure-triggered** |
-| [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) | Topology **private / self-hosted** |
-| [ADR-010](./Architecture/ADR-010-Bounded-Determinism-Scope.md) | **Bounded determinism**: clock ở trong, scheduler/race ở ngoài |
-| [ADR-011](./Architecture/ADR-011-Execution-Diff-First-Class.md) | Execution Diff là **kết quả hạng nhất** của reproduction thất bại |
-
-## 🛡️ Security
-
-- [Spec-Security-Repro-Threat-Model](./Security/Spec-Security-Repro-Threat-Model.md) — Threat model của thiết kế: 13 asset, 6 trust boundary trên 4 zone, 19 threat theo STRIDE per-boundary, 43 requirement `SEC-*` dạng given/then, ràng buộc tuân thủ (GDPR / HIPAA / PCI DSS / SOC 2)
-  - **Phân bố thực nghiệm `SEC-008` (mục 11.b)**: Đã cập nhật phân bố và kết quả Thí nghiệm Cắt Offline từ Bảng T5 của Spike Report, gắn nhãn `HYPOTHESIS`.
-  - **11 trong 19 threat được đánh dấu `[GAP — RQ.md KHÔNG CÓ MITIGATION]`** — chúng được theo dõi tại [Risk-Register §3](../010-Planning/Risk-Register.md).
-  - Kết luận **không được làm mềm** ở mục 7: *redaction là **hygiene control**, KHÔNG phải containment boundary.*
+| ADR ID | Quyết Định Cốt Lõi | Deliverable Path |
+|---|---|---|
+| **`ADR-001`** | Replay **execution**, không phải environment | [ADR-001-Replay-Execution-Not-Environment.md](./Architecture/ADR-001-Replay-Execution-Not-Environment.md) |
+| **`ADR-002`** | Repro Capsule là artifact portable và là **format contract v1** | [ADR-002-Repro-Capsule-Format-Contract.md](./Architecture/ADR-002-Repro-Capsule-Format-Contract.md) |
+| **`ADR-003`** | Record/replay **kết quả query**, không snapshot database | [ADR-003-Database-Record-Replay-Not-Snapshot.md](./Architecture/ADR-003-Database-Record-Replay-Not-Snapshot.md) |
+| **`ADR-004`** | Record/replay input ngoài tại **dependency boundary** | [ADR-004-Record-Replay-External-Inputs-At-Boundary.md](./Architecture/ADR-004-Record-Replay-External-Inputs-At-Boundary.md) |
+| **`ADR-005`** | **Default-deny write side effects** trong lúc replay (L1+L2) | [ADR-005-Default-Deny-Write-Side-Effects.md](./Architecture/ADR-005-Default-Deny-Write-Side-Effects.md) |
+| **`ADR-006`** | Execution verification bằng **phán quyết tương đương (Equivalence)** | [ADR-006-Execution-Verification-By-Equivalence.md](./Architecture/ADR-006-Execution-Verification-By-Equivalence.md) |
+| **`ADR-007`** | **In-process SDK interception** cho Node.js applications | [ADR-007-In-Process-SDK-Interception.md](./Architecture/ADR-007-In-Process-SDK-Interception.md) |
+| **`ADR-008`** | **Async, bounded, failure-triggered capture** | [ADR-008-Async-Bounded-Failure-Triggered-Capture.md](./Architecture/ADR-008-Async-Bounded-Failure-Triggered-Capture.md) |
+| **`ADR-009`** | **Private self-hosted topology** cho recorder và storage | [ADR-009-Private-Self-Hosted-Topology.md](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) |
+| **`ADR-010`** | **Bounded determinism scope** (Virtual Clock Model) | [ADR-010-Bounded-Determinism-Scope.md](./Architecture/ADR-010-Bounded-Determinism-Scope.md) |
+| **`ADR-011`** | Execution Diff là **kết quả hạng nhất** của reproduction thất bại | [ADR-011-Execution-Diff-First-Class.md](./Architecture/ADR-011-Execution-Diff-First-Class.md) |
+| **`ADR-012`** | **Key Custody Architecture & Crypto-Shredding Protocol** ($U\text{-}06d$) | [ADR-012-Key-Custody.md](./Architecture/ADR-012-Key-Custody.md) |
+| **`ADR-013`** | **Open Source License (Apache-2.0) & Contribution Model** ($LG1$) | [ADR-013-OSS-License-And-Contribution-Model.md](./Architecture/ADR-013-OSS-License-And-Contribution-Model.md) |
 
 ---
 
-## ⚠️ Ba điều cần biết trước khi dùng bộ spec này
+## 🛡️ Security & Legal Specs
 
-1. **Hai unknown lõi — đã có kết quả kiểm chứng thực nghiệm tại Phase P0-C (2026-08-28):**
-   - **`U-04`** (*"execution path"* / *"sufficiently equivalent"* của `RQ.md §10` — unknown lớn nhất của cả tài liệu, chặn `ADR-006`): Rubric 2 tầng tại [Spec-Spike-Protocol §3](./Spec-Spike-Protocol.md) đã **chạy thực tế và đạt 100% match** ($21/21$ replays in-class trên $D=7$). Sẽ được nâng cấp thành Product Definition chính thức tại Task **`D2`** ở Phase **`P1`** sau `GATE-06`.
-   - **`U-02`** (query matching identity — rủi ro hiện thực cao nhất, chặn `ADR-003`): Hoạt động ổn định trên bộ 10 fixtures synthetic của Phase 0, tiếp tục được hoàn thiện giải pháp bền vững ở V0.1.
-   - **`U-13`** (ngữ nghĩa clock) và **`U-16`** (drift warning): Đã kiểm chứng qua các scenario `SC-4` và `SC-6` (Nhánh A), đạt kết quả $100\%$ matched.
-   - **Hai điểm `D2` không chốt theo, nay đã được quyết riêng ngày 2026-08-14:**
-     - `SEC-016` (crypto-shredding) — **✅ CHỐT GATE-05b**: rời `DEFER`, nay là **`MUST-V0.1`**. ⚠ Hệ quả: bất biến *"replay không cần kết nối mạng"* **bị phá** (`GATE-05b-r`), và `U-06d` (key custody) **thành blocker** (`GATE-05b-r2`). Xem [Risk-Register §4.2](../010-Planning/Risk-Register.md).
-     - `GAP-04` (chưa có CLI verb nào để vận hành authz/audit) — **vẫn nặng, KHÔNG được đóng.** `GATE-04` chốt *sàn* Capsule Store nhưng không chốt *ai vận hành nó bằng lệnh nào* (`GATE-04-r`).
-3. **`GATE-04` chốt sàn Capsule Store, nhưng chỉ phần *cái gì*.** Sàn đã chốt: **object/file storage + một index + authn/authz/audit hook**, với 3 thao tác tối thiểu — xem [SDD §3.6](./Architecture/SDD-Repro.md) và [ADR-009](./Architecture/ADR-009-Private-Self-Hosted-Topology.md) `D3`. **Cơ chế** authn/authz cụ thể **vẫn `TBD`** ([SDD §5.4](./Architecture/SDD-Repro.md)).
-4. **Khi trích dẫn ở tài liệu hạ nguồn, hãy trỏ section cụ thể** (ví dụ `SDD §3.7`) thay vì trỏ cả file — `SDD-Repro.md` và threat model đều dài trên 1200 dòng.
+- [Spec-Security-Repro-Threat-Model](./Security/Spec-Security-Repro-Threat-Model.md) — Threat Model đầy đủ: 19 threats, 43 security requirements (33 MUST-V0.1), L2 Container Sandbox, GDPR Right-to-Erasure review.
+- [Spec-Security-Data-Retention-Legal-Review](./Security/Spec-Security-Data-Retention-Legal-Review.md) — **Hồ sơ Giải trình Pháp lý Crypto-shredding & TTL 30 ngày** (Task `LG3` — sẵn sàng gửi luật sư bên ngoài).
+- [Spec-Security-Data-Processing-Agreement](./Security/Spec-Security-Data-Processing-Agreement.md) — **Mẫu Thỏa thuận Xử lý Dữ liệu (DPA)** chuẩn bị cho Design Partners ở Phase P4 (Task `LG4`).
+- [Audit-Spike-Code-Phase-0](./Security/Audit-Spike-Code-Phase-0.md) — Báo cáo kiểm toán bảo mật mã nguồn spike.
 
-## 📁 Thư mục con theo RULE-001 — chưa tạo
+---
 
-- `API/` — Endpoint Spec và Integration Spec. Chưa có: V0.1 là CLI-first (`RQ.md §33.2`). `U-06` nay đã **chốt phần sàn** (`GATE-04`) nhưng **API và cơ chế auth của Capsule Store vẫn `TBD`** ⇒ chưa đủ để viết Endpoint Spec.
-- `Schema/` — DB Entity. Chưa có: V0.1 **không có application database** — "persistence" của Repro là capsule, xem `SDD §4`.
+## 🔗 Liên Kết Liên Quan
+
+- [Documentation Master Index](../000-Index.md)
+- [Requirements-MOC](../020-Requirements/Requirements-MOC.md)
+- [QA-MOC](../035-QA/QA-MOC.md)

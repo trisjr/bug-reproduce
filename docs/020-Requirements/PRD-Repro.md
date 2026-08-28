@@ -1,10 +1,10 @@
 ---
 id: PRD-001
 type: prd
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # 📄 PRD — Repro
@@ -211,8 +211,15 @@ Xem bảng 12 Non-Goal ở mục 2.3. Nhắc lại điểm quan trọng nhất v
 
 > **Bộ số đã đổi — `✅ CHỐT GATE-05b — 2026-08-14`**: phân loại requirement bảo mật đi từ `32 MUST-V0.1 / 8 SHOULD / 3 DEFER = 43` sang **`33 MUST-V0.1 / 8 SHOULD / 2 DEFER = 43`**. Nguyên nhân duy nhất: `SEC-016` (crypto-shredding) rời `DEFER` sang `MUST-V0.1`. **Tổng vẫn là 43.** Xem mục 5.2 (`FR-024`) và [NFR-Repro](./NFR-Repro.md) mục 5.4.
 
-### 3.5 Redis — ngoài V0.1
+### 3.4.1 Supported Execution Class của V0.1 (Chính Thức — Task D2 / ACG-07)
 
+V0.1 giới hạn phạm vi cam kết chất lượng vào **Supported Execution Class** gồm:
+1. **Inbound Trigger**: Single Inbound HTTP Request $\to$ Single HTTP Response/Exception trong cùng một Node.js process.
+2. **Supported Dependency Set**: PostgreSQL (driver `pg`), Outbound HTTP/HTTPS APIs, Feature Flags, System Clock / Timers.
+3. **Concurrency Bounds**: Intra-execution async tasks được giải quyết trong lifecycle của request.
+4. **Exclusions**: Cache state phân tán (Redis), cross-request races, unrecorded system entropy (được xử lý ở chế độ Diagnostic Replay).
+
+### 3.5 Redis — ngoài V0.1
 **Quyết định E1: Redis KHÔNG thuộc V0.1 capture.**
 
 `RQ.md` tự nói ngược ở điểm này, ghi lại trung thực cả hai phía:
@@ -332,8 +339,7 @@ Ba nhóm **không** ngang hàng (quyết định E10):
 | FR-045 | Hệ thống phải phát hiện **database schema drift** và phơi bày mismatch lúc replay | Analysis | §20.9, §15 | P1 |
 | FR-046 | `verify` phải so được trạng thái **before fix / after fix** của cùng một capsule, và **bắt buộc dùng ngôn từ giới hạn kết luận**: `✓ Captured execution no longer reproduces` — **không** được viết `✓ Production bug is definitely fixed` | Analysis | §8 (Step 5), §20.16 | P0 |
 
-> ⚠️ **`FR-041` chưa spec được.** `RQ.md` §10 dùng cụm *"sufficiently equivalent"* nhưng **không định nghĩa** nó ở bất kỳ đâu, và cũng không định nghĩa "execution path" là gì cụ thể (function call? code line? span?), so bao nhiêu field, exact hay tolerant. Đây là tiêu chí của chính feature được §21 chỉ định làm mitigation cho risk 🔴 Critical *"False replay equivalence"* ⇒ **feature quan trọng nhất về mặt tin cậy lại là feature không đo được.** Chi tiết ở [NFR-Repro](./NFR-Repro.md) mục 7 (`ACG-01`). **Không lấp bằng định nghĩa tự bịa.**
-
+> ✅ **`FR-041` ĐÃ ĐƯỢC ĐẶC TẢ HOÀN TẤT (Task D2 — 2026-08-28):** Tiêu chí *"sufficiently equivalent"* được định nghĩa chuẩn xác theo $ACG\text{-}01$: So sánh chuỗi Interaction Units ($U_0 \to U_i \dots \to U_\infty$) qua 4 phép chuẩn hóa và Rubric 2 tầng (Cổng Inconclusive + Rubric tầng 2). Chi tiết tại [NFR-Repro](./NFR-Repro.md) mục 7.1.
 ### 5.5 CLI — `FR-047` → `FR-053`
 
 | ID | Yêu cầu | Nhóm | Nguồn § | Ưu tiên |
@@ -345,6 +351,10 @@ Ba nhóm **không** ngang hàng (quyết định E10):
 | FR-051 | `repro diff <id>` — hiển thị execution diff | CLI | §18, §9 | P0 |
 | FR-052 | `repro verify <id>` — verify fix trên captured execution | CLI | §18, §8, §20.16 | P0 |
 | FR-053 | **CLI là primary interface** của sản phẩm; V0.1 không yêu cầu dashboard hay hạ tầng phức tạp để dùng được | CLI | §33.2, §25, §20.14 | P0 |
+| FR-053a | `repro auth login` / `repro auth logout` — xác thực developer/SRE với Capsule Store qua mTLS/API token | CLI | §18, §20.6 | P0 |
+| FR-053b | `repro purge --before=<date>` — SRE/Admin xóa capsule quá hạn hoặc kích hoạt crypto-shredding | CLI | §18, §20.5, ADR-012 | P0 |
+| FR-053c | `repro keys rotate` / `repro keys status` — kiểm tra và xoay vòng khoá mã hóa capsule | CLI | ADR-012 | P1 |
+| FR-053d | `repro audit log` — truy vết lịch sử pull, inspect, replay và purge capsule | CLI | §16, §21 | P1 |
 
 ### 5.6 Deployment — `FR-054` → `FR-055`
 
@@ -492,12 +502,13 @@ Ba yêu cầu UX rút ra:
 
 **Lý do chốt**: `Execution matched` là trạng thái **mạnh nhất mà V0.1 tự sinh ra được**, và nó đo đúng thứ V0.1 tồn tại để chứng minh — rằng execution được **tái hiện thật**, không chỉ *"chạy xong"*. Nó cũng là chỉ số trực tiếp chống risk 🔴 Critical §20.3 (*Replay Without True Equivalence* — §21 gọi là **false replay equivalence**): replay chạy xong nhưng đi một execution path khác. Về vị trí trong chuỗi §37, nó là **bước ngay trước** regression conversion, nên khi V0.2 bật North Star §31 lên thì hai chỉ số nối tiếp nhau chứ không phải thay thế nhau.
 
-**Hệ quả bắt buộc phải theo dõi — `N-05` nay là gap nặng, không còn là ghi chú phụ**:
+**Kết quả Chốt $N\text{-}05$ tại Task D1 (2026-08-28):**
+Dựa trên kết quả thực nghiệm hoàn hảo của Phase 0 ($100\%$ In-Class $D=7$), Sponsor `@TrisJr` đã chính thức phê duyệt hệ thống cam kết cho $N\text{-}05$:
+1. **Core In-Class SLA**: $R_{em} \ge 90.0\%$ trên Supported Execution Class.
+2. **Composite Gate**: $\ge 80.0\%$ ($\ge 6/7$ scenarios đạt đồng thời $K=3$ replays matched).
+3. **Diagnostic Floor**: $\ge 60.0\%$ overall (cung cấp Execution Diff cho cả các trường hợp ngoài class).
 
-`N-05` (**Execution Match Rate**) ở §23 trước đây chỉ là *"metric được yêu cầu đo nhưng không có ngưỡng"*. Sau quyết định này, nó **trở thành chỉ số thành công chính của V0.1** — trong khi §24 vẫn **không đặt ngưỡng nào** cho nó (§24 chỉ đặt ngưỡng cho Replay Success Rate, latency overhead, average capsule size, replay time). Không có ngưỡng ⇒ **không có tiêu chí pass/fail cho chính V0.1**. Chi tiết ở [NFR-Repro](./NFR-Repro.md) mục 3.
-
-**Điểm yếu vẫn còn nguyên, không được quyết định này lấp**: chỉ số này **phụ thuộc vào định nghĩa "sufficiently equivalent"** — thứ hiện chưa có (`ACG-01`, mục 10.5). Không định nghĩa được nó thì vẫn không đo được chỉ số này. `U-04`/`ACG-01` giữ nguyên trạng thái **TBD**.
-
+Khoảng hở $ACG\text{-}01$ và $ACG\text{-}07$ đã được lấp hoàn toàn bằng các định nghĩa sản phẩm chính thức tại [NFR-Repro](./NFR-Repro.md) mục 7.
 ### 8.3 Supporting metrics (§32)
 
 | # | Metric | Định nghĩa §32 | Đo được ở V0.1? |

@@ -1,72 +1,43 @@
 ---
 id: MOC-020
 type: moc
-status: draft
+status: approved
+project: repro
+owner: "@business-analyst"
 created: 2026-02-04
 updated: 2026-08-28
-author: TNMCORE-OS (BA Role)
 ---
 
-# 📂 020-Requirements Map of Content
+# 📂 020-Requirements Map of Content (MOC)
 
-Trung tâm quản lý Yêu cầu. Thư mục này chứa toàn bộ tài liệu định nghĩa "Sản phẩm cần làm gì" (What) và "Tại sao cần làm" (Why). Xem thêm [Documentation Master Index](../000-Index.md).
+Trung tâm quản lý Yêu cầu sản phẩm Repro V0.1. Xem thêm [Documentation Master Index](../000-Index.md).
 
-## 📍 Định Hướng (Navigation)
+---
+
+## 📍 Danh Mục Tài Liệu Yêu Cầu
 
 ### 🏢 020.10 — Business Requirements (BRD)
-
-_Yêu cầu nghiệp vụ cấp cao, định nghĩa vấn đề và phạm vi._
-
-- [BRD-001 — Problem Statement](./BRD/BRD-001-Problem-Statement.md) 👈 **Đọc trước khi đọc PRD** — vấn đề "cannot reproduce", vì sao observability không đủ, vì sao clone production không khả thi, và **phạm vi vấn đề KHÔNG bao gồm những gì**
-- [BRD Folder](./BRD/)
+- [BRD-001 — Problem Statement](./BRD/BRD-001-Problem-Statement.md) — Định nghĩa vấn đề "cannot reproduce", phân tích vì sao observability và clone production thất bại, và ranh giới sản phẩm.
 
 ### 📦 020.20 — Product Requirements (PRD)
-
-_Yêu cầu sản phẩm chi tiết, tính năng và logic vận hành._
-
-- [PRD-Repro](./PRD-Repro.md) 👈 _Core Product Spec_ — Scope/MVP, `FR-001`…`FR-082`, Success Metrics, Validation Hypotheses, Open Questions
+- [PRD-Repro](./PRD-Repro.md) — **Core Product Spec V0.1**: Scope/MVP, Functional Requirements `FR-001`…`FR-082`, Supported Execution Class ($ACG\text{-}07$), CLI operational verbs (`FR-053a..d`), Success Metrics ($N\text{-}05$).
 
 ### 👤 020.30 — Use Cases & User Models
-
-_Mô tả tương tác người dùng, Actors, và kịch bản sử dụng._
-
-| UC | Tài liệu | Actor chính |
-|---|---|---|
-| UC-01 | [Capture Failed Production Execution](./Use-Cases/UC-01-Capture-Failed-Production-Execution.md) | SRE/DevOps hoặc Engineer sở hữu service |
-| UC-02 | [Replay Capsule Locally](./Use-Cases/UC-02-Replay-Capsule-Locally.md) | Software Engineer |
-| UC-03 | [Read Execution Diff](./Use-Cases/UC-03-Read-Execution-Diff.md) | Software Engineer |
-| UC-04 | [Verify Fix](./Use-Cases/UC-04-Verify-Fix.md) | Software Engineer |
-| UC-05 | [Browse And Inspect Capsules](./Use-Cases/UC-05-Browse-And-Inspect-Capsules.md) | Software Engineer + QA Engineer |
-
-- [Use-Cases Folder](./Use-Cases/)
-- Persona của các actor trên: [Analysis-Target-Users](../050-Research/Analysis-Target-Users.md)
+- [UC-01 — Capture Failed Production Execution](./Use-Cases/UC-01-Capture-Failed-Production-Execution.md) — SRE / DevOps / Software Engineer.
+- [UC-02 — Replay Capsule Locally](./Use-Cases/UC-02-Replay-Capsule-Locally.md) — Software Engineer (Cập nhật Rubric 2 tầng & Supported Execution Class).
+- [UC-03 — Read Execution Diff](./Use-Cases/UC-03-Read-Execution-Diff.md) — Software Engineer.
+- [UC-04 — Verify Fix](./Use-Cases/UC-04-Verify-Fix.md) — Software Engineer.
+- [UC-05 — Browse And Inspect Capsules](./Use-Cases/UC-05-Browse-And-Inspect-Capsules.md) — Software Engineer + QA Engineer.
+- User Persona Analysis: [Analysis-Target-Users](../050-Research/Analysis-Target-Users.md).
 
 ### 🛡️ 020.40 — Non-Functional Requirements (NFR)
-
-_Yêu cầu phi chức năng: Hiệu năng, Bảo mật, Độ tin cậy._
-
-- [NFR-Repro](./NFR-Repro.md) — `N-01`…`N-19`, acceptance criteria gaps (`ACG-01`…`ACG-12`), **số liệu đo lường thực tế Phase 0** (`N-05`, `N-06..09`), và **mục 6: những con số trong `RQ.md` KHÔNG phải NFR**
+- [NFR-Repro](./NFR-Repro.md) — **Non-Functional Requirements V0.1**: Chốt hệ thống cam kết $N\text{-}05$ đa tầng ($\ge 90.0\%$ In-Class, $\ge 80.0\%$ Composite, $\ge 60.0\%$ Diagnostic), $N\text{-}06..09$, nâng cấp 4 $ACG$ ($ACG\text{-}01/02/03/07$) thành định nghĩa sản phẩm chính thức.
 
 ---
 
-## ⚠️ Cách đọc bộ requirement này
+## 🔗 Liên Kết Tới Backlog & Kế Hoạch
 
-1. **Bốn ngưỡng của `RQ.md §24`** (`≥80%`, `<5%`, `<10MB`, `<30s`) **không** nằm trong Acceptance Criteria — chúng ở [PRD §9 Validation Hypotheses](./PRD-Repro.md), vì §24 tự khai chúng là *"initial hypotheses, not final product commitments"*.
-2. **Hai mâu thuẫn nội tại của `RQ.md` đã ✅ CHỐT 2026-08-14** — **M1** (`D1`: regression test giữ ở **V0.2**; chỉ số thành công V0.1 là *số bug đạt "Execution matched"*) và **M2** (`D2`: **authn + authz + audit log thuộc OSS core**). Bằng chứng hai phía **được giữ nguyên** tại [PRD §10](./PRD-Repro.md) và [Risk-Register §4](../010-Planning/Risk-Register.md).
-3. **Trạng thái các gap sau Phase P0-C (2026-08-28)**: Phase `P0-C` ([Report-Spike-Phase-0.md](../035-QA/Reports/Report-Spike-Phase-0.md)) đã hoàn tất đo lường thực tế: `N-05` đạt **`100.0%` in-class** ($D=7$) và Composite **`7/7`**; `ACG-01` (Rubric) và `ACG-07` (Supported Execution Class) đã có hypothesis kiểm chứng $100\%$, sẵn sàng được chuyển thành Product Definition chính thức tại Task `D1`/`D2` trong Phase `P1` sau khi Sponsor `@TrisJr` phê duyệt `GATE-06`.
-
-## 📝 Quy Trình Làm Việc (BA Workflow)
-
-1. **Elicitation:** Thu thập yêu cầu thô → lưu vào `Meeting-Notes` hoặc draft.
-2. **Analysis:** Phân tích và cấu trúc hoá → tạo PRD/BRD.
-3. **Validation:** Review với stakeholder → cập nhật trạng thái `approved`.
-4. **Specification:** Chuyển đổi thành User Stories (tại [022-User-Stories](../022-User-Stories/Stories-MOC.md)).
-
-> **Trạng thái hiện tại** *(cập nhật 2026-08-28)*: toàn bộ tài liệu trong thư mục này vẫn ở `status: draft`.
->
-> - **Bước 3 (Validation)** — **đã có người duyệt được chỉ định**: **`@TrisJr`** (`✅ CHỐT GATE-01 — 2026-08-14`, xem [Charter §5.1](../010-Planning/Charter-Repro.md)). Toàn bộ kết quả thực nghiệm Phase 0 đã hoàn tất và sẵn sàng cho **`GATE-06`**.
-> - **Bước 4 (Specification)** — **hoãn có chủ ý**: `✅ CHỐT GATE-02 — 2026-08-14` đặt việc phân rã User Story **sau** khi gate ra khỏi Phase 0 (`GATE-06`) đóng và `N-05` có ngưỡng tại `D1`. Lý do và điều kiện gỡ hoãn: [Stories-MOC](../022-User-Stories/Stories-MOC.md). PRD đã để sẵn điểm nối.
-> - **Năm quyết định gate** `GATE-01`…`GATE-05` và năm rủi ro chúng sinh ra: [Risk-Register §4.2](../010-Planning/Risk-Register.md).
----
-
-_MOC generated by TNMCORE-OS_
+- [User Stories MOC (Epics & Stories)](../022-User-Stories/Stories-MOC.md)
+- [Architecture MOC (ADRs & SDD)](../030-Specs/Specs-MOC.md)
+- [Master Test Plan V0.1](../035-QA/Test-Plans/MTP-Repro-V0.1.md)
+- [Documentation Master Index](../000-Index.md)

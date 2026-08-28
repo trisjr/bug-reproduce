@@ -1,10 +1,10 @@
 ---
 id: ADR-007
 type: adr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # ADR-007: In-Process SDK Interception
@@ -94,14 +94,13 @@ Cơ chế hiện thực cụ thể của việc chặn (`pg`, HTTP inbound/outbo
 
 ## Open items (TBD)
 
-| ID | Unknown | RQ.md nói gì | Nó chặn cái gì |
-|---|---|---|---|
-| `U-01` | **Cơ chế chặn driver PostgreSQL (`pg`)** — monkey-patch prototype của module? wrapper client do Repro cung cấp? hook ở tầng protocol trong process? diagnostics channel của runtime? | §18 yêu cầu capture `database query/result`; §11 mô tả replay layer trả recorded result. RQ.md **không có một dòng nào** về cơ chế. | Chặn: ước lượng công sức V0.1; chặn việc biết trước sẽ vỡ ở phiên bản `pg` nào; chặn thiết kế định danh query để match lúc replay (`U-02`, thuộc [ADR-003](./ADR-003-Database-Record-Replay-Not-Snapshot.md)); chặn technical spike §22. |
-| `U-03` | **Cơ chế chặn HTTP — cả outbound lẫn inbound.** Hai chiều là hai bài toán khác nhau: outbound cần thay response trả về cho app (§12); inbound cần tái tạo request lúc replay (§18 *HTTP request replay*). | §18 liệt kê cả `HTTP request` (capture) lẫn `external HTTP response`; §12 mô tả thay response. Cơ chế: **không có**. | Chặn: đặc tả `repro replay` (nạp request vào app bằng cách nào — gọi handler trực tiếp hay dựng HTTP thật ở loopback); chặn ranh giới với [ADR-005](./ADR-005-Default-Deny-Write-Side-Effects.md) về egress allowlist; chặn `U-10` của [ADR-011](./ADR-011-Execution-Diff-First-Class.md). |
-| `U-19` | **Library vs process wrapper** — `repro.init()` trong code (A5 là `repro run …`)? Hay hỗ trợ cả hai? | §20.14 chỉ nêu hình thái library (`npm install` + `repro.init()`). RQ.md **không cân** phương án wrapper. | Chặn: hợp đồng cài đặt trong tài liệu onboarding; chặn câu hỏi §38.13 (*"What is the minimum integration effort that developers will accept?"*) — vốn RQ.md để mở; chặn việc chặn được các dependency được nạp **trước** `repro.init()` (vấn đề thứ tự khởi tạo mà hình thái library luôn có còn wrapper thì không). |
-| `U-C1` | **Compatibility matrix là nợ vĩnh viễn — chưa có chính sách.** Hỗ trợ bao nhiêu major version của driver? Hành vi khi gặp phiên bản chưa biết: từ chối chạy, chạy mà cảnh báo, hay im lặng không capture? | §21 khai risk `Compatibility matrix / Medium / MVP? Yes / Narrow initial support`. "Narrow initial support" là *hướng*, không phải *chính sách*. | Chặn: hợp đồng hành vi của SDK khi gặp môi trường ngoài matrix; chặn cam kết bảo trì trong tài liệu OSS (§28); và im lặng-không-capture là kịch bản tệ nhất vì nó tạo capsule thiếu input — nối vào quyết định **E9** (thiếu input lúc replay ⇒ divergence + incomplete capture, không crash, **không** fallback gọi hệ thống thật). |
-| `U-C2` | **Ngưỡng an toàn của lớp chặn**: lỗi trong recorder có được phép ném ra ứng dụng không? | §20.7 chỉ nêu nguyên tắc *"never become the reason production becomes slower or fails"* — không nêu cơ chế. | Chặn: đặc tả xử lý lỗi của SDK; là điều kiện cần để [ADR-008](./ADR-008-Async-Bounded-Failure-Triggered-Capture.md) có nghĩa. |
-
+| ID | Unknown | Giải pháp Chốt Chính Thức tại Phase P1 (2026-08-28) | Trạng thái |
+|---|---|---|:---:|
+| **`U-01`** | Cơ chế intercept driver PostgreSQL (`pg`) | Monkey-patching `pg.Client.prototype.query` & `pg.Pool.prototype.query` ở tầng pure JavaScript connection layer (hỗ trợ `pg` v8.x). | ✅ **Đã đóng** |
+| **`U-03`** | Cơ chế intercept HTTP (Outbound & Inbound) | **Outbound**: Wrapper `http.request` / `https.request` / `global.fetch`; **Inbound**: Listener/Middleware wrapper ở tầng `http.Server` cơ sở. | ✅ **Đã đóng** |
+| **`U-19`** | Hình thái tích hợp SDK | Hỗ trợ cả hai: `npm install @repro/node` + `repro.init()` trong code, hoặc preload qua `node --require @repro/node app.js`. | ✅ **Đã đóng** |
+| **`U-C1`** | Chính sách tương thích | Hỗ trợ `pg` v8.x, Node.js 18/20/22 LTS. Phiên bản lạ $\to$ cảnh báo và fallback sang uninstrumented pass-through (không crash). | ✅ **Đã đóng** |
+| **`U-C2`** | Ngưỡng an toàn lỗi recorder | Tuyệt đối không ném lỗi ra ứng dụng ($§20.7$): Try-catch toàn bộ recorder pipeline, log telemetry nội bộ và tiếp tục request. | ✅ **Đã đóng** |
 > ✅ **CHỐT GATE-01 — 2026-08-14** — technical spike §22 **đã được bật**: `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Cột *"Nó chặn cái gì"* của `U-01` ghi *chặn technical spike §22* — quan hệ đó nay **đảo chiều một nửa**: spike đã có ngân sách và người chịu trách nhiệm, nên nó là **nơi để thử** các cơ chế chặn driver `pg`.
 >
 > ⚠️ **`U-01` VẪN `TBD`, và `U-03` cũng vậy.** RQ.md vẫn **không có một dòng nào** về cơ chế; bốn ứng viên của `U-01` (monkey-patch prototype · wrapper client · hook tầng protocol · diagnostics channel) **chưa có ứng viên nào được chọn**, và `GATE-01` **không** chọn hộ. `Go` cũng không tự làm spike đo được — `ACG-01`/`ACG-02`/`ACG-03`/`ACG-07` vẫn hở. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.

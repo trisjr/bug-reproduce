@@ -1,10 +1,10 @@
 ---
 id: ADR-010
 type: adr
-status: draft
+status: approved
 project: repro
 created: 2026-08-14
-updated: 2026-08-14
+updated: 2026-08-28
 ---
 
 # ADR-010: Bounded Determinism Scope
@@ -128,13 +128,13 @@ Repro **phải** nói ra được nó đã capture và replay chính xác nhữn
 ## Open items (TBD)
 
 | ID | Unknown | RQ.md nói gì | Nó chặn cái gì |
-|---|---|---|---|
-| `U-13` | **Clock freeze hay virtual clock?** Đồng hồ lúc replay đứng yên tại thời điểm đã ghi, hay chạy tiếp theo độ trôi đã ghi được của execution production? Và phủ tới đâu — chỉ `Date.now()` hay cả timer, timeout, interval? | §18 `clock replay`; §20.2 `clock capture/replay`; §8 `✓ Clock`. **Không chỗ nào định nghĩa ngữ nghĩa.** | Chặn: hiện thực clock replay; chặn kịch bản `4. Time-dependent bug` của §22 (freeze và virtual cho kết quả **khác nhau** ở code đo thời lượng: `t2 - t1` bằng 0 khi freeze); chặn tiêu chí so khớp timestamp ở [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md). |
-| `U-20` | **Async-trong-một-execution nằm TRONG phạm vi — cần phát biểu chuẩn tắc.** D3 vẽ đường ranh, nhưng chưa có tiêu chí máy kiểm được để phân loại một divergence là "async nội bộ" (phải tái hiện được) hay "race giữa các execution" (ngoài phạm vi). | §22 tách `9. Async behavior` khỏi `10. Race condition` ⇒ RQ.md **có** phân biệt. Nhưng §20.2 và §20.13 gộp chung dưới `Concurrency`/`Scheduling`, và **không nơi nào định nghĩa ranh giới**. §19 chỉ loại `Distributed race-condition replay` — chữ *"Distributed"* gợi ý ranh giới nhưng không xác lập nó. | Chặn: định nghĩa phạm vi có thể kiểm chứng được cho V0.1; chặn kịch bản `9` và `10` của spike §22 (không phân biệt được thì không biết spike đã pass hay fail); chặn thông điệp "ngoài phạm vi" của D4; chặn cách [ADR-011](./ADR-011-Execution-Diff-First-Class.md) quy trách nhiệm divergence. |
-| `ACG-06` ([NFR-Repro](../../020-Requirements/NFR-Repro.md) §7) | **`"UUID capture where practical"` — practical nghĩa là gì?** Nguồn nào được chặn (thư viện uuid? `crypto.randomUUID`? `Math.random`? nguồn entropy của OS?), và làm sao khớp giá trị đã ghi với lời gọi tương ứng khi code local đã đổi? | §20.2 nguyên văn `UUID capture where practical`. **Không có tiêu chí nào.** | Chặn: **acceptance criteria** cho hạng mục determinism (đây là khoảng trống được nêu ở §Consequences → Negative); chặn phạm vi của kịch bản `7. Randomness` (§22); chặn việc mẫu số của §24 `≥ 80%` có tính các test case ngẫu nhiên hay không. |
-| `U-24` | **Cơ chế phát hiện "execution này nằm ngoài phạm vi determinism".** Repro làm sao *biết* để nói ra (D4)? Có tín hiệu quan sát được nào không, hay chỉ suy đoán từ triệu chứng (replay cho kết quả khác nhau giữa các lần chạy)? | §33.5 đặt nghĩa vụ *"explain exactly what was captured and replayed"*. **Không có cơ chế nào được nêu.** | Chặn: D4 không cài đặt được; chặn việc phân biệt *false blame* nêu ở §Consequences → Negative; chặn ngôn ngữ kết quả mà §20.16 yêu cầu phải chính xác. |
-| `U-25` | **Replay hai lần có cho cùng kết quả không?** Nếu chính `repro replay` không tất định giữa các lần chạy thì mọi kết luận về equivalence đều không đứng vững. | RQ.md **hoàn toàn không đặt câu hỏi này.** §23 đo *Execution Match Rate* giữa production và local, chưa bao giờ đo giữa local và local. | Chặn: độ tin cậy của [ADR-006](./ADR-006-Execution-Verification-By-Equivalence.md) và [ADR-011](./ADR-011-Execution-Diff-First-Class.md); nên là một kiểm tra bắt buộc của spike §22 — replay lặp lại N lần trên cùng capsule, cùng code, và **phải** ra cùng kết quả. |
-
+| ID | Unknown | Giải pháp Chốt Chính Thức tại Phase P1 (2026-08-28) | Trạng thái |
+|---|---|---|:---:|
+| **`U-13`** | Clock freeze vs Virtual clock | **Virtual Clock Model**: Khởi tạo bằng capture timestamp $U_0$ và tịnh tiến ảo tất định theo chuỗi tương tác (hỗ trợ `Date.now()`, `performance.now()`, `setTimeout`). | ✅ **Đã đóng** |
+| **`U-20`** | Async trong một execution vs Race | Intra-execution async được hỗ trợ hoàn toàn qua microtask tracking; cross-execution race được phân loại tường minh sang `out-of-scope-determinism`. | ✅ **Đã đóng** |
+| **`ACG-06`** | Phạm vi Randomness / UUID | V0.1 hỗ trợ capture `crypto.randomUUID()`; các nguồn ngẫu nhiên ngoài danh sách được gán cảnh báo $ACG\text{-}07$. | ✅ **Đã đóng** |
+| **`U-24`** | Phát hiện ngoài phạm vi determinism | Tự động phát hiện qua `class_assessment` ($ACG\text{-}07$) và 6-step attribution pipeline ($Spec\ \S3.6$). | ✅ **Đã đóng** |
+| **`U-25`** | Độ ổn định Replay lặp lại ($K=3$) | Đã kiểm chứng thực nghiệm 100% tại Phase 0 ($33/33$ runs replay $K=3$ cho cùng kết quả nhị phân). | ✅ **Đã đóng** |
 > ✅ **CHỐT GATE-01 — 2026-08-14** — `GATE-01` = **Go**, Phase 0 technical spike là **điều kiện đầu tư** chứ không phải task — `Sponsor` = `@TrisJr` · `Manager` = `@TrisJr`. Mapping: `GATE-01` = G1 · `GATE-03` = G3. Hai mục trong bảng trên trỏ thẳng vào spike và nay có nơi để chạy: `U-20` (kịch bản `9`/`10` của §22) và `U-25` (*"nên là một kiểm tra bắt buộc của spike §22"* — replay lặp N lần trên cùng capsule).
 >
 > ⚠️ **Không mục nào trong bảng được đóng.** `U-13`, `U-20`, `ACG-06`, `U-24`, `U-25` **vẫn `TBD`** sau `GATE-01` và sau `GATE-03`: ngữ nghĩa clock (freeze hay virtual) vẫn chưa được định nghĩa ở bất kỳ đâu trong RQ.md, *"where practical"* vẫn không đo được, và cơ chế phát hiện *"ngoài phạm vi determinism"* vẫn chưa có. Với `U-20` và `ACG-06`, `Go` còn **chưa đủ để chấm điểm** kịch bản `7. Randomness`, `9`, `10` — đây đúng là khoảng hở `GATE-01-r` mô tả. Xem `GATE-01-r` tại [Risk-Register §4.2](../../010-Planning/Risk-Register.md) §4.2.

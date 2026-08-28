@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: repro-test-postgres
+    environment:
+      POSTGRES_USER: repro_user
+      POSTGRES_PASSWORD: repro_password
+      POSTGRES_DB: repro_test_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U repro_user -d repro_test_db"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  canary-sink:
+    image: alpine:latest
+    container_name: repro-test-canary-sink
+    command: ["sh", "-c", "nc -lk -p 9999 -e echo -e 'HTTP/1.1 200 OK\\r\\n\\r\\nCanary Received'"]
+    ports:
+      - "9999:9999"
+
+  test-runner:
+    image: node:22-alpine
+    container_name: repro-test-runner
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      REPRO_ENV: test
+      DATABASE_URL: postgres://repro_user:repro_password@postgres:5432/repro_test_db
+      CANARY_SINK_URL: http://canary-sink:9999
+    command: ["npm", "test"]
